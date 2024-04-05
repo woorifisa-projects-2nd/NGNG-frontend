@@ -1,3 +1,12 @@
-export default function MyPage() {
-  return <div className="text-slate-200">mypage page</div>;
+import React, { Suspense, useEffect } from "react";
+import MyInfo from "./_compoenets/MyInfo";
+
+export default function index() {
+  return (
+    <div>
+      <Suspense fallback={<p>"로딩중"</p>}>
+        <MyInfo />
+      </Suspense>
+    </div>
+  );
 }

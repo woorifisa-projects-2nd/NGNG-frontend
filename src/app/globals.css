@@ -7,4 +7,5 @@
 
 body {
   @apply text-black dark:text-white;
+  min-height: 100vh;
 }
