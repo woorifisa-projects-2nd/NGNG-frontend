@@ -4,3 +4,7 @@
 
 :root {
 }
+
+body {
+  @apply text-black dark:text-white;
+}

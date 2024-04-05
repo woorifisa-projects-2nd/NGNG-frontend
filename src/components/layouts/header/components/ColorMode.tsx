@@ -6,9 +6,9 @@ import LightModeIcon from "../design/SVG/light_mode.svg";
 export default function ColorMode() {
   const { systemTheme, theme, setTheme } = useTheme();
   const currentTheme = theme === "system" ? systemTheme : theme;
-  const changeColorMode = () => {
+  console.log("system", systemTheme, "theme", theme);
+  const changeColorMode = () =>
     setTheme(currentTheme === "dark" ? "light" : "dark");
-  };
   return (
     <div
       className="cursor-pointer transition duration-300"

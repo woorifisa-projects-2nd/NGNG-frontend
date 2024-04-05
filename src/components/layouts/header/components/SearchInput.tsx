@@ -1,16 +1,12 @@
-"use client";
 import SearchIcon from "../design/SVG/search.svg";
-import { useTheme } from "next-themes";
 export default function SearchInput() {
-  const { theme } = useTheme();
-  const iconColor = theme === "dark" ? "white" : "#272727";
   return (
-    <div className="flex items-center w-4/5 md:w-[35%]">
-      <div className="relative left-10">
-        <SearchIcon color={iconColor} />
+    <div className="flex items-center w-full md:w-[28%] p-5 pt-0 md:p-0">
+      <div className="relative left-[15px] w-0 h-0 bottom-[9px]">
+        <SearchIcon className="fill-black dark:fill-white" />
       </div>
       <input
-        className="bg-light-gray dark:bg-black rounded h-10 focus:outline-none pl-12 text-black dark:text-white min-w-56 w-[80%] md:w-full"
+        className="bg-light-gray dark:bg-black rounded h-9 focus:outline-none pl-12 text-black dark:text-white min-w-44 w-full"
         placeholder="무엇을 원하세요?"
       />
     </div>

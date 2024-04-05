@@ -8,7 +8,9 @@ export default function DefaultLayout({ children }: { children: ReactNode }) {
   const textColor = theme === "dark" ? "text-white" : "text-black";
   const bgColor = theme === "dark" ? "bg-bg-dark" : "bg-white";
   return (
-    <div className={`${textColor} ${bgColor} w-full h-full min-w-[375px]`}>
+    <div
+      className={`text-black dark:text-white ${bgColor} w-full h-full min-w-[375px]`}
+    >
       <Header />
       {children}
     </div>

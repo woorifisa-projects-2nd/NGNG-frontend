@@ -1,9 +1,8 @@
-// "use client";
-import CameraIcon from "@/assets/sell/Camera.svg";
+import CameraIcon from "@/assets/SVG/Camera.svg";
 import { useTheme } from "next-themes";
 import Image from "next/image";
 import { useRef } from "react";
-import CloseIcon from "@/assets/sell/Close.svg";
+import CloseIcon from "@/assets/SVG/Close.svg";
 type ImageUploadBoxProps = {
   image: { id: number; image: File } | undefined;
   uploadImage: (image: File, id?: number) => void;
@@ -17,20 +16,10 @@ export default function ImageUploadBox({
   const { theme } = useTheme();
   const iconColor = theme === "dark" ? "white" : "#272727";
   const inputRef = useRef<HTMLInputElement>(null);
-  const clickBox = () => {
-    inputRef.current?.click();
-  };
-  const resetImage = () => {
-    console.log("delte image id", image?.id);
-
-    image && deleteImage(image.id);
-  };
-  const changeFile = (e: React.ChangeEvent<HTMLInputElement>) => {
-    console.log("files", e.target.files);
-
+  const clickBox = () => inputRef.current?.click();
+  const resetImage = () => image && deleteImage(image.id);
+  const changeFile = (e: React.ChangeEvent<HTMLInputElement>) =>
     e.target.files && uploadImage(e.target.files[0], image?.id);
-  };
-  console.log("id", image?.id, "image", image?.image);
   return (
     <>
       {image === undefined ? (
@@ -46,19 +35,29 @@ export default function ImageUploadBox({
           </div>
         </div>
       ) : (
-        <div className="flex">
-          <div
-            className="relative left-[200px] cursor-pointer"
+        <div className="flex relative">
+          <CloseIcon
+            width={20}
+            height={20}
+            className="absolute right-2 top-2 cursor-pointer fill-white dark:fill-black"
+            color={iconColor}
             onClick={resetImage}
-          >
-            <CloseIcon width={20} height={20} color={iconColor} />
-          </div>
+          />
+
           <Image
-            className="cursor-pointer"
+            className="hidden md:block cursor-pointer object-contain"
             src={URL.createObjectURL(image.image)}
             alt="업로드한 이미지"
             width={208}
             height={208}
+            onClick={clickBox}
+          />
+          <Image
+            className="block md:hidden cursor-pointer object-contain"
+            src={URL.createObjectURL(image.image)}
+            alt="업로드한 이미지"
+            width={60}
+            height={60}
             onClick={clickBox}
           />
         </div>

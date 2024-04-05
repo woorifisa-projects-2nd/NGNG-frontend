@@ -1,8 +1,8 @@
 "use client";
 import Button from "@/components/common/Button";
 import { useState } from "react";
-import TabContent from "./components/TabContent";
-import TabHeader from "./components/TabHeader";
+import TabContent from "./_components/TabContent";
+import TabHeader from "./_components/TabHeader";
 
 export type Product = {
   order: number;
