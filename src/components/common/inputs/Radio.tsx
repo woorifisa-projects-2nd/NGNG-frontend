@@ -11,7 +11,8 @@ export default function Radio() {
     <label className="inline-flex items-center">
       <input
         type="radio"
-        className="appearance-none w-6 h-6 rounded-full border-2 border-gray-300 checked:bg-point-color checked:border-transparent focus:outline-none"
+        style={{}}
+        className="appearance-none w-4 h-4 rounded-full border-2 border-gray-300  checked:border-4 checked:border-white checked:shadow-point-color checked:shadow-radio checked:bg-point-color checked:accent-point-color"
         value="option1"
         checked={selectedOption === "option1"}
         onChange={handleOptionChange}

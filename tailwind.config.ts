@@ -16,6 +16,9 @@ const config: Config = {
         "bg-dark": "#282828",
         "bg-header-dark": "#303030",
       },
+      boxShadow: {
+        radio: " 0 0 0 1.6px #873EAC",
+      },
     },
   },
   plugins: [],

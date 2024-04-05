@@ -18,6 +18,17 @@ const categories: CategoryType[] = [
   { name: "가공식품", id: 9 },
   { name: "기타", id: 10 },
 ];
+
+const status = [
+  { id: 1, name: "미개봉 새상품" },
+  { id: 2, name: "사용감 없음" },
+
+  { id: 3, name: "사용감 적음" },
+
+  { id: 4, name: "사용감 많음" },
+
+  { id: 5, name: "고장/파손 상품" },
+];
 export type CategoryType = {
   id: number;
   name: string;
