@@ -9,16 +9,19 @@ import { IconMenuItem } from "@/components/common/drop_down/components/IconMenuI
 
 const iconMenus = [
   <IconMenuItem
+    key="판매하기"
     icon={<SellIcon className="fill-black dark:fill-white" />}
     link="/sell"
     name="판매하기"
   />,
   <IconMenuItem
+    key="내 상점"
     icon={<MyPageIcon className="fill-black dark:fill-white" />}
     link="/my_page"
     name="내 상점"
   />,
   <IconMenuItem
+    key="채팅하기"
     icon={<ChatIcon className="fill-black dark:fill-white" />}
     link="/chat"
     name="채팅하기"

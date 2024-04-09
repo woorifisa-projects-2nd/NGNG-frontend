@@ -1,12 +1,16 @@
 "use client";
 import { useTheme } from "next-themes";
-
 import DarkModeIcon from "../design/SVG/dark_mode.svg";
 import LightModeIcon from "../design/SVG/light_mode.svg";
+import { useEffect, useState } from "react";
 export default function ColorMode() {
   const { systemTheme, theme, setTheme } = useTheme();
   const currentTheme = theme === "system" ? systemTheme : theme;
-  console.log("system", systemTheme, "theme", theme);
+  const [loaded, setLoaded] = useState<boolean>(false);
+  useEffect(() => {
+    setLoaded(true);
+  }, [setLoaded]);
+
   const changeColorMode = () =>
     setTheme(currentTheme === "dark" ? "light" : "dark");
   return (
@@ -14,7 +18,7 @@ export default function ColorMode() {
       className="cursor-pointer transition duration-300"
       onClick={changeColorMode}
     >
-      {currentTheme === "dark" ? <LightModeIcon /> : <DarkModeIcon />}
+      {loaded && currentTheme === "dark" ? <LightModeIcon /> : <DarkModeIcon />}
     </div>
   );
 }
