@@ -2,20 +2,17 @@ import Image from "next/image";
 import React from "react";
 import { formatKRW } from "../_utils/format";
 
-export default function ProductCard({
-  status,
-  imageSrc,
-  title,
-  price,
-}: {
+type Props = {
   status: string;
   imageSrc: string;
   title: string;
   price: number;
-}) {
+};
+
+export default function ProductCard({ status, imageSrc, title, price }: Props) {
   return (
-    <div>
-      <p>{status}</p>
+    <div className="max-w-[200px] border rounded-lg p-2">
+      <p className="float-right">{status}</p>
       <Image
         className="rounded-md shadow-xl my-2"
         src={imageSrc}

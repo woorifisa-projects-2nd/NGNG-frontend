@@ -1,11 +1,11 @@
 import React from "react";
-import ProductCard from "./ProductCard";
+import ProductCard from "../_design/ProductCard";
 
-export default function BuyHistory({
-  buyList,
-}: {
+type Props = {
   buyList: TransactionDetails[];
-}) {
+};
+
+export default function BuyHistory({ buyList }: Props) {
   return (
     <div className="grid grid-cols-2 sm:grid-cols-3 p-2 gap-2 md:grid-cols-4">
       {buyList &&

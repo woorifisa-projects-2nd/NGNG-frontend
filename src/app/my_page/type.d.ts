@@ -11,6 +11,7 @@ interface TransactionDetails {
 }
 
 interface Product {
+  productId: number;
   category: {
     id: number;
     name: string;
@@ -58,3 +59,18 @@ interface IPointHistory {
   createdAt: Date;
   typeDetail: Date;
 }
+
+type UpdateTransactionDetailsStatusResponse = {
+  address: string;
+  consumer: { name: string; phoneNumber: string };
+  product: Product;
+  seller: { name: string; phoneNumber: string };
+  status: { id: number; status: string };
+  transactionDetailsId: number;
+};
+
+type UpdateTransDetiilsFunctionParameter = {
+  data: { transactionDetailsId: number; status: string };
+  Done?: () => void;
+  Fiall?: (err: any) => void;
+};
