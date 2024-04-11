@@ -4,8 +4,12 @@ import TabIndex from "./TabIndex";
 export default function TabHeader({ products }: { products: Product[] }) {
   return (
     <div className="py-10">
-      {products.map((p) => (
-        <TabIndex order={p.order} isLast={p.order == products.length} />
+      {products.map((p, key) => (
+        <TabIndex
+          key={key}
+          order={p.order}
+          isLast={p.order == products.length}
+        />
       ))}
     </div>
   );

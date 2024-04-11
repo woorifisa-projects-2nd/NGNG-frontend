@@ -84,6 +84,7 @@ export default function TabContent({ data, onChangeData }: TabContentProps) {
             (_, index) => index
           ).map((item, index) => (
             <ImageUploadBox
+              key={index}
               image={product.images[index]}
               uploadImage={changeImages}
               deleteImage={deleteImage}

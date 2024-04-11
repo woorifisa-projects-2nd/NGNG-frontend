@@ -60,8 +60,7 @@ export default function SellHistory({
 
     updateTransactionStatus({
       data: {
-        transactionDetailsId:
-          +selectProduct?.transactionDetails.transactionDetailsId,
+        transactionDetailsId: +selectProduct?.transactionDetails.id,
         status: updateStatus,
       },
       Done: () => {
@@ -99,7 +98,7 @@ export default function SellHistory({
                 <ProductCard
                   imageSrc="https://source.unsplash.com/user/max_duz/300x300"
                   title={slae.title}
-                  status={slae.transactionDetails.status?.status || "판매중"}
+                  status={slae.transactionDetails?.status?.status || "판매중"}
                   price={slae.price}
                 />
               </div>
@@ -120,7 +119,7 @@ export default function SellHistory({
                 >
                   끌어올리기
                 </button>
-                {selectProduct.transactionDetails.status?.status ? (
+                {selectProduct.transactionDetails?.status?.status ? (
                   //  거래 성사 된 상품일시
                   <>
                     <select

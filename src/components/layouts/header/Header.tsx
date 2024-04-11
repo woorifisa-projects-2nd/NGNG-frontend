@@ -42,13 +42,14 @@ export default function Header() {
       </div>
       <div className="hidden md:flex justify-center items-center shadow-md w-full h-12">
         <div className="hidden md:flex justify-around items-center w-[90%]">
-          {categories.map((category) => {
+          {categories.map((category, key) => {
             return (
               <Link
                 href={category.link}
                 className={`${
                   pathname === category.link && "text-point-color font-bold"
                 }`}
+                key={key}
               >
                 {category.name}
               </Link>

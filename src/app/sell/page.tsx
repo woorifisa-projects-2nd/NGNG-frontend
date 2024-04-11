@@ -58,8 +58,8 @@ export default function Sell() {
     <div className="px-5 lg:px-32 w-full">
       <div className="text-2xl font-medium pt-20">상품 등록</div>
       <TabHeader products={products} />
-      {products.map((p) => (
-        <TabContent data={p} />
+      {products.map((p, key) => (
+        <TabContent data={p} key={key} />
       ))}
       {/* <Button text="등록하기" /> */}
     </div>
