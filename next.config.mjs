@@ -29,7 +29,6 @@ const nextConfig = {
 
     return config;
   },
-
   async rewrites() {
     return {
       fallback: [
@@ -37,6 +36,11 @@ const nextConfig = {
           source: "/api/:path*",
           destination: "http://localhost:8080/:path*",
         },
+        {
+          source: "/products/:path*",
+          destination: "http://localhost:8080/products/:path*",
+        },
+
       ],
     };
   },
@@ -55,6 +59,8 @@ const nextConfig = {
   //
   reactStrictMode: false,
   output: "standalone",
+
   basePath: "",
+
 };
 export default nextConfig;

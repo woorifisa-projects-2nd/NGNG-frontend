@@ -27,7 +27,7 @@ export default function ImageUploadBox({
           className="w-52 h-52 bg-light-gray border-[1px] border-black/15 cursor-pointer flex justify-center items-center"
           onClick={clickBox}
         >
-          <div className="text-center">
+          <div className="text-center dark:text-text-gray">
             <div className="flex justify-center">
               <CameraIcon />
             </div>
@@ -45,19 +45,19 @@ export default function ImageUploadBox({
           />
 
           <Image
-            className="hidden md:block cursor-pointer object-contain"
+            className="w-full h-auto hidden md:block cursor-pointer object-contain"
             src={URL.createObjectURL(image.image)}
             alt="업로드한 이미지"
-            width={208}
-            height={208}
+            width={0}
+            height={0}
             onClick={clickBox}
           />
           <Image
-            className="block md:hidden cursor-pointer object-contain"
+            className="w-full h-auto block md:hidden cursor-pointer object-contain"
             src={URL.createObjectURL(image.image)}
             alt="업로드한 이미지"
-            width={60}
-            height={60}
+            width={0}
+            height={0}
             onClick={clickBox}
           />
         </div>

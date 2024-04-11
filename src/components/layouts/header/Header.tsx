@@ -20,7 +20,7 @@ export default function Header() {
   ];
 
   return (
-    <div className="dark:bg-bg-header-dark">
+    <div className="dark:bg-bg-header-dark sticky top-0 z-10 bg-white">
       <div className="hidden md:flex justify-center items-center w-full p-5">
         <div className="flex justify-between items-center w-[90%]">
           <Link href="/">
@@ -45,6 +45,7 @@ export default function Header() {
           {categories.map((category, key) => {
             return (
               <Link
+                key={category.name}
                 href={category.link}
                 className={`${
                   pathname === category.link && "text-point-color font-bold"

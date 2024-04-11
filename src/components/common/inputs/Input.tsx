@@ -1,5 +1,5 @@
 type InputProps = {
-  value: string;
+  value?: string | number;
   onChange: (newValue: string) => void;
   placeholder?: string;
   width?: number;

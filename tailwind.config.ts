@@ -15,10 +15,14 @@ const config: Config = {
         "point-color": "#873EAC",
         "bg-dark": "#282828",
         "bg-header-dark": "#303030",
+        "light-lavender": "#FAF5FF",
+      },
+      boxShadow: {
+        radio: " 0 0 0 1.6px #873EAC",
       },
     },
   },
-  plugins: [],
+  plugins: [require("tailwind-scrollbar-hide")],
   darkMode: "class",
 };
 export default config;
