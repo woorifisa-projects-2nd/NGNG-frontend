@@ -71,7 +71,8 @@ type Product = {
 
 export default function ProductDetail() {
   //userID
-
+  const userId = 2;
+  const userPoint = 0;
   const recentChatRef = useRef<HTMLDivElement>(null);
   const [stompClient, setStompClient] = useState<StompJs.Client | null>(null);
   const { theme } = useTheme();
@@ -177,6 +178,19 @@ export default function ProductDetail() {
       recentChatRef.current.scrollTop = recentChatRef.current.scrollHeight;
     }
   };
+
+  const onClickChatButton = () => {
+    // 포인트 충분한지 검증
+    if (data) {
+      const isPointOk = userPoint >= data.price;
+      if (isPointOk) {
+        // 채팅방으로 이동
+      } else {
+        //포인트 충전 창
+      }
+    }
+  };
+
   useEffect(() => {
     async function fetchData() {
       const productData = await getProductById(1); // getProductById(1)를 호출하여 데이터를 가져옴
@@ -312,7 +326,13 @@ export default function ProductDetail() {
             </div>
             <div>
               <Button
-                text={`${data.available ? "1:1 채팅/구매하기" : "거래완료"}`}
+                text={`${
+                  data.available
+                    ? data.user.id === userId
+                      ? "채팅방 보기"
+                      : "1:1 채팅/구매하기"
+                    : "거래완료"
+                }`}
                 width={"100%"}
                 disabled={!data.available}
               />
