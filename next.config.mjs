@@ -40,6 +40,7 @@ const nextConfig = {
           source: "/products/:path*",
           destination: "http://localhost:8080/products/:path*",
         },
+
       ],
     };
   },
@@ -58,5 +59,8 @@ const nextConfig = {
   //
   reactStrictMode: false,
   output: "standalone",
+
+  basePath: "",
+
 };
 export default nextConfig;
