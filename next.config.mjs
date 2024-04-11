@@ -29,6 +29,7 @@ const nextConfig = {
 
     return config;
   },
+
   async rewrites() {
     return {
       fallback: [
@@ -58,5 +59,6 @@ const nextConfig = {
   //
   reactStrictMode: false,
   output: "standalone",
+  basePath: "",
 };
 export default nextConfig;
