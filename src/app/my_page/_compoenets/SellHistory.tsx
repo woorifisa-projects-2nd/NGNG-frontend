@@ -60,7 +60,9 @@ export default function SellHistory({
 
     updateTransactionStatus({
       data: {
-        transactionDetailsId: +selectProduct?.transactionDetails.id,
+        transactionDetailsId:
+          +selectProduct?.transactionDetails.transactionDetailsId,
+ 
         status: updateStatus,
       },
       Done: () => {
@@ -99,6 +101,7 @@ export default function SellHistory({
                   imageSrc="https://source.unsplash.com/user/max_duz/300x300"
                   title={slae.title}
                   status={slae.transactionDetails?.status?.status || "판매중"}
+
                   price={slae.price}
                 />
               </div>

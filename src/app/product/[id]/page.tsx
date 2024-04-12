@@ -1,4 +1,7 @@
 "use client";
+import Loading from "./_design/SVG/Loading.svg";
+import OpenChatIcon from "./_design/SVG/ChatsCircle.svg";
+import NoticeIcon from "./_design/SVG/Megaphone.svg";
 import ImagePlusIcon from "./_design/SVG/Plus.svg";
 import MessageSendIcon from "./_design/SVG/CaretLeft.svg";
 import Image from "next/image";
@@ -11,7 +14,10 @@ import { maskingName } from "@/utils";
 import CloseIcon from "@/assets/SVG/Close.svg";
 import { useTheme } from "next-themes";
 import * as StompJs from "@stomp/stompjs";
-import { v4 } from "uuid";
+import { createPortal } from "react-dom";
+import Link from "next/link";
+import InfoIcon from "./_design/SVG/Info.svg";
+import { usePathname, useRouter } from "next/navigation";
 
 type User = {
   id: number;
@@ -71,11 +77,20 @@ type Product = {
 
 export default function ProductDetail() {
   //userID
+  const pathname = usePathname();
 
+  const id = pathname.split("/")[2];
+  const userId = 1;
+  const isUserAccountOk = true;
+  const [
+    accountAuthenticationWanringModal,
+    setAccountAuthenticationWanringModal,
+  ] = useState(false);
   const recentChatRef = useRef<HTMLDivElement>(null);
   const [stompClient, setStompClient] = useState<StompJs.Client | null>(null);
+
   const { theme } = useTheme();
-  const iconColor = theme === "dark" ? "white" : "#272727";
+
   const inputRef = useRef<HTMLInputElement>(null);
   const [message, setMessage] = useState<string>("");
   const [image, setImage] = useState<File | undefined>(undefined);
@@ -88,9 +103,11 @@ export default function ProductDetail() {
 
   const resetImage = () => {
     setImage(undefined);
+    setMessage("");
   };
   const changeFile = (e: React.ChangeEvent<HTMLInputElement>) => {
     e.target.files && setImage(e.target.files[0]);
+    setMessage(" ");
   };
 
   const enterMessage = (
@@ -106,6 +123,8 @@ export default function ProductDetail() {
 
   const enter = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === "Enter") {
+      e.preventDefault();
+      e.stopPropagation();
       if (image !== undefined) {
         sendImage(image);
         setImage(undefined);
@@ -177,9 +196,38 @@ export default function ProductDetail() {
       recentChatRef.current.scrollTop = recentChatRef.current.scrollHeight;
     }
   };
+
+  const onClickChatButton = () => {
+    if (data) {
+      if (isUserAccountOk) {
+        // 채팅방으로 이동
+      } else {
+        // 계좌인증 모달
+        setAccountAuthenticationWanringModal(true);
+      }
+    }
+  };
+  const getMessage = (data: any) => {
+    console.log("chatData", chatData);
+    if (chatData) {
+      console.log("get message", data);
+      setChatData([
+        ...chatData,
+        {
+          id: data.id,
+          message: data.message,
+          userId: data.userId,
+          userName: data.userName,
+          userNickName: data.userNickName,
+          createAt: data.createdAt,
+        },
+      ]);
+    }
+  };
+
   useEffect(() => {
     async function fetchData() {
-      const productData = await getProductById(1); // getProductById(1)를 호출하여 데이터를 가져옴
+      const productData = await getProductById(Number(id)); // getProductById(1)를 호출하여 데이터를 가져옴
       setData(productData); // 가져온 데이터로 상태 업데이트
       setChatData(productData.chats);
       //console.log("data", productData);
@@ -187,36 +235,44 @@ export default function ProductDetail() {
       setIsLoading(false); // 로딩 상태 업데이트
     }
 
-    const initializeWebSocket = async () => {
-      const client = new StompJs.Client({
-        brokerURL: "ws://localhost:8081/chat-server", // WebSocket 서버 URL
-        debug: function (str) {
-          //console.log(str);
-        },
-        reconnectDelay: 5000,
-      });
-
-      client.onConnect = () => {
-        // console.log("Connected to WebSocket");
-        client.subscribe("/topic/public", (message) => {
-          console.log("message", message);
-        });
-      };
-
-      client.onStompError = (frame) => {
-        console.log("Broker reported error: " + frame.headers["message"]);
-        console.log("Additional details: " + frame.body);
-      };
-
-      client.activate();
-      setStompClient(client);
-    };
     fetchData();
-    initializeWebSocket();
+    const client = new StompJs.Client({
+      brokerURL: "ws://localhost:8081/chat-server", // WebSocket 서버 URL
+      debug: function (str) {
+        console.log(str);
+      },
+      reconnectDelay: 5000,
+    });
+    client.onConnect = () => {
+      console.log("Connected to WebSocket");
+      if (client.connected) {
+        // 연결 상태 확인
+        client.subscribe(`/product/${id}`, (message) => {
+          const res = JSON.parse(message.body).body;
+          console.log("data", res);
+          getMessage(res);
+        });
+      } else {
+        console.error("STOMP connection is not established yet.");
+      }
+    };
+
+    client.onStompError = (frame) => {
+      console.log("Broker reported error: " + frame.headers["message"]);
+      console.log("Additional details: " + frame.body);
+    };
+    setStompClient(client);
+
     return () => {
       if (stompClient) stompClient.deactivate();
     };
   }, []);
+
+  useEffect(() => {
+    if (stompClient) {
+      stompClient.activate();
+    }
+  }, [stompClient]);
 
   useEffect(() => {
     setTimeout(() => {
@@ -226,30 +282,14 @@ export default function ProductDetail() {
 
   if (isLoading || !data) {
     return (
-      <div role="status">
-        <svg
-          aria-hidden="true"
-          className="inline w-10 h-10 text-gray-200 animate-spin dark:text-gray-600 fill-point-color"
-          viewBox="0 0 100 101"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
-            fill="currentColor"
-          />
-          <path
-            d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
-            fill="currentFill"
-          />
-        </svg>
-        <span className="sr-only">Loading...</span>
+      <div role="status" className="flex justify-center h-[calc(100vh-128px)]">
+        <Loading />
       </div>
     ); // 로딩 중인 경우 로딩 UI 표시
   }
 
   return (
-    <div className="px-8 xl:px-40  w-full block lg:flex  h-auto box-border">
+    <div className="px-8 xl:px-40  w-full block lg:flex  h-auto box-border justify-center">
       <div className="px-3 py-5">
         <div className="block xl:flex">
           <div className="w-full xl:w-1/2 mr-10 flex items-center">
@@ -265,12 +305,12 @@ export default function ProductDetail() {
             <div className="flex w-full justify-between mb-10">
               <div>
                 <p className="text-text-gray">홈 - {data.category.name}</p>
-                <p className="text-2xl">{data.title}</p>
+                <p className="text-2xl mb-5">{data.title}</p>
                 <span className="text-2xl mr-2">
                   {data.price.toLocaleString()}원
                 </span>
                 <span
-                  className={`font-medium ${
+                  className={`block xl:inline font-medium ${
                     data.discountable ? "text-point-color" : "text-red-500"
                   } `}
                 >
@@ -291,7 +331,9 @@ export default function ProductDetail() {
                   />
                   {`${data.user.nickname} (${maskingName(data.user.name)})`}
                 </div>
-                {!!data.purchaseAt && <div>구매년도 {data.purchaseAt}</div>}
+                {!!data.purchaseAt && (
+                  <div className="text-right">구매년도 {data.purchaseAt}</div>
+                )}
               </div>
             </div>
             <div className="mb-10 w-full flex rounded-lg border-[1px] border-text-gray justify-around p-8 font-medium">
@@ -312,9 +354,16 @@ export default function ProductDetail() {
             </div>
             <div>
               <Button
-                text={`${data.available ? "1:1 채팅/구매하기" : "거래완료"}`}
+                text={`${
+                  data.available
+                    ? data.user.id === userId
+                      ? "채팅방 보기"
+                      : "구매하기"
+                    : "거래완료"
+                }`}
                 width={"100%"}
                 disabled={!data.available}
+                onClick={onClickChatButton}
               />
             </div>
           </div>
@@ -336,9 +385,23 @@ export default function ProductDetail() {
         </div>
       </div>
 
-      <div className="lg:sticky relative w-full lg:w-[25%] dark:shadow-gray-950 shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px] p-5 h-[calc(100vh-128px)]  top-[128px]">
+      <div className="lg:sticky relative w-full lg:w-[25%] dark:shadow-gray-950 shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px] p-5 h-[calc(100vh-128px)]  top-[128px]  min-w-72">
+        <div className="bg-transparent border-b-[1px] border-text-gray text-center w-full text-2xl pb-2 font-bold text-point-color">
+          {/* <OpenChatIcon className="" /> */}
+          {data.user.id === userId ? "내꺼채팅" : "니꺼채팅"}
+
+          <div className="flex flex-col justify-around text-sm font-normal text-black min-w-72 ">
+            <NoticeIcon className="relative top-6 lg:left-2 fill-black dark:fill-white left-44" />
+            <div className="flex md:block">
+              이 채팅방은
+              <span className="text-red-500 font-medium">{` ${data.title}`}</span>
+              에 관심이 있는 <br className="hidden lg:block" />
+              모든 사용자가 참여하는 채팅방입니다.
+            </div>
+          </div>
+        </div>
         <div
-          className="h-[calc(100%-15rem)] flex flex-col items-start overflow-y-scroll scrollbar-hide"
+          className="min-w-52 h-[calc(100%-22rem)] mt-3 flex flex-col items-start overflow-y-scroll scrollbar-hide"
           ref={recentChatRef}
         >
           {chatData &&
@@ -351,6 +414,9 @@ export default function ProductDetail() {
                   <Message
                     key={chat.id}
                     direction={data.user.id === chat.userId ? "left" : "right"}
+                    userName={`${data.user.nickname}(${maskingName(
+                      data.user.name
+                    )})`}
                     text={chat.message}
                     isImage={chat.isImage}
                   />
@@ -360,7 +426,7 @@ export default function ProductDetail() {
 
         <div className="mb-4 flex flex-col justify-between w-[calc(100%-2.5rem)] bg-light-gray absolute bottom-0 h-48 border-2 border-light-gray p-5 pb-4 rounded-xl">
           <textarea
-            className=" w-full bg-light-gray resize-none focus:outline-none overflow-y-scroll scrollbar-hide "
+            className=" w-full bg-light-gray resize-none focus:outline-none overflow-y-scroll scrollbar-hide dark:text-black"
             value={message}
             onKeyDown={enter}
             onChange={changeMessage}
@@ -372,8 +438,8 @@ export default function ProductDetail() {
               <CloseIcon
                 width={20}
                 height={20}
-                className="absolute right-2 top-2 cursor-pointer fill-white dark:fill-black"
-                color={iconColor}
+                className="absolute right-2 top-2 cursor-pointer fill-white dark:fill-black z-10"
+                color={"#272727"}
                 onClick={resetImage}
               />
               <Image
@@ -381,7 +447,7 @@ export default function ProductDetail() {
                 alt="첨부파일"
                 width={0}
                 height={0}
-                className="w-full h-36 object-contain"
+                className="w-full h-36 object-contain relative bottom-2"
               />
             </>
           )}
@@ -410,6 +476,30 @@ export default function ProductDetail() {
           </div>
         </div>
       </div>
+      {accountAuthenticationWanringModal &&
+        createPortal(
+          <div className="fixed top-0 left-0 w-full h-full flex justify-center items-center bg-black bg-opacity-50 z-50">
+            <div className="relative bg-white p-8 rounded-lg shadow-lg">
+              <CloseIcon
+                className="absolute right-2 top-2 fill-text-gray cursor-pointer"
+                width={24}
+                height={24}
+                onClick={() => setAccountAuthenticationWanringModal(false)}
+              />
+              <div className="flex">
+                <InfoIcon />
+                <div className="ml-2">
+                  계좌인증을 한 후에 상품을 구매할 수 있어요.
+                </div>
+              </div>
+
+              <Link href={"/my_page"} className="flex justify-end underline">
+                계좌인증하러가기
+              </Link>
+            </div>
+          </div>,
+          document.body
+        )}
     </div>
   );
 }
