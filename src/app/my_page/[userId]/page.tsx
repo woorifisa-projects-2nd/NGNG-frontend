@@ -1,6 +1,5 @@
 import { Metadata, ResolvingMetadata } from "next";
 import React from "react";
-import TestCount from "./_compoents/TestCount";
 
 type Props = {
   params: { userId: string };
@@ -45,7 +44,6 @@ export default async function Page({ params, searchParams }: Props) {
   return (
     <div>
       <p>User hi {userInfo.name}</p>
-      <TestCount />
     </div>
   );
 }
