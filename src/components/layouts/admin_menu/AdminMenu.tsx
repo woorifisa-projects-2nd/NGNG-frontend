@@ -1,11 +1,9 @@
-"use client"
 import Logo from "./design/SVG/logo.svg";
-// import SearchInput from "./components/SearchInput";
-// import Menu from "./components/Menu";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { ReactNode } from "react";
 
-export default function AdminMenu() {
+export default function AdminMenu({ children }: { children: ReactNode }) {
     const pathname = usePathname();
     const menu = [
         { name: "신고 관리", link: "/admin/reports" },
@@ -23,20 +21,20 @@ export default function AdminMenu() {
     ];
 
     return (
-        <div className="dark:bg-bg-header-dark w-full">
-            <div className="hidden md:flex justify-center items-center p-5">
-                <div>
-                    <Link href="/admin">
-                        관리자
-                        <Logo />
+        <div className="flex h-screen">
+            <div className="w-1/4 border-r">
+                <div className="p-5 flex justify-center">
+                    <Link href="/admin/reports">
+                        <div className="flex flex-col items-center">
+                            <span>관리자</span>
+                            <Logo />
+                        </div>
                     </Link>
                 </div>
-            </div>
-            <hr />
+                <hr />
 
-            <div className="p-5">
                 {menu.map((item, index) => (
-                    <div key={index} className="py-2 text-left ml-20">
+                    <div key={index} className="mt-5 text-left ml-28">
                         <Link
                             href={item.link}
                             className={`${pathname === item.link && "text-point-color font-bold"
@@ -58,7 +56,9 @@ export default function AdminMenu() {
                     </div>
                 ))}
             </div>
-
+            <div className="w-3/4 p-10">
+                {children}
+            </div>
         </div>
     );
 }
