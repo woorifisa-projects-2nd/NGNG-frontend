@@ -1,5 +1,5 @@
 interface TransactionDetails {
-  transactionDetailsId: number;
+  id: number;
   address: string;
   product: Product;
   consumer: SimpeUserInfo;

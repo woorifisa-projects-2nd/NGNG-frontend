@@ -10,7 +10,7 @@ export default function Menu({ items, onClick }: MenuProps) {
       style={{ height: 40 * items.length }}
       className={`rounded-md border-[1px] border-black/15 absolute left-0 mt-2 w-48 bg-white z-10  dark:bg-black `}
     >
-      {items.map((item) => {
+      {items.map((item, key) => {
         return (
           <div
             key={item.id}

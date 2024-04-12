@@ -70,7 +70,7 @@ const useMypage = () => {
   };
 
   useEffect(() => {
-    fetch(`/api/user/mypage/${USER_ID}`)
+    fetch(`/api/users/${USER_ID}/mypage`)
       .then((res) => res.json())
       .then((data: UserGetReposne) => {
         data.sellList.sort((item1, item2) => {

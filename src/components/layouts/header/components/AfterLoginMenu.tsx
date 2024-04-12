@@ -2,7 +2,7 @@ import SellIcon from "../design/SVG/sell.svg";
 import MyPageIcon from "../design/SVG/my_page.svg";
 import ChatIcon from "../design/SVG/chat.svg";
 import MenuIcon from "../design/SVG/menu.svg";
-import { useState } from "react";
+import { Component, useState } from "react";
 import Link from "next/link";
 import IconDropDown from "@/components/common/drop_down/IconDropDown";
 import { IconMenuItem } from "@/components/common/drop_down/components/IconMenuItem";
