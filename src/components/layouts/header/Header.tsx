@@ -50,7 +50,6 @@ export default function Header() {
                 className={`${
                   pathname === category.link && "text-point-color font-bold"
                 }`}
-                key={key}
               >
                 {category.name}
               </Link>
