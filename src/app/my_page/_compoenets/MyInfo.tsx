@@ -8,9 +8,10 @@ import EmailSVG from "../_design/SVG/EmailSVG";
 import AddressSVG from "../_design/SVG/AddressSVG";
 import ProductSVG from "../_design/SVG/ProductSVG";
 import BuySVG from "../_design/SVG/BuySVG";
+import { MypageReponse } from "../type";
 
 type Props = {
-  userInfo: UserGetReposne;
+  userInfo: MypageReponse;
   openModalPoint?: () => void;
   openModalAccount?: () => void;
   openModalEmail?: () => void;

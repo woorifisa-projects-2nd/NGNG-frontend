@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import ProductCard from "../_design/ProductCard";
 import { createPortal } from "react-dom";
 import ModalSmall from "../_design/ModalSmall";
+import { Product, UpdateTransDetiilsFunctionParameter } from "../type";
 
 type Props = {
   sellList: Product[];
@@ -41,9 +42,13 @@ export default function SellHistory({
   };
 
   const openModalProduct = (productId: number) => {
-    const select = sellList.filter((sell) => sell.productId === productId)[0];
+    const select = sellList.filter((sell) => sell.id === productId)[0];
     setSelectProduct(select);
-    setProductStatus(select?.transactionDetails?.status?.id - 1 || 0);
+    setProductStatus(
+      select.transactionDetails?.status?.id
+        ? select.transactionDetails?.status.id - 1
+        : 0
+    );
     setIsOpenModal(true);
   };
 
@@ -60,9 +65,8 @@ export default function SellHistory({
 
     updateTransactionStatus({
       data: {
-        transactionDetailsId:
-          +selectProduct?.transactionDetails.transactionDetailsId,
- 
+        transactionDetailsId: +selectProduct.transactionDetails!.id,
+
         status: updateStatus,
       },
       Done: () => {
@@ -89,19 +93,22 @@ export default function SellHistory({
         {sellList &&
           sellList
             .filter((item) =>
-              isOnlySell ? !item.transactionDetails.status?.status : true
+              isOnlySell ? !item.transactionDetails?.status?.status : true
             )
             .map((slae, key) => (
               <div
                 key={key}
                 className="relative cursor-pointer hmx-auto hover:scale-110 transition-all"
-                onClick={() => openModalProduct(slae.productId)}
+                onClick={() => openModalProduct(slae.id)}
               >
                 <ProductCard
-                  imageSrc="https://source.unsplash.com/user/max_duz/300x300"
+                  imageSrc={
+                    slae.thumbnail
+                      ? slae.thumbnail.thumbnailURL
+                      : `https://source.unsplash.com/user/max_duz/300x300`
+                  }
                   title={slae.title}
                   status={slae.transactionDetails?.status?.status || "판매중"}
-
                   price={slae.price}
                 />
               </div>
@@ -135,7 +142,8 @@ export default function SellHistory({
                           key={key}
                           value={key}
                           disabled={
-                            key < selectProduct.transactionDetails.status.id - 1
+                            key <
+                            selectProduct.transactionDetails!.status.id - 1
                           }
                         >
                           {value}
@@ -155,7 +163,7 @@ export default function SellHistory({
                   <button
                     type="button"
                     className={` bg-red-900 rounded-md p-2 inline-flex items-center justify-center text-gray-200 hover:text-gray-100 hover:bg-red-700 `}
-                    onClick={() => onDeleteProduct(selectProduct.productId)}
+                    onClick={() => onDeleteProduct(selectProduct.id)}
                   >
                     삭제버튼
                   </button>

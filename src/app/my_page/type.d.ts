@@ -1,59 +1,76 @@
-interface TransactionDetails {
+import { UserInfo } from "os";
 
-  transactionDetailsId: number;
-
+type TransactionDetails = {
   id: number;
-
   address: string;
-  product: Product;
-  consumer: SimpeUserInfo;
-  seller: SimpeUserInfo;
+  product: {
+    productId: number;
+    title: string;
+    price: number;
+    isEscrow: boolean;
+    purchaseAt: Date | null;
+    visible: boolean;
+    freeShipping: boolean;
+    status: string;
+    category: string;
+  };
+  consumer: {
+    name: string;
+    phoneNumber: string;
+  };
+  seller: {
+    name: string;
+    phoneNumber: string;
+  };
   status: {
     id: number;
     status: string;
   };
-}
+};
 
-interface Product {
-  productId: number;
+type Product = {
+  id: number;
+  title: string;
+  content: string;
+  price: number;
+  isEscrow: boolean;
+  discountable: boolean;
+  purchaseAt: Date | null;
+  forSale: boolean;
+  createdAt: Date;
+  updatedAt: Date | null;
+  visible: boolean;
+  freeShipping: boolean;
+  available: boolean;
+  refreshedAt: Date | null;
+  user: {
+    id: number;
+    name: string;
+    nickname: string;
+  };
+  status: {
+    id: number;
+    name: string;
+  };
   category: {
     id: number;
     name: string;
   };
-  content: string;
-  discountable: boolean;
-  forSale: boolean;
-  freeShipping: boolean;
-  isEscrow: boolean;
-  price: number;
-  productId: number;
-  title: string;
-  transactionDetails: TransactionDetails;
-}
-
-interface SimpeUserInfo {
-  name: string;
-  phoneNumber: string;
-}
-
-interface UserGetReposne {
-  accountBank: string;
-  accountNumber: string;
-  email: string;
-  name: string;
-  phoneNumber: string;
-  address: string;
-  point: number;
-  role: {
-    roleId: number;
-    roleType: string;
+  tags: { tagName: string }[];
+  images: { id: number; imageURL: string }[];
+  thumbnail: {
+    id: number;
+    thumbnailURL: string;
   };
-  userId: number;
-  sellList: Product[];
-  buyList: TransactionDetails[];
-}
+  transactionDetails: TransactionDetails | null;
+};
 
-interface IPointHistory {
+type SimpeUserInfo = {
+  name: string;
+  phoneNumber: string;
+};
+
+type IPointHistory = {
   id: number;
   beforeCost: number;
   addCost: number;
@@ -62,7 +79,7 @@ interface IPointHistory {
   typeDetail: string;
   createdAt: Date;
   typeDetail: Date;
-}
+};
 
 type UpdateTransactionDetailsStatusResponse = {
   address: string;
@@ -77,4 +94,21 @@ type UpdateTransDetiilsFunctionParameter = {
   data: { transactionDetailsId: number; status: string };
   Done?: () => void;
   Fiall?: (err: any) => void;
+};
+
+type MypageReponse = {
+  userId: number;
+  name: string;
+  phoneNumber: string;
+  email: string;
+  accountBank: string | null;
+  accountNumber: string | null;
+  address: string;
+  role: {
+    roleId: number;
+    roleType: string;
+  };
+  point: number;
+  sellList: Product[];
+  buyList: TransactionDetails[];
 };

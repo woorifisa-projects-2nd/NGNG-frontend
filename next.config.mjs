@@ -41,7 +41,6 @@ const nextConfig = {
           source: "/products/:path*",
           destination: "http://localhost:8080/products/:path*",
         },
-
       ],
     };
   },
@@ -55,6 +54,12 @@ const nextConfig = {
         port: "",
         pathname: "**",
       },
+      {
+        protocol: "https",
+        hostname: "team3-s3-test.s3.ap-northeast-2.amazonaws.com",
+        port: "",
+        pathname: "**",
+      },
     ],
   },
   //
@@ -62,6 +67,5 @@ const nextConfig = {
   output: "standalone",
 
   basePath: "",
-
 };
 export default nextConfig;
