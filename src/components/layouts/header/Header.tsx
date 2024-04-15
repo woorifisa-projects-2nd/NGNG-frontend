@@ -45,6 +45,7 @@ export default function Header() {
           {categories.map((category) => {
             return (
               <Link
+                key={category.name}
                 href={category.link}
                 className={`${
                   pathname === category.link && "text-point-color font-bold"
