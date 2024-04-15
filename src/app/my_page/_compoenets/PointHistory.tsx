@@ -2,7 +2,6 @@
 import React, { useEffect, useState } from "react";
 import { USER_ID } from "../_constants/user";
 import { formatKRW } from "../_utils/format";
-import { IPointHistory } from "../type";
 
 export default function PointHistory() {
   const [history, seHistory] = useState<IPointHistory[]>();

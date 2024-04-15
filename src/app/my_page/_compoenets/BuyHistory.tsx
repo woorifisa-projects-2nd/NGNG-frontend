@@ -1,6 +1,5 @@
 import React from "react";
 import ProductCard from "../_design/ProductCard";
-import { TransactionDetails } from "../type";
 
 type Props = {
   buyList: TransactionDetails[];

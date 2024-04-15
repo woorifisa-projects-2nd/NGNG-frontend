@@ -1,10 +1,5 @@
 import { useEffect, useState } from "react";
 import { USER_ID } from "../_constants/user";
-import {
-  MypageReponse,
-  Product,
-  UpdateTransDetiilsFunctionParameter,
-} from "../type";
 
 const useMypage = () => {
   const [userInfo, setUserInfo] = useState<MypageReponse>();
