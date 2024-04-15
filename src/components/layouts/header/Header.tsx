@@ -20,7 +20,7 @@ export default function Header() {
   ];
 
   return (
-    <div className="dark:bg-bg-header-dark">
+    <div className="dark:bg-bg-header-dark sticky top-0 z-10 bg-white">
       <div className="hidden md:flex justify-center items-center w-full p-5">
         <div className="flex justify-between items-center w-[90%]">
           <Link href="/">
@@ -42,7 +42,7 @@ export default function Header() {
       </div>
       <div className="hidden md:flex justify-center items-center shadow-md w-full h-12">
         <div className="hidden md:flex justify-around items-center w-[90%]">
-          {categories.map((category) => {
+          {categories.map((category, key) => {
             return (
               <Link
                 key={category.name}

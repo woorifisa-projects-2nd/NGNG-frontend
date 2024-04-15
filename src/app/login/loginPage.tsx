@@ -50,6 +50,7 @@ export default function LoginPage() {
           nickname: data.nickname
         })
 
+        // accessToken은 localStorage에, refreshToken은 securityCookie에 저장
         localStorage.setItem("accessToken", JSON.stringify(data.accessToken));
       })
       .catch(e => console.error(e))
