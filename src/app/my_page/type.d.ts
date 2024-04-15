@@ -1,5 +1,3 @@
-import { UserInfo } from "os";
-
 type TransactionDetails = {
   id: number;
   address: string;
