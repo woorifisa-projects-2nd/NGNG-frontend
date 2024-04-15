@@ -4,7 +4,6 @@ import React, { useState } from "react";
 import ProductCard from "../_design/ProductCard";
 import { createPortal } from "react-dom";
 import ModalSmall from "../_design/ModalSmall";
-import { Product, UpdateTransDetiilsFunctionParameter } from "../type";
 import { convertEnumToKeyValuesObject } from "../_utils/convert";
 
 type Props = {

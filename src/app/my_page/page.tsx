@@ -8,7 +8,6 @@ import PointHistory from "./_compoenets/PointHistory";
 import { createPortal } from "react-dom";
 import PointModalContent from "./_compoenets/modal/PointModalContent";
 import ModalSmall from "./_design/ModalSmall";
-import { IPointHistory, UpdateTransDetiilsFunctionParameter } from "./type";
 
 export default function Page() {
   const { userInfo, setPoint, deleteProduct, UpdateTransactionDetailStatus } =
