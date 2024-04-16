@@ -91,7 +91,7 @@ export default function ProudctInfo({ data, userId }: ProductInfoProps) {
                   window.open(
                     `/chat/${data.id}/${userId}`,
                     "_blank",
-                    "width=520, height=780,location=no,status=no,menubar=no,toolbar=no"
+                    "width=380, height=640,location=no,status=no,menubar=no,toolbar=no"
                   );
                 } else {
                   setOpen(true);

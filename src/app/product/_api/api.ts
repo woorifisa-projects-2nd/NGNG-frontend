@@ -30,7 +30,7 @@ export const sendPublicChatMessage = ({
   isImage?: boolean;
 }) => {
   client.publish({
-    destination: `/public-chat/${productId}`,
+    destination: `/chats/${productId}`,
     body: JSON.stringify({
       message: message,
       userId: 1,

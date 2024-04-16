@@ -1,25 +1,25 @@
 "use client";
 
-import NoticeIcon from "../_design/SVG/Megaphone.svg";
 import CloseIcon from "@/assets/SVG/Close.svg";
 import ImagePlusIcon from "@/assets/SVG/Plus.svg";
 import MessageSendIcon from "@/assets/SVG/CaretLeft.svg";
 import { useEffect, useRef, useState } from "react";
 import Message from "@/components/common/chat/Message";
 import * as StompJs from "@stomp/stompjs";
-import { sendPublicChatMessage } from "../../_api/api";
 import Image from "next/image";
-import { Chat, Product } from "../../_types/type";
+import { PrivateChat, PrivateChatMessage } from "../page";
+import { sendPublicChatMessage } from "@/app/product/_api/api";
+import { sendPrivateChatMessage } from "@/app/chat/api";
 
 type ChattingProps = {
-  data: Product;
-  userId: number;
+  data: PrivateChat;
 };
-export default function Chatting({ data, userId }: ChattingProps) {
+export default function PrivateChatting({ data }: ChattingProps) {
+  const userId = 2;
   const recentChatRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const [stompClient, setStompClient] = useState<StompJs.Client | null>(null);
-  const [chatData, setChatData] = useState<Chat[]>(data.chats);
+  const [chatData, setChatData] = useState<PrivateChatMessage[]>(data.messages);
   const [message, setMessage] = useState<string>("");
   const [image, setImage] = useState<File | undefined>(undefined);
 
@@ -35,31 +35,38 @@ export default function Chatting({ data, userId }: ChattingProps) {
       }
     }
   };
+
   const changeMessage = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setMessage(e.currentTarget.value);
   };
-  const sendImage = (image: File) => {
-    // 이미지 서버에 전송하기
 
+  const sendImage = (image: File) => {
     data &&
       stompClient &&
-      sendPublicChatMessage({
+      sendPrivateChatMessage({
         client: stompClient,
         message: URL.createObjectURL(image),
-        productId: data.id,
+        productId: data.product.productId,
+        buyerId: data.product.buyer.id,
+        userId,
         isImage: true,
+        privateChatRoomId: data.chatRoomId,
       });
 
     chatData !== undefined &&
       setChatData([
         ...chatData,
         {
-          id: chatData?.slice(-1)[0].id + 1,
+          chatId: chatData?.slice(-1)[0].chatId + 1,
           createdAt: new Date().toUTCString(),
           message: URL.createObjectURL(image),
-          userId: 2,
-          userName: "테스트",
-          userNickName: "테스트",
+          user: {
+            id: userId,
+            name: "test",
+            nickname: "test",
+            address: "test",
+          },
+          contentType: "IMAGE",
         },
       ]);
     setMessage("");
@@ -76,22 +83,29 @@ export default function Chatting({ data, userId }: ChattingProps) {
   const sendMessage = (message: string) => {
     data &&
       stompClient &&
-      sendPublicChatMessage({
+      sendPrivateChatMessage({
         client: stompClient,
         message,
-        productId: data.id,
+        productId: data.product.productId,
+        buyerId: data.product.buyer.id,
+        userId,
+        privateChatRoomId: data.chatRoomId,
       });
 
     chatData !== undefined &&
       setChatData([
         ...chatData,
         {
-          id: chatData?.slice(-1)[0]?.id + 1,
+          chatId: chatData?.slice(-1)[0]?.chatId + 1,
           createdAt: new Date().toUTCString(),
           message: message,
-          userId,
-          userName: "테스트",
-          userNickName: "테스트",
+          user: {
+            id: userId,
+            name: "test",
+            nickname: "test",
+            address: "test",
+          },
+          contentType: "TEXT",
         },
       ]);
 
@@ -119,17 +133,23 @@ export default function Chatting({ data, userId }: ChattingProps) {
       sendMessage(message);
     }
   };
-  // console.log("chatData", chatData);
+
   const getMessage = (data: any) => {
+    console.log("received", data);
+
     setChatData([
       ...chatData,
       {
-        id: data.id,
+        chatId: data.chat,
         message: data.message,
-        userId: data.userId,
-        userName: data.userName,
-        userNickName: data.userNickName,
+        user: {
+          id: userId,
+          name: "test",
+          nickname: "test",
+          address: "test",
+        },
         createdAt: data.createdAt,
+        contentType: data.contentType,
       },
     ]);
   };
@@ -149,14 +169,20 @@ export default function Chatting({ data, userId }: ChattingProps) {
       reconnectDelay: 5000,
     });
     client.onConnect = () => {
-      console.log("Connected to WebSocket");
+      console.log(
+        "Connected to WebSocket",
+        `/product/${data.product.productId}/${data.product.buyer.id}`
+      );
       if (client.connected) {
         // 연결 상태 확인
-        client.subscribe(`/public-chats/${data.id}`, (message) => {
-          const data = JSON.parse(message.body).body;
-          console.log("data", data);
-          getMessage(JSON.parse(message.body).body);
-        });
+        client.subscribe(
+          `/private-chats/${data.product.productId}/${data.product.buyer.id}`,
+          (message) => {
+            const data = JSON.parse(message.body).body;
+            console.log("data", data);
+            getMessage(JSON.parse(message.body).body);
+          }
+        );
       } else {
         console.error("STOMP connection is not established yet.");
       }
@@ -180,21 +206,9 @@ export default function Chatting({ data, userId }: ChattingProps) {
   }, [chatData]);
 
   return (
-    <div className="lg:sticky relative w-full lg:w-[30%] dark:lg:shadow-gray-950 lg:shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px] p-5 h-[calc(100vh-128px)]  lg:top-[128px]  min-w-80 shadow-none dark:bg-bg-black">
-      <div className="bg-transparent border-b-[1px] border-text-gray text-center w-full text-2xl pb-2 font-bold text-point-color">
-        {data.user.id === userId ? "내꺼채팅" : "니꺼채팅"}
-
-        <div className="flex items-center text-sm font-normal text-black  justify-center w-full">
-          <NoticeIcon className="mr-2 fill-black dark:fill-white " />
-          <div className="text-start break-all ">
-            이 채팅방은
-            <span className="text-red-500 font-medium">{` ${data.title}`}</span>
-            에 관심이 있는 모든 사용자가 참여하는 채팅방입니다.
-          </div>
-        </div>
-      </div>
+    <div className="relative w-full dark:bg-bg-black p-3">
       <div
-        className="min-w-72 h-[calc(100%-15rem)] mt-3 flex flex-col items-start overflow-y-scroll scrollbar-hide"
+        className="h-[22rem] flex flex-col items-start overflow-y-scroll scrollbar-hide"
         ref={recentChatRef}
       >
         {chatData &&
@@ -205,11 +219,11 @@ export default function Chatting({ data, userId }: ChattingProps) {
             .map((chat, index) => {
               return (
                 <Message
-                  key={chat.id}
-                  direction={userId === chat.userId ? "right" : "left"}
-                  userName={data.user.nickname}
+                  key={chat.chatId}
+                  direction={chat.user.id === userId ? "right" : "left"}
+                  userName={chat.user.nickname}
                   text={chat.message}
-                  isImage={chat.isImage}
+                  isImage={chat.contentType === "IMAGE"}
                   isFirstOfTheDay={
                     index === 0 ||
                     chatData[index - 1].createdAt?.split("T")[0] !==
@@ -221,9 +235,9 @@ export default function Chatting({ data, userId }: ChattingProps) {
             })}
       </div>
 
-      <div className="mb-4 flex flex-col justify-between w-[calc(100%-2.5rem)] bg-light-gray absolute bottom-0 h-36 border-2 border-light-gray p-5 pb-4 rounded-xl">
+      <div className="fixed bottom-0 w-[calc(100%-30px)] mb-4 flex flex-col justify-between bg-light-gray h-32 border-2 border-light-gray p-5 pb-4 rounded-xl box-border">
         <textarea
-          className=" w-full bg-light-gray resize-none focus:outline-none overflow-y-scroll scrollbar-hide dark:text-black"
+          className="w-full bg-light-gray resize-none focus:outline-none overflow-y-scroll scrollbar-hide dark:text-black"
           value={message}
           onKeyDown={enter}
           onChange={changeMessage}
@@ -248,7 +262,7 @@ export default function Chatting({ data, userId }: ChattingProps) {
             />
           </>
         )}
-        <div className="w-full flex justify-between items-center">
+        <div className="flex justify-between items-center">
           <ImagePlusIcon
             className={
               message.length === 0 && image === undefined

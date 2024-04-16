@@ -43,28 +43,37 @@ const Message = forwardRef<HTMLDivElement, MessageProps>(
         >
           <div>
             <span
-              className={`font-bold ${direction === "right" ? "text-end" : ""}`}
+              className={`ml-2 font-bold ${
+                direction === "right" ? "ml-10" : ""
+              }`}
             >
               {userName}
             </span>
-            <div
-              style={{ wordBreak: "break-all" }}
-              className={`w-52 p-5 rounded-xl shadow-[0_3px_10px_rgb(0,0,0,0.2)] overflow-y-scroll scrollbar-hide ${
-                direction === "left" ? adminColor : guestColor
-              } whitespace-normal`}
-            >
-              {isImage ? (
-                <Image
-                  src={URL.createObjectURL(text as unknown as Blob)}
-                  alt="첨부파일"
-                  width={0}
-                  height={0}
-                  className="w-full h-36 object-contain"
-                />
-              ) : (
-                text
+            <div className="flex items-end gap-1">
+              {direction === "right" && (
+                <p className="text-sm text-right">{time}</p>
               )}
-              <p className="text-sm text-right">{time}</p>
+              <div
+                style={{ wordBreak: "break-all" }}
+                className={` w-60 p-5 rounded-xl shadow-[0_3px_10px_rgb(0,0,0,0.2)] overflow-y-scroll scrollbar-hide ${
+                  direction === "right" ? adminColor : guestColor
+                } whitespace-normal`}
+              >
+                {isImage ? (
+                  <Image
+                    src={URL.createObjectURL(text as unknown as Blob)}
+                    alt="첨부파일"
+                    width={0}
+                    height={0}
+                    className="w-full h-36 object-contain"
+                  />
+                ) : (
+                  text
+                )}
+              </div>
+              {direction === "left" && (
+                <p className="text-sm text-right">{time}</p>
+              )}
             </div>
           </div>
         </div>
