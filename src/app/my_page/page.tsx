@@ -8,14 +8,28 @@ import PointHistory from "./_compoenets/PointHistory";
 import { createPortal } from "react-dom";
 import PointModalContent from "./_compoenets/modal/PointModalContent";
 import ModalSmall from "./_design/ModalSmall";
+import UpdateField from "./_compoenets/modal/UpdateField";
+import UpdateAddress from "./_compoenets/modal/UpdateAddress";
+import ConfirmAddress from "./_compoenets/modal/ConfirmAccount";
+import ConfirmEmail from "./_compoenets/modal/ConfirmEmail";
+import ConfirmAccount from "./_compoenets/modal/ConfirmAccount";
 
 export default function Page() {
-  const { userInfo, setPoint, deleteProduct, UpdateTransactionDetailStatus } =
-    useMypage();
+  const {
+    userInfo,
+    setPoint,
+    deleteProduct,
+    UpdateTransactionDetailStatus,
+    updateUserProfile,
+  } = useMypage();
 
   const [activeMenuNumber, setMewnuNumber] = useState<number>(0);
 
   const [isOpenPointModal, setPointModal] = useState(false);
+  const [isOpenNickNameModal, setNickNameModal] = useState(false);
+  const [isOpenAddressModal, setAddressModal] = useState(false);
+  const [isOpenEmailModal, setEmailModal] = useState(false);
+  const [isOpenAccountModal, setAccountModal] = useState(false);
 
   const [refreshPointerHistroy, setRRefreshPointerHistory] = useState(
     Math.random() * 100
@@ -37,13 +51,38 @@ export default function Page() {
     UpdateTransactionDetailStatus(data);
   };
 
+  const hadnleUpdateNickName = (nickname: string) => {
+    updateUserProfile(
+      {
+        nickname,
+      },
+      () => setNickNameModal(false)
+    );
+  };
+
+  const handleUpdateAdreess = (address: string) => {
+    updateUserProfile(
+      {
+        address,
+      },
+      () => setAddressModal(false)
+    );
+  };
+
   //   추후 Suspense 로바꾸면 좋을거 같음
   if (!userInfo) return <div>로딩중..</div>;
 
   return (
     <div className="max-w-[1248px] flex-col justify-center mx-auto p-4">
       {/* 사용자 정보 부분 */}
-      <MyInfo userInfo={userInfo} openModalPoint={() => setPointModal(true)} />
+      <MyInfo
+        userInfo={userInfo}
+        openModalPoint={() => setPointModal(true)}
+        openModalNickName={() => setNickNameModal(true)}
+        openModalAdress={() => setAddressModal(true)}
+        openModalAccount={() => setAccountModal(true)}
+        openModalEmail={() => setEmailModal(true)}
+      />
 
       {/* 콘텐츠 버튼 ( 판매 , 구매 , 포인트 내역 )  */}
       <div className="hidden md:block">
@@ -85,6 +124,49 @@ export default function Page() {
               point={userInfo.point}
               changePoint={handleChangePoint}
             />
+          </ModalSmall>,
+          document.body
+        )}
+      {isOpenNickNameModal &&
+        createPortal(
+          <ModalSmall
+            title="닉네임 변경"
+            onClose={() => setNickNameModal(false)}
+          >
+            <UpdateField
+              filedName="닉네임 변경"
+              update={hadnleUpdateNickName}
+            />
+          </ModalSmall>,
+          document.body
+        )}
+      {isOpenAddressModal &&
+        createPortal(
+          <ModalSmall
+            title="배송지 변경"
+            onClose={() => setAddressModal(false)}
+          >
+            {/* <UpdateField filedName="배송지 변경" update={handleUpdateAdreess} /> */}
+            <UpdateAddress updateAddress={handleUpdateAdreess} />
+          </ModalSmall>,
+          document.body
+        )}
+      {isOpenEmailModal &&
+        createPortal(
+          <ModalSmall title="이메일 변경" onClose={() => setEmailModal(false)}>
+            {/* <UpdateField filedName="배송지 변경" update={handleUpdateAdreess} /> */}
+            <ConfirmEmail />
+          </ModalSmall>,
+          document.body
+        )}
+      {isOpenAccountModal &&
+        createPortal(
+          <ModalSmall
+            title="계좌번호 변경"
+            onClose={() => setAccountModal(false)}
+          >
+            {/* <UpdateField filedName="배송지 변경" update={handleUpdateAdreess} /> */}
+            <ConfirmAccount />
           </ModalSmall>,
           document.body
         )}

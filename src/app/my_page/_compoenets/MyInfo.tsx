@@ -15,6 +15,7 @@ type Props = {
   openModalAccount?: () => void;
   openModalEmail?: () => void;
   openModalAdress?: () => void;
+  openModalNickName?: () => void;
 };
 
 export default function MyInfo({
@@ -23,6 +24,7 @@ export default function MyInfo({
   openModalAdress,
   openModalEmail,
   openModalPoint,
+  openModalNickName,
 }: Props) {
   //   추후 Suspense 로바꾸면 좋을거 같음
   if (!userInfo) return <div>로딩중</div>;
@@ -45,8 +47,13 @@ export default function MyInfo({
         <div>
           {/* 닉네임 & 로그아웃 */}
           <div className="flex flex-col items-center relative gap-2 my-2 md:flex-row md:items-center md:gap-4 md:mb-4 md:border-b-2 md:border-black md:border-opacity-20">
-            <p className="font-bold text-[2rem]">{userInfo.name}</p>
-            <p className="text-black text-opacity-45 ">닉네임 변경하기</p>
+            <p className="font-bold text-[2rem]">{userInfo.nickName}</p>
+            <p
+              className="text-black text-opacity-45 cursor-pointer "
+              onClick={() => openModalNickName && openModalNickName()}
+            >
+              닉네임 변경하기
+            </p>
             <button className="block absolute right-0 bottom-0 border p-2 border-black md:bottom-[25%] ">
               로그아웃
             </button>
@@ -65,7 +72,7 @@ export default function MyInfo({
                 </p>
                 <p>{formatKRW(userInfo.point)}</p>
               </div>
-              <div className="flex m-1 flex-wrap  ">
+              <div className="flex m-1 flex-wrap ">
                 <AccountSVG />
                 <p className="w-[5rem] ">계좌번호</p>
                 <p>{userInfo.accountNumber}</p>

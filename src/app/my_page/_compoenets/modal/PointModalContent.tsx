@@ -1,7 +1,7 @@
 "use client";
 import React, { useRef, useState } from "react";
 import PointHistory from "../PointHistory";
-import { USER_ID } from "../../_constants/user";
+import { getAccessToken } from "../../_utils/auth-header";
 
 export default function PointModalContent({
   point,
@@ -16,7 +16,6 @@ export default function PointModalContent({
 
   const chargingPoint = () => {
     if (isNaN(+cost) || +cost < 0) {
-
       alert("유효하지 않은 형식입니다.");
 
       setCost("");
@@ -24,10 +23,11 @@ export default function PointModalContent({
     }
 
     setDeisabe(true);
-    fetch(`/api/points/${USER_ID}`, {
+    fetch(`/api/points`, {
       method: "post",
       headers: {
         "Content-Type": "application/json",
+        Authorization: getAccessToken(),
       },
       body: JSON.stringify({
         addCost: +cost,

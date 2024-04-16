@@ -5,22 +5,13 @@ import ProductCard from "../_design/ProductCard";
 import { createPortal } from "react-dom";
 import ModalSmall from "../_design/ModalSmall";
 
-import { convertEnumToKeyValuesObject } from "../_utils/convert";
+import SellProductDetail from "./modal/SellProductDetail";
 
 type Props = {
   sellList: Product[];
   deleteProduct: (index: number) => void;
   updateTransactionStatus: (p: UpdateTransDetiilsFunctionParameter) => void;
 };
-
-enum PRODUCT_STATUS {
-  "입금 대기" = 1,
-  "입금 완료",
-  "배송중",
-  "배송완료",
-  "거래완료",
-  "거래 취소",
-}
 
 export default function SellHistory({
   sellList,
@@ -32,9 +23,7 @@ export default function SellHistory({
 
   const [selectProduct, setSelectProduct] = useState<Product>();
 
-  const [productStatus, setProductStatus] = useState<number>(0);
-
-  const onDeleteProduct = (productId: number) => {
+  const handleDeleteProduct = (productId: number) => {
     if (confirm("정말 삭제 하실 겁니까?")) {
       deleteProduct(productId);
       setSelectProduct(undefined);
@@ -45,7 +34,6 @@ export default function SellHistory({
   const openModalProduct = (productId: number) => {
     const select = sellList.filter((sell) => sell.id === productId)[0];
     setSelectProduct(select);
-    setProductStatus(select.transactionDetails?.status?.id || 0);
     setIsOpenModal(true);
   };
 
@@ -53,14 +41,14 @@ export default function SellHistory({
     console.log("끌어 올리기");
   };
 
-  const changeProductStatus = () => {
+  const handleChangeProductStatus = (status: string) => {
     if (!selectProduct) return;
 
     updateTransactionStatus({
       data: {
         transactionDetailsId: +selectProduct.transactionDetails!.id,
 
-        status: productStatus + "",
+        status,
       },
       Done: () => {
         setIsOpenModal(false);
@@ -113,57 +101,12 @@ export default function SellHistory({
               title={selectProduct.title}
               onClose={() => setIsOpenModal(false)}
             >
-              <div>{selectProduct.title}</div>
-              <div className="flex gap-2 flex-col">
-                <button
-                  type="button"
-                  className={` bg-green-900 rounded-md p-2 inline-flex items-center justify-center text-gray-200 hover:text-gray-100 hover:bg-green-700 `}
-                  onClick={() => updateDate()}
-                >
-                  끌어올리기
-                </button>
-                {selectProduct.transactionDetails?.status?.status ? (
-                  //  거래 성사 된 상품일시
-                  <>
-                    <select
-                      value={productStatus}
-                      onChange={(e) => setProductStatus(+e.target.value)}
-                    >
-                      {convertEnumToKeyValuesObject(PRODUCT_STATUS).map(
-                        (status) => (
-                          <option
-                            className="disabled:text-red-500"
-                            key={status.value}
-                            value={status.value}
-                            disabled={
-                              status.value <
-                              selectProduct.transactionDetails!.status.id
-                            }
-                          >
-                            {status.key}
-                          </option>
-                        )
-                      )}
-                    </select>
-                    <button
-                      type="button"
-                      className={` bg-blue-900 rounded-md p-2 inline-flex items-center justify-center text-gray-200 hover:text-gray-100 hover:bg-blue-700 `}
-                      onClick={() => changeProductStatus()}
-                    >
-                      상태변경
-                    </button>
-                  </>
-                ) : (
-                  //  거래 중인 상품일시
-                  <button
-                    type="button"
-                    className={` bg-red-900 rounded-md p-2 inline-flex items-center justify-center text-gray-200 hover:text-gray-100 hover:bg-red-700 `}
-                    onClick={() => onDeleteProduct(selectProduct.id)}
-                  >
-                    삭제버튼
-                  </button>
-                )}
-              </div>
+              <SellProductDetail
+                product={selectProduct}
+                chnageStatus={handleChangeProductStatus}
+                deleteProduct={handleDeleteProduct}
+                updateDate={updateDate}
+              />
             </ModalSmall>,
             document.body
           )}

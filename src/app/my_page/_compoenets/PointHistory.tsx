@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { USER_ID } from "../_constants/user";
 import { formatKRW } from "../_utils/format";
+import { getAccessToken } from "../_utils/auth-header";
 
 export default function PointHistory() {
   const [history, seHistory] = useState<IPointHistory[]>();
@@ -9,7 +9,11 @@ export default function PointHistory() {
   useEffect(() => {
     console.log("ph");
 
-    fetch(`/api/points/all/${USER_ID}`)
+    fetch(`/api/points/all`, {
+      headers: {
+        Authorization: getAccessToken(),
+      },
+    })
       .then((res) => res.json())
       .then(seHistory);
   }, []);

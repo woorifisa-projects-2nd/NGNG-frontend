@@ -97,6 +97,7 @@ type UpdateTransDetiilsFunctionParameter = {
 type MypageReponse = {
   userId: number;
   name: string;
+  nickName: string;
   phoneNumber: string;
   email: string;
   accountBank: string | null;
