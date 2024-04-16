@@ -16,7 +16,9 @@ export default function PointModalContent({
 
   const chargingPoint = () => {
     if (isNaN(+cost) || +cost < 0) {
+
       alert("유효하지 않은 형식입니다.");
+
       setCost("");
       return;
     }

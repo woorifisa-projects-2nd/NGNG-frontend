@@ -41,6 +41,10 @@ const nextConfig = {
           source: "/products/:path*",
           destination: "http://localhost:8080/products/:path*",
         },
+<<<<<<<<< Temporary merge branch 1
+
+=========
+>>>>>>>>> Temporary merge branch 2
       ],
     };
   },

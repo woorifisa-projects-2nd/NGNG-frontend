@@ -67,6 +67,7 @@ const useMypage = () => {
   };
 
   useEffect(() => {
+
     fetch(`/api/users/${USER_ID}/mypage`)
       .then((res) => res.json())
       .then((data: UserGetReposne) => {
