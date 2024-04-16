@@ -74,11 +74,17 @@ export default function ReportDetail({ params }: { params: { reportId: number } 
     const [selectedPenaltyLevel, setSelectedPenaltyLevel] = useState<PenaltyLevelType | undefined>(undefined);
     const [penalty, setPenalty] = useState<Penalty | null>(null);
 
+    // 이미지 보기
+    const [showModal, setShowModal] = useState<boolean>(false);
+    const [modalImage, setModalImage] = useState<string>("");
+    const [currentImageIndex, setCurrentImageIndex] = useState<number>(0);
+
     // API로부터 신고 데이터를 가져오는 함수
     async function fetchReport() {
         fetch(process.env.NEXT_PUBLIC_API_URL + `admin/reports/${params.reportId}`)
             .then(resp => resp.json())
             .then(result => {
+
                 setReport(result);
                 if (result?.isReport === 1) {
                     fetchPenalty(result);
@@ -105,7 +111,7 @@ export default function ReportDetail({ params }: { params: { reportId: number } 
 
     // 적용 버튼을 눌렀을 때 실행되는 함수
     const handleApply = async () => {
-        if (report && selectedPenaltyLevel) {
+        if (report && selectedPenaltyLevel && penaltyReason) {
             const postData = {
                 userId: report.user.userId,
                 reporterId: report.reporter.userId,
@@ -125,17 +131,17 @@ export default function ReportDetail({ params }: { params: { reportId: number } 
 
                 if (response.ok) {
                     // POST 요청이 성공한 경우에 대한 처리를 추가하십시오.
-                    console.log('제재가 성공적으로 적용되었습니다.');
+                    alert('제재가 성공적으로 적용되었습니다.');
                     // goToListPage;
                 } else {
                     // 요청이 실패한 경우에 대한 처리를 추가하십시오.
-                    console.error('제재 적용에 실패했습니다.');
+                    alert('제재 적용에 실패했습니다.');
                 }
             } catch (error) {
                 console.error('제재 적용 중 오류가 발생했습니다.', error);
             }
         } else {
-            console.error('선택된 신고 또는 제재 레벨이 없습니다.');
+            alert('제재이유 또는 신고 처분을 선택해 주세요.');
         }
     };
 
@@ -156,11 +162,43 @@ export default function ReportDetail({ params }: { params: { reportId: number } 
     };
 
 
+    // 이미지를 클릭했을 때 모달을 열고 해당 이미지를 표시하는 함수
+    const handleImageClick = (imageUrl: string, index: number) => {
+        setModalImage(imageUrl);
+        setCurrentImageIndex(index);
+        setShowModal(true);
+    };
+
+    // 다음 이미지로 이동하는 함수
+    const goToNextImage = () => {
+        if (report?.reportImages) {
+            const nextIndex = (currentImageIndex + 1) % report?.reportImages.length;
+            setModalImage(report?.reportImages[nextIndex].imageUrl);
+            setCurrentImageIndex(nextIndex);
+        }
+    };
+
+    // 이전 이미지로 이동하는 함수
+    const goToPreviousImage = () => {
+        if (report?.reportImages) {
+            const previousIndex = (currentImageIndex - 1 + report?.reportImages.length) % report?.reportImages.length;
+            setModalImage(report?.reportImages[previousIndex].imageUrl);
+            setCurrentImageIndex(previousIndex);
+        }
+    };
+
+    // 모달을 닫는 함수
+    const closeModal = () => {
+        setShowModal(false);
+    };
+
+    console.log(report);
+    
+
+
     return (
         <>
-            {/* <div>{report?.reportId}</div> */}
             <div>
-                {/* {report && ( */}
                 <div>
                     <div className="flex mb-4">
                         <div className="w-1/2">
@@ -192,8 +230,8 @@ export default function ReportDetail({ params }: { params: { reportId: number } 
                     <div className="mb-4">
                         <div className="font-extrabold">신고 사진</div>
 
-                        <div className="border-t border-solid border-t-fuchsia-900 flex justify-center">
-                            <Carousel className="w-1/2 h-1/2"
+                        <div className="border-t border-solid border-t-fuchsia-900 p-4">
+                            <Carousel className=""
                                 showArrows={true}
                                 // centerMode={true}
                                 // centerSlidePercentage={100}
@@ -205,38 +243,56 @@ export default function ReportDetail({ params }: { params: { reportId: number } 
 
                                 {report?.reportImages.map(media => (
                                     media.contentType === 'IMAGE' ? ( // 이미지인 경우
-                                        <div className="w-full">
-                                            <img key={media.reportImageId} src={media.imageUrl} className="" alt={`reportImage_${media.reportImageId}`} />
+                                        <div onClick={() => handleImageClick(media.imageUrl, media.reportImageId-1)}>
+                                            <img
+                                                key={media.reportImageId}
+                                                src={media.imageUrl}
+                                                className="object-contain object-center h-96 w-h-96"
+                                                alt={`reportImage_${media.reportImageId}`}
+                                            />
                                         </div>
                                     ) : ( // 동영상인 경우
-                                        <div className="w-96">
-                                            <ReactPlayer key={media.reportImageId} url={media.imageUrl} controls={true} />
+                                        <div onClick={() => handleImageClick(media.imageUrl, media.reportImageId-1)}>
+                                            <ReactPlayer
+                                                key={media.reportImageId}
+                                                url={media.imageUrl}
+                                                className="object-cover object-center h-96 w-h-96"
+                                                controls={true}
+                                            />
                                             {/* <video key={media.reportImageId} src={media.imageUrl}/> */}
                                         </div>
                                     )
                                 ))}
 
                             </Carousel>
-
-                            {/* <Carousel 
-                                // showArrows={true}
-                                // centerMode={true}
-                                // centerSlidePercentage={100}
-                                // showThumbs={true}
-                                showStatus={false}
-                                // autoPlay={false}
-                                infiniteLoop={false}
-                            >
-                                {report?.reportImages.map(image => (
-                                    <div key={image.reportImageId} className="w-1/4 h- 1/4">
-                                        <img src={`${image.imageUrl}`} alt={`reportImage_${image.reportImageId}`} className="w-full h-full object-cover" />
-                                    </div>
-                                ))}
-                                <div>
-                                    <ReactPlayer url="https://www.youtube.com/embed/en-OkqU-agI" />
-                                </div>
-                            </Carousel> */}
                         </div>
+
+                        {showModal && (
+                            <div className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50 z-50">
+                                <div className="max-w-screen-lg p-4 relative">
+
+                                    {report?.reportImages[currentImageIndex]?.contentType === 'IMAGE' ? (
+                                        <img
+                                            src={report?.reportImages[currentImageIndex]?.imageUrl}
+                                            alt={`reportImage_${report?.reportImages[currentImageIndex]?.reportImageId}`}
+                                            className="max-w-full max-h-full"
+                                        />
+                                    ) : (
+                                        <ReactPlayer
+                                            url={report?.reportImages[currentImageIndex]?.imageUrl}
+                                            controls={true}
+                                            width="100%"
+                                            height="100%"
+                                        />
+                                    )}
+
+                                    <button className="absolute top-[50%] left-0 transform -translate-y-1/2 p-2 text-white" onClick={goToPreviousImage}>이전</button>
+                                    <button className="absolute top-[50%] right-0 transform -translate-y-1/2 p-2 text-white" onClick={goToNextImage}>다음</button>
+                                    <button className="absolute top-0 right-0 p-2 text-black" onClick={closeModal}>닫기</button>
+                                </div>
+                            </div>
+                        )}
+
                     </div>
 
                     <div className="mb-4">
@@ -275,7 +331,6 @@ export default function ReportDetail({ params }: { params: { reportId: number } 
                         </div>
                     </div>
                 </div>
-                {/* )} */}
             </div>
         </>
     );

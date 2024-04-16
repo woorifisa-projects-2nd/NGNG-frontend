@@ -32,35 +32,36 @@ type Report = {
 export default function ReportManagement() {
     const [showUnprocessedOnly, setShowUnprocessedOnly] = useState(false);
     const [reports, setReports] = useState<Report[]>([]);
-    const [displayedReports, setDisplayedReports] = useState<Report[]>([]);
     const [currentPage, setCurrentPage] = useState<number>(0);
+    
+    // 페이지 관련
     const [totalPages, setTotalPages] = useState<number>(0);
     const [itemsPerPage, setItemsPerPage] = useState<number>(0);
-    const [maxPageButtons, setMaxPageButtons] = useState<number>(7); // 최대 페이지 버튼 수
+    const [maxPageButtons, setMaxPageButtons] = useState<number>(5); // 최대 페이지 버튼 수
     const [startPage, setStartPage] = useState<number>(0); // 페이징 번호 시작 페이지
-    const [endPage, setEndPage] = useState<number>(0); // 페이징 번호 끝 페이지
+    const [endPage, setEndPage] = useState<number>(1); // 페이징 번호 끝 페이지
+    const disablePrevious = Math.floor(currentPage / maxPageButtons) * maxPageButtons - maxPageButtons < 0;
+    const disableNext = Math.floor(currentPage / maxPageButtons) * maxPageButtons + maxPageButtons >= totalPages;
 
+    // 페이지를 변경할 때 해당 페이지의 데이터를 가져오는 함수
+    async function fetchReportsByPage(pageNumber: number, unprocessedOnly: boolean) {
+        const url = unprocessedOnly
+            ? `${process.env.NEXT_PUBLIC_API_URL}admin/reports/unprocessed?page=${pageNumber}`
+            : `${process.env.NEXT_PUBLIC_API_URL}admin/reports?page=${pageNumber}`;
 
-    // API로부터 신고 목록 데이터를 가져오는 함수
-    async function fetchReports() {
-        fetch(process.env.NEXT_PUBLIC_API_URL + "admin/reports")
+        await fetch(url)
             .then(resp => resp.json())
             .then(result => {
-                setReports(result);
-                setDisplayedReports(result);
+                setReports(result.content);
+                setCurrentPage(result.pageable.pageNumber);
+                setTotalPages(result.totalPages);
+                setItemsPerPage(result.pageable.pageSize)
             });
     }
 
     useEffect(() => {
-        // fetchReports();
-        fetchReportsByPage(currentPage);
-    }, []);
-
-    useEffect(() => {
-        setDisplayedReports(
-            showUnprocessedOnly ? reports.filter(report => !report.isReport) : reports
-        );
-    }, [showUnprocessedOnly, reports]);
+        fetchReportsByPage(currentPage, showUnprocessedOnly);
+    }, [currentPage, showUnprocessedOnly]);
 
     useEffect(() => {
         if (totalPages <= maxPageButtons) {
@@ -72,35 +73,23 @@ export default function ReportManagement() {
         }
     }, [currentPage, totalPages]);
 
-    // 페이지를 변경할 때 해당 페이지의 데이터를 가져오는 함수
-    async function fetchReportsByPage(pageNumber: number) {
-        await fetch(`${process.env.NEXT_PUBLIC_API_URL}admin/reports?page=${pageNumber}`)
-            .then(resp => resp.json())
-            .then(result => {
-                setReports(result.content);
-                setDisplayedReports(result.content);
-                setCurrentPage(result.pageable.pageNumber);
-                setTotalPages(result.totalPages);
-                setItemsPerPage(result.pageable.pageSize)
-            });
-    }
-
     const handlePageClick = (pageNumber: number) => {
         setCurrentPage(pageNumber);
-        fetchReportsByPage(pageNumber);
+        fetchReportsByPage(pageNumber, showUnprocessedOnly);
     };
 
     const handlePreviousPageClick = () => {
-        const previousPage = (currentPage / maxPageButtons) * maxPageButtons + maxPageButtons;
-        setCurrentPage(0);
-        fetchReportsByPage(0);
+        const previousPage = Math.floor(currentPage / maxPageButtons) * maxPageButtons - maxPageButtons;
+        setCurrentPage(previousPage);
+        fetchReportsByPage(previousPage, showUnprocessedOnly);
+        setStartPage(previousPage);
+        setEndPage(previousPage + maxPageButtons);
     };
 
     const handleNextPageClick = () => {
-        // 한번에 보여줄 페이지 개수 ex) 1 2 3 4 5 라면 5
         const nextPage = Math.floor(currentPage / maxPageButtons) * maxPageButtons + maxPageButtons;
         setCurrentPage(nextPage);
-        fetchReportsByPage(nextPage);
+        fetchReportsByPage(nextPage, showUnprocessedOnly);
         setStartPage(nextPage);
         setEndPage(nextPage + maxPageButtons);
     };
@@ -109,17 +98,15 @@ export default function ReportManagement() {
         const pageNumbers = [];
         for (let i = startPage; i < endPage; i++) {
             pageNumbers.push(
-                // <button
-                //     key={i}
-                //     onClick={() => handlePageClick(i)}
-                //     disabled={currentPage === i}
-                //     className={currentPage === i ? 'text-violet-800' : 'text-slate-400'}
-                // >
-                //     {i + 1}
-                // </button>
                 <Link key={i} href={`/admin/reports?page=${i + 1}`}
-                    onClick={() => handlePageClick(i)}
-                    className={currentPage === i ? 'text-violet-800' : 'text-slate-400'}
+                    onClick={(e) => {
+                        if (currentPage === i) {
+                            e.preventDefault();
+                        } else {
+                            handlePageClick(i);
+                        }
+                    }}
+                    className={`${currentPage === i ? 'text-violet-900 pointer-events-none' : 'text-slate-300 pointer-events-auto'}`}
                 >
                     {i + 1}
                 </Link>
@@ -128,8 +115,7 @@ export default function ReportManagement() {
         return pageNumbers;
     };
 
-    console.log(displayedReports);
-    
+    console.log(reports);
 
     return (
         <div className="p-5">
@@ -165,7 +151,7 @@ export default function ReportManagement() {
                 </div>
 
                 <div className="text-center">
-                    {displayedReports.map((report, index) => (
+                    {reports.map((report, index) => (
                         <div key={report.reportId} className="border-b border-gray-300 rounded p-3 flex items-center">
                             <div className="w-1/6">{index + 1 + currentPage * itemsPerPage}</div>
                             <div className="w-1/6">{report.createdAt.substring(0, 10)}</div>
@@ -183,9 +169,6 @@ export default function ReportManagement() {
                             </div>
                             <div className="w-1/6">
                                 <div className="p-5">
-                                    {/* <div className="w-1/5 cursor-pointer" onClick={() => openModal(report)}>
-                                        <CheckReport />
-                                    </div> */}
                                     <Link href={`/admin/reports/${report.reportId}`}><CheckReport /></Link>
                                 </div>
                             </div>
@@ -195,29 +178,34 @@ export default function ReportManagement() {
             </div>
 
             <div className="flex justify-center space-x-4">
-                <button
-                    onClick={handlePreviousPageClick}
-                    disabled={currentPage === 0}
-                    className="text-black"
+                <Link
+                    href={!disablePrevious ? `/admin/reports?page=${Math.floor(currentPage / maxPageButtons) * maxPageButtons - maxPageButtons + 1}` : "#"}
+                    onClick={e => {
+                        if (disablePrevious) {
+                            e.preventDefault();
+                        } else {
+                            handlePreviousPageClick();
+                        }
+                    }}
+                    className={`text-black ${disablePrevious ? 'cursor-not-allowed text-gray-500' : ''}`}
                 >
                     {'<'}
-                </button>
+                </Link>
                 {renderPageNumbers()}
-                <button
-                    onClick={handleNextPageClick}
-                    // disabled={currentPage === totalPages - 1}
-                    disabled={(currentPage / maxPageButtons) * maxPageButtons + maxPageButtons >= totalPages}
-                    className="text-black"
+                <Link
+                    href={!disableNext ? `/admin/reports?page=${Math.floor(currentPage / maxPageButtons) * maxPageButtons + maxPageButtons + 1}` : "#"}
+                    onClick={e => {
+                        if (disableNext) {
+                            e.preventDefault();
+                        } else {
+                            handleNextPageClick();
+                        }
+                    }}
+                    className={`text-black ${disableNext ? 'cursor-not-allowed text-gray-500' : ''}`}
                 >
                     {'>'}
-                </button>
+                </Link>
             </div>
-
-            {/* <div>
-                <button onClick={() => fetchReportsByPage(currentPage - 1)} disabled={currentPage === 0}>Previous</button>
-                <button onClick={() => fetchReportsByPage(currentPage + 1)} disabled={currentPage+1 === totalPages}>Next</button>
-            </div> */}
-
         </div>
     );
 }
