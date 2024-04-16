@@ -18,14 +18,14 @@ export default function Button({
     color === undefined
       ? ""
       : color === "black"
-      ? "bg-[#2e2e2e] border-[#A6A6A6]"
-      : "bg-white border-text-gray";
+      ? "bg-[#2e2e2e] "
+      : "bg-white ";
 
   return (
     <button
       disabled={disabled}
       style={{ width, height }}
-      className={`border-solid rounded-lg text-white bg-point-color border-[1px] w-32 h-12 ${colorClassName}  ${
+      className={` rounded-lg text-white bg-point-color  w-32 h-12 ${colorClassName}  ${
         disabled && `bg-text-gray`
       }`}
       onClick={onClick}

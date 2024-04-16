@@ -50,10 +50,7 @@ const useMypage = () => {
         setUserInfo((prev: any) => ({
           ...prev,
           sellList: prev.sellList.map((sell: Product) => {
-            if (
-              sell.transactionDetails.transactionDetailsId ===
-              data.transactionDetailsId
-            ) {
+            if (sell.transactionDetails.id === data.transactionDetailsId) {
               return {
                 ...sell,
                 transactionDetails: {

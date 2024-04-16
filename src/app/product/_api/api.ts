@@ -1,8 +1,22 @@
 import * as StompJs from "@stomp/stompjs";
+import { Product } from "../_types/type";
+import dayjs from "dayjs";
+import utc from "dayjs/plugin/utc";
 
-export const getProductById = async (id: number) => {
-  const res = await fetch(`http://localhost:3000/products/${id}`);
-  return res.json();
+export const getProductById = async (id: string) => {
+  const res = await fetch(`http://localhost:3000/products/${id}`, {
+    cache: "no-store",
+  });
+
+  if (res.status === 404) {
+    return { status: res.status, data: undefined };
+  } else {
+    return res.json().then((data) => {
+      console.log("data", data);
+
+      return { status: res.status, data: data as Product };
+    });
+  }
 };
 export const sendPublicChatMessage = ({
   client,
@@ -23,4 +37,12 @@ export const sendPublicChatMessage = ({
       isImage,
     }),
   });
+};
+
+dayjs.extend(utc);
+
+export const getLocalTime = (time: string) => {
+  let utcTime = dayjs.utc(time);
+
+  return utcTime.local().format("HH:mm");
 };
