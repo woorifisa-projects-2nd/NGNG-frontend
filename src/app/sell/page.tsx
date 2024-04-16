@@ -1,14 +1,17 @@
 "use client";
-import Button from "@/components/common/Button";
+
 import { useState } from "react";
 import TabContent from "./_components/TabContent";
 import TabHeader from "./_components/TabHeader";
+import Button from "@/components/common/Button";
+import { createProduct } from "./_api/api";
+import { log } from "console";
 
 export type Product = {
   order: number;
   title: string;
   content: string;
-  price: number;
+  price?: number;
   isEscrow: boolean;
   discountable: boolean;
   purchaseAt?: string;
@@ -19,6 +22,7 @@ export type Product = {
   tags: { name: string }[];
   images: { id: number; image: File }[];
   thumbnail?: File;
+  isFullfillSaveCondition?: boolean;
 };
 
 const getDummyProduct = (order: number) => {
@@ -26,7 +30,6 @@ const getDummyProduct = (order: number) => {
     order: order,
     title: "",
     content: "",
-    price: 0,
     isEscrow: false,
     discountable: false,
     purchaseAt: "",
@@ -37,14 +40,27 @@ const getDummyProduct = (order: number) => {
     tags: [],
     images: [],
     thumbnail: undefined,
+    isFullfillSaveCondition: false,
   };
 };
 
 export default function Sell() {
-  const [products, setProducts] = useState<Product[]>([getDummyProduct(1)]);
+  const [currentOrder, setCurrentOrder] = useState<number>(0);
+  const [products, setProducts] = useState<Product[]>([getDummyProduct(0)]);
+  const allfullfilledSaveCondition =
+    products.filter((product) => product.isFullfillSaveCondition === true)
+      .length === products.length;
+  console.log(products);
+
   const addProduct = () => {
-    setProducts([...products, getDummyProduct(products.length + 1)]);
+    setProducts([...products, getDummyProduct(products.length)]);
+    setCurrentOrder(products.length);
   };
+
+  const changeCurrentOder = (order: number) => {
+    setCurrentOrder(order);
+  };
+
   const changeProduct = ({
     order,
     product,
@@ -54,14 +70,36 @@ export default function Sell() {
   }) => {
     setProducts([...products.map((p) => (p.order !== order ? p : product))]);
   };
+
+  const onClickButton = () => {
+    products.forEach(async (product) => {
+      const res = await createProduct(product);
+    });
+    // TODO 뭔가 리다이렉트시켜야 할 듯
+  };
   return (
     <div className="px-5 lg:px-32 w-full">
       <div className="text-2xl font-medium pt-20">상품 등록</div>
-      <TabHeader products={products} />
-      {products.map((p) => (
-        <TabContent data={p} />
-      ))}
-      {/* <Button text="등록하기" /> */}
+      <TabHeader
+        products={products}
+        addProduct={addProduct}
+        changeOrder={changeCurrentOder}
+        currentOrder={currentOrder}
+      />
+
+      <TabContent
+        key={products[currentOrder].order}
+        data={products[currentOrder]}
+        onChangeData={changeProduct}
+      />
+
+      <div className="flex justify-end items-center pb-20">
+        <Button
+          text="등록하기"
+          disabled={!allfullfilledSaveCondition}
+          onClick={onClickButton}
+        />
+      </div>
     </div>
   );
 }

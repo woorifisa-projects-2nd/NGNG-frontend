@@ -1,3 +1,11 @@
+import DefaultLayout from "@/components/layouts/DefaultLayout";
+import LoginPage from "./loginPage";
+
 export default function Login() {
-  return <div className="text-slate-200">login page</div>;
+  
+  return (
+    <DefaultLayout>
+      <LoginPage></LoginPage>
+    </DefaultLayout>
+  )
 }
