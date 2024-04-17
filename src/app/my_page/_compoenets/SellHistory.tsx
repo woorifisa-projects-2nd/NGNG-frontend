@@ -5,11 +5,22 @@ import ProductCard from "../_design/ProductCard";
 import { createPortal } from "react-dom";
 import ModalSmall from "../_design/ModalSmall";
 
+import { convertEnumToKeyValuesObject } from "../_utils/convert";
+
 type Props = {
   sellList: Product[];
   deleteProduct: (index: number) => void;
   updateTransactionStatus: (p: UpdateTransDetiilsFunctionParameter) => void;
 };
+
+enum PRODUCT_STATUS {
+  "입금 대기" = 1,
+  "입금 완료",
+  "배송중",
+  "배송완료",
+  "거래완료",
+  "거래 취소",
+}
 
 export default function SellHistory({
   sellList,
@@ -23,15 +34,6 @@ export default function SellHistory({
 
   const [productStatus, setProductStatus] = useState<number>(0);
 
-  const PRODUCT_STATUS = [
-    "입금 대기",
-    "입금 완료",
-    "배송중",
-    "배송완료",
-    "거래완료",
-    "거래 취소",
-  ];
-
   const onDeleteProduct = (productId: number) => {
     if (confirm("정말 삭제 하실 겁니까?")) {
       deleteProduct(productId);
@@ -41,9 +43,9 @@ export default function SellHistory({
   };
 
   const openModalProduct = (productId: number) => {
-    const select = sellList.filter((sell) => sell.productId === productId)[0];
+    const select = sellList.filter((sell) => sell.id === productId)[0];
     setSelectProduct(select);
-    setProductStatus(select?.transactionDetails?.status?.id - 1 || 0);
+    setProductStatus(select.transactionDetails?.status?.id || 0);
     setIsOpenModal(true);
   };
 
@@ -54,16 +56,11 @@ export default function SellHistory({
   const changeProductStatus = () => {
     if (!selectProduct) return;
 
-    console.log(productStatus + 1 + "");
-
-    const updateStatus = productStatus + 1 + "";
-
     updateTransactionStatus({
       data: {
-        transactionDetailsId:
-          +selectProduct?.transactionDetails.transactionDetailsId,
- 
-        status: updateStatus,
+        transactionDetailsId: +selectProduct.transactionDetails!.id,
+
+        status: productStatus + "",
       },
       Done: () => {
         setIsOpenModal(false);
@@ -89,19 +86,22 @@ export default function SellHistory({
         {sellList &&
           sellList
             .filter((item) =>
-              isOnlySell ? !item.transactionDetails.status?.status : true
+              isOnlySell ? !item.transactionDetails?.status?.status : true
             )
             .map((slae, key) => (
               <div
                 key={key}
                 className="relative cursor-pointer hmx-auto hover:scale-110 transition-all"
-                onClick={() => openModalProduct(slae.productId)}
+                onClick={() => openModalProduct(slae.id)}
               >
                 <ProductCard
-                  imageSrc="https://source.unsplash.com/user/max_duz/300x300"
+                  imageSrc={
+                    slae.thumbnail
+                      ? slae.thumbnail.thumbnailURL
+                      : `https://source.unsplash.com/user/max_duz/300x300`
+                  }
                   title={slae.title}
                   status={slae.transactionDetails?.status?.status || "판매중"}
-
                   price={slae.price}
                 />
               </div>
@@ -129,18 +129,21 @@ export default function SellHistory({
                       value={productStatus}
                       onChange={(e) => setProductStatus(+e.target.value)}
                     >
-                      {PRODUCT_STATUS.map((value, key) => (
-                        <option
-                          className="disabled:text-red-500"
-                          key={key}
-                          value={key}
-                          disabled={
-                            key < selectProduct.transactionDetails.status.id - 1
-                          }
-                        >
-                          {value}
-                        </option>
-                      ))}
+                      {convertEnumToKeyValuesObject(PRODUCT_STATUS).map(
+                        (status) => (
+                          <option
+                            className="disabled:text-red-500"
+                            key={status.value}
+                            value={status.value}
+                            disabled={
+                              status.value <
+                              selectProduct.transactionDetails!.status.id
+                            }
+                          >
+                            {status.key}
+                          </option>
+                        )
+                      )}
                     </select>
                     <button
                       type="button"
@@ -155,7 +158,7 @@ export default function SellHistory({
                   <button
                     type="button"
                     className={` bg-red-900 rounded-md p-2 inline-flex items-center justify-center text-gray-200 hover:text-gray-100 hover:bg-red-700 `}
-                    onClick={() => onDeleteProduct(selectProduct.productId)}
+                    onClick={() => onDeleteProduct(selectProduct.id)}
                   >
                     삭제버튼
                   </button>

@@ -81,6 +81,9 @@ const Message = forwardRef<HTMLDivElement, MessageProps>(
     );
   }
 );
+// Error: Component definition is missing display name  react/display-name
+// 참고 : https://stackoverflow.com/questions/67992894/component-definition-is-missing-display-name-for-forwardref
+Message.displayName = "Message";
 Message.displayName = "Message";
 
 export default Message;

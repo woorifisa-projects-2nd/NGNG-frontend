@@ -10,7 +10,7 @@ import ProductSVG from "../_design/SVG/ProductSVG";
 import BuySVG from "../_design/SVG/BuySVG";
 
 type Props = {
-  userInfo: UserGetReposne;
+  userInfo: MypageReponse;
   openModalPoint?: () => void;
   openModalAccount?: () => void;
   openModalEmail?: () => void;

@@ -1,11 +1,10 @@
 import DefaultLayout from "@/components/layouts/DefaultLayout";
-import LoginPage from "./loginPage";
 
-export default function Login() {
-  
+export default function Confirm() {
+
   return (
     <DefaultLayout>
-      <LoginPage></LoginPage>
+      <div>asdf</div>
     </DefaultLayout>
-  )
+  );
 }

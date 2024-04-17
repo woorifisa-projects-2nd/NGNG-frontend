@@ -8,7 +8,7 @@ type Props = {
 
 export default function Modal({ children, onClose, title }: Props) {
   return (
-    <div className="fixed inset-0  bg-black bg-opacity-40 snap-y ">
+    <div className="fixed inset-0  bg-black bg-opacity-40 snap-y z-10 ">
       {/* 배경 */}
       {/* content 중앙 정렬 */}
       <div className="flex justify-center items-center w-[100vw] h-[100vh] ">

@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { USER_ID } from "../_constants/user";
 
 const useMypage = () => {
-  const [userInfo, setUserInfo] = useState<UserGetReposne>();
+  const [userInfo, setUserInfo] = useState<MypageReponse>();
 
   const setPoint = (cost: number) => {
     setUserInfo((prev: any) => ({
@@ -16,7 +16,7 @@ const useMypage = () => {
     setUserInfo((prev: any) => ({
       ...prev,
       sellList: prev.sellList.filter(
-        (product: Product) => product.productId !== deleteProductId
+        (product: Product) => product.id !== deleteProductId
       ),
     }));
   };
@@ -42,7 +42,7 @@ const useMypage = () => {
           Done && Done();
           return res.json();
         } else {
-          Fiall && Fiall("상품 상태를 업데이트 하지 못함");
+          Fiall && Fiall("상품 상태를 업데이트 하지 못했어요");
         }
       })
       .then((data) => {
@@ -50,7 +50,7 @@ const useMypage = () => {
         setUserInfo((prev: any) => ({
           ...prev,
           sellList: prev.sellList.map((sell: Product) => {
-            if (sell.transactionDetails.id === data.transactionDetailsId) {
+            if (sell.transactionDetails?.id === data.id) {
               return {
                 ...sell,
                 transactionDetails: {
@@ -67,10 +67,9 @@ const useMypage = () => {
   };
 
   useEffect(() => {
-
     fetch(`/api/users/${USER_ID}/mypage`)
       .then((res) => res.json())
-      .then((data: UserGetReposne) => {
+      .then((data: MypageReponse) => {
         data.sellList.sort((item1, item2) => {
           const status1 = item1.transactionDetails?.status?.id || 0;
           const status2 = item2.transactionDetails?.status?.id || 0;
