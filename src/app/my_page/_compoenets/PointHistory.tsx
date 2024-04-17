@@ -2,23 +2,12 @@
 import React, { useEffect, useState } from "react";
 import { formatKRW } from "../_utils/format";
 import { getAccessToken } from "../_utils/auth-header";
+import usePointHistory from "../_hooks/usePointeHistory";
 
 export default function PointHistory() {
-  const [history, seHistory] = useState<IPointHistory[]>();
+  const { pointHistory } = usePointHistory();
 
-  useEffect(() => {
-    console.log("ph");
-
-    fetch(`/api/points/all`, {
-      headers: {
-        Authorization: getAccessToken(),
-      },
-    })
-      .then((res) => res.json())
-      .then(seHistory);
-  }, []);
-
-  if (!history) return <div>로딩중....</div>;
+  if (!pointHistory) return <div>로딩중....</div>;
 
   return (
     <div>
@@ -48,7 +37,7 @@ export default function PointHistory() {
             </tr>
           </thead>
           <tbody>
-            {history.map((item, key) => (
+            {pointHistory.map((item, key) => (
               <tr key={key}>
                 <th
                   scope="row"

@@ -1,15 +1,24 @@
 import React, { useRef, useState } from "react";
+import useMypageSWR from "../../_hooks/useMypageSWR";
 
 type Props = {
   filedName: string;
-  update: (nickname: string) => void;
+  onCloseModal: () => void;
 };
 
-export default function UpdateField({ filedName, update }: Props) {
+export default function UpdateField({ filedName, onCloseModal }: Props) {
+  const { updateProfile } = useMypageSWR();
+
   const inputRef = useRef<HTMLInputElement>(null);
 
   const onUpdate = () => {
-    inputRef.current && update(inputRef.current?.value);
+    inputRef.current &&
+      updateProfile(
+        {
+          nickname: inputRef.current.value,
+        },
+        () => onCloseModal()
+      );
   };
 
   return (

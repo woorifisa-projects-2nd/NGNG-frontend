@@ -80,14 +80,32 @@ type IPointHistory = {
 };
 
 type UpdateTransactionDetailsStatusResponse = {
+  id: number;
   address: string;
-  consumer: { name: string; phoneNumber: string };
-  product: Product;
-  seller: { name: string; phoneNumber: string };
-  status: { id: number; status: string };
-  transactionDetailsId: number;
+  product: {
+    productId: number;
+    title: string;
+    price: number;
+    isEscrow: boolean;
+    purchaseAt: boolean;
+    visible: boolean;
+    freeShipping: boolean;
+    status: string;
+    category: string;
+  };
+  consumer: {
+    name: string;
+    phoneNumber: string;
+  };
+  seller: {
+    name: string;
+    phoneNumber: string;
+  };
+  status: {
+    id: number;
+    status: string;
+  };
 };
-
 type UpdateTransDetiilsFunctionParameter = {
   data: { transactionDetailsId: number; status: string };
   Done?: () => void;

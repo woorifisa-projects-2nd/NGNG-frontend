@@ -1,7 +1,6 @@
 "use client";
 import React, { Suspense, useEffect, useState } from "react";
 import MyInfo from "./_compoenets/MyInfo";
-import useMypage from "./_hooks/useMypage";
 import SellHistory from "./_compoenets/SellHistory";
 import BuyHistory from "./_compoenets/BuyHistory";
 import PointHistory from "./_compoenets/PointHistory";
@@ -10,18 +9,13 @@ import PointModalContent from "./_compoenets/modal/PointModalContent";
 import ModalSmall from "./_design/ModalSmall";
 import UpdateField from "./_compoenets/modal/UpdateField";
 import UpdateAddress from "./_compoenets/modal/UpdateAddress";
-import ConfirmAddress from "./_compoenets/modal/ConfirmAccount";
+
 import ConfirmEmail from "./_compoenets/modal/ConfirmEmail";
 import ConfirmAccount from "./_compoenets/modal/ConfirmAccount";
+import useMypageSWR from "./_hooks/useMypageSWR";
 
 export default function Page() {
-  const {
-    userInfo,
-    setPoint,
-    deleteProduct,
-    UpdateTransactionDetailStatus,
-    updateUserProfile,
-  } = useMypage();
+  const { user: userInfo, deleteProduct } = useMypageSWR();
 
   const [activeMenuNumber, setMewnuNumber] = useState<number>(0);
 
@@ -31,42 +25,8 @@ export default function Page() {
   const [isOpenEmailModal, setEmailModal] = useState(false);
   const [isOpenAccountModal, setAccountModal] = useState(false);
 
-  const [refreshPointerHistroy, setRRefreshPointerHistory] = useState(
-    Math.random() * 100
-  );
-
-  const handleChangePoint = (point: IPointHistory) => {
-    setPoint(point.cost);
-
-    setRRefreshPointerHistory(Math.random() * 100);
-  };
-
   const handlerDelteProduct = (productId: number) => {
     deleteProduct(productId);
-  };
-
-  const handlerUpdateTransactionStatus = (
-    data: UpdateTransDetiilsFunctionParameter
-  ) => {
-    UpdateTransactionDetailStatus(data);
-  };
-
-  const hadnleUpdateNickName = (nickname: string) => {
-    updateUserProfile(
-      {
-        nickname,
-      },
-      () => setNickNameModal(false)
-    );
-  };
-
-  const handleUpdateAdreess = (address: string) => {
-    updateUserProfile(
-      {
-        address,
-      },
-      () => setAddressModal(false)
-    );
   };
 
   //   추후 Suspense 로바꾸면 좋을거 같음
@@ -107,23 +67,19 @@ export default function Page() {
         {activeMenuNumber === 0 ? (
           <SellHistory
             sellList={userInfo.sellList}
-            updateTransactionStatus={handlerUpdateTransactionStatus}
             deleteProduct={handlerDelteProduct}
           />
         ) : activeMenuNumber === 1 ? (
           <BuyHistory buyList={userInfo.buyList} />
         ) : (
-          <PointHistory key={refreshPointerHistroy} />
+          <PointHistory />
         )}
       </div>
       {/* 모달 부분 */}
       {isOpenPointModal &&
         createPortal(
           <ModalSmall title="Point 충전" onClose={() => setPointModal(false)}>
-            <PointModalContent
-              point={userInfo.point}
-              changePoint={handleChangePoint}
-            />
+            <PointModalContent point={userInfo.point} />
           </ModalSmall>,
           document.body
         )}
@@ -135,7 +91,7 @@ export default function Page() {
           >
             <UpdateField
               filedName="닉네임 변경"
-              update={hadnleUpdateNickName}
+              onCloseModal={() => setNickNameModal(false)}
             />
           </ModalSmall>,
           document.body
@@ -147,7 +103,7 @@ export default function Page() {
             onClose={() => setAddressModal(false)}
           >
             {/* <UpdateField filedName="배송지 변경" update={handleUpdateAdreess} /> */}
-            <UpdateAddress updateAddress={handleUpdateAdreess} />
+            <UpdateAddress onCloseModal={() => setAddressModal(false)} />
           </ModalSmall>,
           document.body
         )}

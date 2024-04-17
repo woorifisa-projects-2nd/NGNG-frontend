@@ -6,18 +6,16 @@ import { createPortal } from "react-dom";
 import ModalSmall from "../_design/ModalSmall";
 
 import SellProductDetail from "./modal/SellProductDetail";
+import useMypageSWR from "../_hooks/useMypageSWR";
 
 type Props = {
   sellList: Product[];
   deleteProduct: (index: number) => void;
-  updateTransactionStatus: (p: UpdateTransDetiilsFunctionParameter) => void;
 };
 
-export default function SellHistory({
-  sellList,
-  deleteProduct,
-  updateTransactionStatus,
-}: Props) {
+export default function SellHistory({ sellList, deleteProduct }: Props) {
+  const { UpdateTransactionDetailStatus } = useMypageSWR();
+
   const [isOnlySell, setIsOnlySell] = useState<boolean>(false);
   const [isOpenProductModal, setIsOpenModal] = useState<boolean>(false);
 
@@ -44,10 +42,9 @@ export default function SellHistory({
   const handleChangeProductStatus = (status: string) => {
     if (!selectProduct) return;
 
-    updateTransactionStatus({
+    UpdateTransactionDetailStatus({
       data: {
         transactionDetailsId: +selectProduct.transactionDetails!.id,
-
         status,
       },
       Done: () => {
