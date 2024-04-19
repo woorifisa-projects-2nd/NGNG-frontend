@@ -4,6 +4,7 @@ import EmailImage from './_image/email.svg';
 import PasswordImage from './_image/password.svg';
 import LogoImage from '../../components/layouts/header/design/SVG/logo.svg'
 import ColorMode from "@/components/layouts/header/components/ColorMode";
+import { useRouter } from "next/navigation";
 
 interface User {
   id: number,
@@ -12,6 +13,7 @@ interface User {
 
 export default function LoginPage() {
 
+  const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLogin, setIsLogin] = useState(false);
@@ -55,8 +57,9 @@ export default function LoginPage() {
         localStorage.setItem("accessToken", JSON.stringify(data.accessToken));
 
         setIsLogin(true);
+        router.push("/");
       })
-      .catch(e => console.error(e))
+      .catch(e => console.error(e));
   };
 
   return (
@@ -79,28 +82,20 @@ export default function LoginPage() {
                 <PasswordImage className="w-9 mr-4 ml-2 fill-black/50 dark:fill-[#9CA3AF]" />
                 <input className="w-full focus:outline-none text-xl" type="password" placeholder="비밀번호" value={password} onChange={(e) => setPassword(e.target.value)} />
               </div>
-              <Link href={"/"}>
-                <button className="border-solid rounded-md text-white bg-point-color w-full h-16 text-3xl mt-12">로그인</button>
-              </Link>
+              <button className="border-solid rounded-md text-white bg-point-color w-full h-16 text-3xl mt-12">로그인</button>
             </form>
           </div>
           <div className="flex justify-between text-gray-400 mt-4">
             <div className="flex">
               <div className="mr-2">
-                <Link href={"/find/email"}>
-                  <button type="button">이메일 찾기</button>
-                </Link>
+                <button type="button" onClick={() => router.push("/find/email")}>이메일 찾기</button>
               </div>
               <div>
-                <Link href={"/find/password"}>
-                  <button type="button">비밀번호 찾기</button>
-                </Link>
+                <button type="button" onClick={() => router.push("/find/password")}>비밀번호 찾기</button>
               </div>
             </div>
             <div>
-              <Link href={"/join"}>
-                <button type="button">회원가입</button>
-              </Link>
+              <button type="button" onClick={() => router.push("/join")}>회원가입</button>
             </div>
           </div>
         </div>
