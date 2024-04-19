@@ -1,13 +1,8 @@
-/** @type {import('next').NextConfig} */
-
 // const runtimeCaching = require("next-pwa/cache");
-// const withPWA = require("next-pwa")({
-//   dest: "public",
-//   register: true,
-//   skipWaiting: true,
-//   runtimeCaching,
-//   disable: prod ? false : true,
-// });
+const withPWA = require("next-pwa")({
+  dest: "public",
+  reloadOnOnline: true,
+});
 
 // const nextConfig = withPWA({
 //   webpack: (config) => {
@@ -20,6 +15,7 @@
 //   },
 // });
 
+/** @type {import('next').NextConfig} */
 const nextConfig = {
   webpack: (config) => {
     config.module.rules.push({
@@ -81,4 +77,6 @@ const nextConfig = {
   output: "standalone",
   basePath: "",
 };
-export default nextConfig;
+
+module.exports = withPWA(nextConfig);
+// export default nextConfig;

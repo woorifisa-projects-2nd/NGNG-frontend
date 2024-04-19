@@ -1,5 +1,3 @@
-import { createTransactionStatus } from "../../_api";
-
 type Props = {
   className?: string;
 
