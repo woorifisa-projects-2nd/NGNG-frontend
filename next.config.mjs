@@ -41,6 +41,14 @@ const nextConfig = {
           source: "/products/:path*",
           destination: "http://localhost:8080/products/:path*",
         },
+        {
+          source: "/private-chats/:path*",
+          destination: "http://localhost:8081/private-chats/:path*",
+        },
+        {
+          source: "/transaction/:path*",
+          destination: "http://localhost:8080/transaction/:path*",
+        },
       ],
     };
   },
@@ -55,6 +63,12 @@ const nextConfig = {
         pathname: "**",
       },
       {
+        protocol: "http",
+        hostname: "localhost:3000",
+        port: "",
+        pathname: "**",
+      },
+      {
         protocol: "https",
         hostname: "team3-s3-test.s3.ap-northeast-2.amazonaws.com",
         port: "",
@@ -65,7 +79,6 @@ const nextConfig = {
   //
   reactStrictMode: false,
   output: "standalone",
-
   basePath: "",
 };
 export default nextConfig;

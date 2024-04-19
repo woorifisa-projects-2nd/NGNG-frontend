@@ -1,8 +1,22 @@
 import * as StompJs from "@stomp/stompjs";
+import { Product } from "../_types/type";
+import dayjs from "dayjs";
+import utc from "dayjs/plugin/utc";
 
-export const getProductById = async (id: number) => {
-  const res = await fetch(`http://localhost:3000/products/${id}`);
-  return res.json();
+export const getProductById = async (id: string) => {
+  const res = await fetch(`http://localhost:3000/products/${id}`, {
+    cache: "no-store",
+  });
+
+  if (res.status === 404) {
+    return { status: res.status, data: undefined };
+  } else {
+    return res.json().then((data) => {
+      console.log("data", data);
+
+      return { status: res.status, data: data as Product };
+    });
+  }
 };
 export const sendPublicChatMessage = ({
   client,
@@ -16,11 +30,54 @@ export const sendPublicChatMessage = ({
   isImage?: boolean;
 }) => {
   client.publish({
-    destination: `/public-chat/${productId}`,
+    destination: `/chats/${productId}`,
     body: JSON.stringify({
       message: message,
       userId: 1,
       isImage,
     }),
   });
+};
+
+dayjs.extend(utc);
+
+export const getLocalTime = (time: string) => {
+  let utcTime = dayjs.utc(time);
+
+  return utcTime.local().format("HH:mm");
+};
+
+export const findPrivateChatRoomByProductIdAndBuyerId = async (
+  productId: number,
+  buyerId: number
+) => {
+  return await fetch(`/private-chats/find/${productId}/${buyerId}`).then(
+    (res) => {
+      if (res.status === 404) {
+        return -1;
+      }
+      return res.json();
+    }
+  );
+};
+export const createPrivateChatRoom = async ({
+  buyerId,
+  productId,
+  sellerId,
+}: {
+  productId: number;
+  buyerId: number;
+  sellerId: number;
+}) => {
+  return await fetch(`/private-chats`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      productId,
+      buyerId,
+      sellerId,
+    }),
+  }).then((res) => res.json());
 };

@@ -95,13 +95,15 @@ export default function TabContent({ data, onChangeData }: TabContentProps) {
   };
 
   const chanagePrice = (newPrice: string) => {
-    onChangeData?.({
-      order: data.order,
-      product: {
-        ...data,
-        price: Number(newPrice.replaceAll(",", "")),
-      },
-    });
+    if (!isNaN(Number(newPrice))) {
+      onChangeData?.({
+        order: data.order,
+        product: {
+          ...data,
+          price: Number(newPrice.replaceAll(",", "")),
+        },
+      });
+    }
   };
 
   const changeContent = (newContent: string) => {
@@ -229,8 +231,9 @@ export default function TabContent({ data, onChangeData }: TabContentProps) {
           {status.map((stat) => {
             return (
               <div
-                className="flex justify-start items-center mb-4"
+                className="flex justify-start items-center mb-4 cursor-pointer"
                 key={stat.id}
+                onClick={() => changeStatus(stat.id.toString())}
               >
                 <Radio
                   name="status"
@@ -258,7 +261,10 @@ export default function TabContent({ data, onChangeData }: TabContentProps) {
           거래방식<p className="text-red-600">*</p>
         </div>
         <div>
-          <div className="flex justify-start items-center mb-4">
+          <div
+            className="flex justify-start items-center mb-4 cursor-pointer"
+            onClick={() => changeIsEscrow("true")}
+          >
             <Radio
               name="isEscrow"
               onChange={changeIsEscrow}
@@ -267,7 +273,10 @@ export default function TabContent({ data, onChangeData }: TabContentProps) {
             />
             안심거래
           </div>
-          <div className="flex justify-start items-center">
+          <div
+            className="flex justify-start items-center cursor-pointer"
+            onClick={() => changeIsEscrow("false")}
+          >
             <Radio
               name="isEscrow"
               onChange={changeIsEscrow}
