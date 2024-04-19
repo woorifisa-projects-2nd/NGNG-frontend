@@ -1,5 +1,3 @@
-import { createTransactionStatus } from "../../_api";
-
 type Props = {
   className?: string;
 
@@ -15,13 +13,13 @@ export default function TransactionRequestButton({
   productId,
 }: Props) {
   const click = () => {
-    // 상태 생성하기
-    createTransactionStatus({
-      productId,
-      buyerId,
-    }).then(() => {
-      onClick();
-    });
+    // 거래요청 생성하기
+    // createTransactionStatus({
+    //   productId,
+    //   buyerId,
+    // }).then(() => {
+    //   onClick();
+    // });
   };
   return (
     <button

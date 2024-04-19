@@ -62,7 +62,7 @@ export const getAllChatMessages = async ({
   );
 };
 
-export const createTransactionStatus = async ({
+export const createTransactionRequest = async ({
   buyerId,
   productId,
 }: {
