@@ -7,6 +7,7 @@ import ModalSmall from "../_design/ModalSmall";
 
 import SellProductDetail from "./modal/SellProductDetail";
 import useMypageSWR from "../_hooks/useMypageSWR";
+import ModalLarge from "../_design/ModalLarge";
 
 type Props = {
   sellList: Product[];
@@ -94,7 +95,7 @@ export default function SellHistory({ sellList, deleteProduct }: Props) {
         {isOpenProductModal &&
           selectProduct &&
           createPortal(
-            <ModalSmall
+            <ModalLarge
               title={selectProduct.title}
               onClose={() => setIsOpenModal(false)}
             >
@@ -104,7 +105,7 @@ export default function SellHistory({ sellList, deleteProduct }: Props) {
                 deleteProduct={handleDeleteProduct}
                 updateDate={updateDate}
               />
-            </ModalSmall>,
+            </ModalLarge>,
             document.body
           )}
       </div>

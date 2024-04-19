@@ -1,5 +1,4 @@
 import useSWR from "swr";
-import { getAccessToken } from "../_utils/auth-header";
 import {
   getFetchMyPage,
   updateFetchMyPage,
@@ -13,7 +12,23 @@ const useMypageSWR = () => {
     isLoading,
     isValidating,
     mutate,
-  } = useSWR<MypageReponse>("/api/users", () => getFetchMyPage());
+  } = useSWR<MypageReponse>(
+    "/api/users",
+    () =>
+      getFetchMyPage().then((data) => {
+        return {
+          ...data,
+          sellList: data.sellList.filter((p) => p.visible),
+          buyList: data.buyList.filter((p) => p.product.visible),
+        } as MypageReponse;
+      }),
+    // 자동 갱신 비활성화
+    {
+      revalidateIfStale: false,
+      revalidateOnFocus: false,
+      revalidateOnReconnect: false,
+    }
+  );
 
   const updateProfile = async (
     body: {
@@ -38,6 +53,8 @@ const useMypageSWR = () => {
   const UpdateTransactionDetailStatus = async (
     payload: UpdateTransDetiilsFunctionParameter
   ) => {
+    console.log(payload);
+
     mutate(
       async (prev: MypageReponse | undefined) => {
         // 현재 데이터를 기반하여 데이터 변경

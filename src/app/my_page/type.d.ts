@@ -55,7 +55,7 @@ type Product = {
     name: string;
   };
   tags: { tagName: string }[];
-  images: { id: number; imageURL: string }[];
+  images: { id: number; imageURL: string; visible: boolean }[];
   thumbnail: {
     id: number;
     thumbnailURL: string;

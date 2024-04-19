@@ -59,7 +59,13 @@ export default function UpdateProductId({ productId }: { productId: number }) {
     fetch(`/api/products/${productId}`)
       .then((res) => res.json())
       .then((data: Product) => {
-        setData(data);
+        console.log(data);
+
+        const product = {
+          ...data,
+          images: data.images.filter((p) => p.visible),
+        } as Product;
+        setData(product);
 
         setProductStatus(data.status.id);
         setProductIsEscrow(data.isEscrow ? 1 : 0);

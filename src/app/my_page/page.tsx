@@ -33,7 +33,7 @@ export default function Page() {
   if (!userInfo) return <div>로딩중..</div>;
 
   return (
-    <div className="max-w-[1248px] flex-col justify-center mx-auto p-4">
+    <div className="max-w-[1240px] flex-col justify-center mx-auto p-4">
       {/* 사용자 정보 부분 */}
       <MyInfo
         userInfo={userInfo}
