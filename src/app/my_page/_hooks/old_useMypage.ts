@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { USER_ID } from "../_constants/user";
+import { getAccessToken } from "../_utils/auth-header";
 
 const useMypage = () => {
   const [userInfo, setUserInfo] = useState<MypageReponse>();
@@ -31,6 +31,7 @@ const useMypage = () => {
       cache: "no-cache",
       headers: {
         "Content-Type": "application/json",
+        Authorization: getAccessToken(),
       },
       redirect: "follow",
       body: JSON.stringify({
@@ -66,8 +67,43 @@ const useMypage = () => {
       });
   };
 
+  const updateUserProfile = async (
+    body: {
+      nickname?: string;
+      address?: string;
+    },
+    Done?: () => void
+  ) => {
+    fetch("/api/users", {
+      method: "PUT",
+      cache: "no-cache",
+      redirect: "follow",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: getAccessToken(),
+      },
+      body: JSON.stringify(body),
+    })
+      .then((res) => {
+        if (res.ok) Done && Done();
+
+        return res.json();
+      })
+      .then((data) => {
+        setUserInfo((prev: any) => ({
+          ...prev,
+          ...(data.address && { address: data.address }),
+          ...(data.nickName && { nickName: data.nickName }),
+        }));
+      });
+  };
+
   useEffect(() => {
-    fetch(`/api/users/${USER_ID}/mypage`)
+    fetch(`/api/users/mypage`, {
+      headers: {
+        Authorization: getAccessToken(),
+      },
+    })
       .then((res) => res.json())
       .then((data: MypageReponse) => {
         data.sellList.sort((item1, item2) => {
@@ -85,6 +121,7 @@ const useMypage = () => {
     setPoint,
     deleteProduct,
     UpdateTransactionDetailStatus,
+    updateUserProfile,
   };
 };
 
