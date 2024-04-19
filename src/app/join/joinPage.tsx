@@ -3,7 +3,7 @@ import FirstPage from "./_pages/firstPage";
 import SecondPage from "./_pages/secondPage";
 import ThirdPage from "./_pages/thirdPage";
 
-interface userInfo {
+export interface userInfo {
   name: string;
   email: string;
   password: string;

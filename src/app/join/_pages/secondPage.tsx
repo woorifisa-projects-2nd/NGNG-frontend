@@ -5,8 +5,16 @@ import PhoneImage from "../_image/phone.svg";
 import AuthCheck from "../_image/authCheck.svg";
 import Link from "next/link";
 import LogoImage from '../../../components/layouts/header/design/SVG/logo.svg'
+import { userInfo } from "../joinPage";
 
-export default function SecondPage({ user, setUser, currentPage, setCurrentPage }) {
+type SecondPageProps = {
+  user: userInfo;
+  setUser: React.Dispatch<React.SetStateAction<userInfo>>;
+  currentPage: number,
+  setCurrentPage: React.Dispatch<React.SetStateAction<number>>;
+}
+
+export default function SecondPage({ user, setUser, currentPage, setCurrentPage }: SecondPageProps) {
 
   const [insertName, setInsertName] = useState("");
   const [insertPhoneNumber, setInsertPhoneNumber] = useState("");

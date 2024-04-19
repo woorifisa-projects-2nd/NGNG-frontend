@@ -7,8 +7,16 @@ import EmailImage from "../_image/email.svg";
 import PasswordImage from "../_image/password.svg";
 import AuthCheck from "../_image/authCheck.svg";
 import UserImage from "../_image/user.svg";
+import { userInfo } from "../joinPage";
 
-export default function ThirdPage({ user, setUser, currentPage, setCurrentPage }) {
+type ThirdPageProps = {
+  user: userInfo;
+  setUser: React.Dispatch<React.SetStateAction<userInfo>>;
+  currentPage: number,
+  setCurrentPage: React.Dispatch<React.SetStateAction<number>>;
+}
+
+export default function ThirdPage({ user, setUser, currentPage, setCurrentPage }: ThirdPageProps) {
 
   const router = useRouter();
 
@@ -22,7 +30,7 @@ export default function ThirdPage({ user, setUser, currentPage, setCurrentPage }
   const [isCheckAuthNumberDisabled, setIsCheckAuthNumberDisabled] = useState(true);
   const [isCheckAuthNumberHidden, setsCheckAuthNumberHidden] = useState(true);
 
-  const [isDisabled, setIsDisabled] = useState(true);
+  const [isJoinDisabled, setIsJoinDisabled] = useState(true);
 
   const sendEmail = async () => {
 
@@ -69,7 +77,7 @@ export default function ThirdPage({ user, setUser, currentPage, setCurrentPage }
     }
 
     setIsCheckAuthNumberDisabled(true);
-    setIsDisabled(false);
+    setIsJoinDisabled(false);
   }
 
   const join = async () => {
@@ -156,7 +164,7 @@ export default function ThirdPage({ user, setUser, currentPage, setCurrentPage }
             <button className="border-solid rounded-md dark:text-white dark:bg-[#3B3B3B] dark:border-black/45 text-black bg-gray-100 border-[2px] w-[calc(50%-1vw)] h-16 text-3xl"
               onClick={() => setCurrentPage(currentPage - 1)}>이전</button>
             <button className="border-solid rounded-md text-white bg-point-color w-[calc(50%-1vw)] h-16 text-3xl"
-              onClick={join} disabled={isDisabled}>가입</button>
+              onClick={join} disabled={isJoinDisabled}>가입</button>
           </div>
         </div>
       </div>

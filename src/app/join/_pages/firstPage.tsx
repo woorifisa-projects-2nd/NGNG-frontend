@@ -3,7 +3,12 @@ import Link from "next/link";
 import { useState } from "react";
 import LogoImage from '../../../components/layouts/header/design/SVG/logo.svg'
 
-export default function FirstPage({ currentPage, setCurrentPage }) {
+type FirstPageProps = {
+  currentPage: number,
+  setCurrentPage: React.Dispatch<React.SetStateAction<number>>;
+};
+
+export default function FirstPage({ currentPage, setCurrentPage }: FirstPageProps) {
 
   const [checkbox1, setCheckbox1] = useState<boolean>(false);
   const [checkbox2, setCheckbox2] = useState<boolean>(false);
