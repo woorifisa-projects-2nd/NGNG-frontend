@@ -26,6 +26,7 @@ type Report = {
     reportContents: string;
     productId: number;
     privateChatId: number;
+    visible: boolean;
 }
 
 
@@ -33,7 +34,7 @@ export default function ReportManagement() {
     const [showUnprocessedOnly, setShowUnprocessedOnly] = useState(false);
     const [reports, setReports] = useState<Report[]>([]);
     const [currentPage, setCurrentPage] = useState<number>(0);
-    
+
     // 페이지 관련
     const [totalPages, setTotalPages] = useState<number>(0);
     const [itemsPerPage, setItemsPerPage] = useState<number>(0);
@@ -45,11 +46,13 @@ export default function ReportManagement() {
 
     // 페이지를 변경할 때 해당 페이지의 데이터를 가져오는 함수
     async function fetchReportsByPage(pageNumber: number, unprocessedOnly: boolean) {
-        const url = unprocessedOnly
-            ? `${process.env.NEXT_PUBLIC_API_URL}admin/reports/unprocessed?page=${pageNumber}`
-            : `${process.env.NEXT_PUBLIC_API_URL}admin/reports?page=${pageNumber}`;
+        // const url = unprocessedOnly
+        //     ? `${process.env.NEXT_PUBLIC_API_URL}admin/reports/unprocessed?page=${pageNumber}`
+        //     : `${process.env.NEXT_PUBLIC_API_URL}admin/reports?page=${pageNumber}`;
 
-        await fetch(url)
+        const url2 = `${process.env.NEXT_PUBLIC_API_URL}admin/reports?page=${pageNumber}&unprocessedOnly=${unprocessedOnly}`;
+
+        await fetch(url2)
             .then(resp => resp.json())
             .then(result => {
                 setReports(result.content);

@@ -3,6 +3,7 @@ import Refresh from "@/components/layouts/admin_menu/design/SVG/refresh.svg";
 import CheckReport from "@/components/layouts/admin_menu/design/SVG/check_report.svg";
 import { useState, useEffect } from 'react';
 import Link from "next/link";
+import { useRouter } from 'next/navigation';
 
 type User = {
     id: number;
@@ -62,6 +63,7 @@ type Product = {
 
 
 export default function ProductManagement() {
+    const router = useRouter();
     const [products, setProducts] = useState<Product[]>([]);
     const [currentPage, setCurrentPage] = useState<number>(0);
     const [totalPages, setTotalPages] = useState<number>(0);
@@ -85,7 +87,6 @@ export default function ProductManagement() {
             .then(resp => resp.json())
             .then(result => {
                 setProducts(result);
-                // setProduct(result.content);
                 // setCurrentPage(result.pageable.pageNumber);
                 // setTotalPages(result.totalPages);
                 // setItemsPerPage(result.pageable.pageSize)
@@ -148,13 +149,17 @@ export default function ProductManagement() {
         return pageNumbers;
     };
 
+    const handleCreateProduct = () => {
+        router.push('/sell'); // '/sell' 경로로 이동합니다.
+    };
+
     return (
         <div className="p-5">
             <div className="text-3xl font-bold mb-16">상품 관리</div>
 
             <div className="flex justify-between mb-5">
 
-                <div className="flex cursor-pointer" onClick={() => window.location.reload()}>
+                <div className="flex cursor-pointer" onClick={handleCreateProduct}>
                     <Refresh className="mr-2" />
                     <div>상품 등록</div>
                 </div>
@@ -175,7 +180,7 @@ export default function ProductManagement() {
                         <div key={product.id} className="border-b border-gray-300 rounded p-3 flex items-center">
                             <div className="w-1/6">{product.id}</div>
                             <div className="w-1/6">{product.title}</div>
-                            <div className="w-1/6">{product.price}</div>
+                            <div className="w-1/6">{product.price.toLocaleString()}</div>
                             <div className="w-1/6">{product.user.name}</div>
                             <div className="w-1/6">{product.category.name}</div>
                             <div className="w-1/6">

@@ -31,7 +31,7 @@ type Report = {
     reporter: UserDetails;
     user: UserDetails;
     reportType: ReportTypeDetails;
-    isReport: number;
+    isReport: boolean;
     reportContents: string;
     productId: number;
     privateChatId: number;
@@ -86,7 +86,7 @@ export default function ReportDetail({ params }: { params: { reportId: number } 
             .then(result => {
 
                 setReport(result);
-                if (result?.isReport === 1) {
+                if (result?.isReport === true) {
                     fetchPenalty(result);
                 }
             });
@@ -192,8 +192,8 @@ export default function ReportDetail({ params }: { params: { reportId: number } 
         setShowModal(false);
     };
 
-    console.log(report);
-    
+    console.log(penalty);
+
 
 
     return (
@@ -243,7 +243,7 @@ export default function ReportDetail({ params }: { params: { reportId: number } 
 
                                 {report?.reportImages.map(media => (
                                     media.contentType === 'IMAGE' ? ( // 이미지인 경우
-                                        <div onClick={() => handleImageClick(media.imageUrl, media.reportImageId-1)}>
+                                        <div onClick={() => handleImageClick(media.imageUrl, media.reportImageId - 1)}>
                                             <img
                                                 key={media.reportImageId}
                                                 src={media.imageUrl}
@@ -252,7 +252,7 @@ export default function ReportDetail({ params }: { params: { reportId: number } 
                                             />
                                         </div>
                                     ) : ( // 동영상인 경우
-                                        <div onClick={() => handleImageClick(media.imageUrl, media.reportImageId-1)}>
+                                        <div onClick={() => handleImageClick(media.imageUrl, media.reportImageId - 1)}>
                                             <ReactPlayer
                                                 key={media.reportImageId}
                                                 url={media.imageUrl}
@@ -321,7 +321,7 @@ export default function ReportDetail({ params }: { params: { reportId: number } 
                                 뒤로가기
                             </div>
 
-                            {report?.isReport === 0 && (
+                            {report?.isReport !== true && (
                                 <div className="bg-[#77559D] text-white rounded-xl px-4 py-2 hover:bg-[#6b4f8a] focus:outline-none focus:ring-2 focus:ring-[#77559D] focus:ring-opacity-50 w-1/4 text-center cursor-pointer"
                                     onClick={handleApply}>
                                     적용
