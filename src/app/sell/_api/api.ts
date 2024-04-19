@@ -18,7 +18,7 @@ const mapProductToAPISepc = (product: Product) => {
   };
 };
 
-export const createProduct = async (product: Product): Promise<boolean> => {
+export const createProduct = async (product: Product): Promise<string> => {
   const res = await fetch(`/products`, {
     method: "POST",
     headers: {
@@ -30,10 +30,10 @@ export const createProduct = async (product: Product): Promise<boolean> => {
   if (res.ok === true) {
     const productId = await res.text();
     const resImages = await createImages(productId, product.images);
-    return resImages.ok;
+    return `product/${productId}`;
   }
 
-  return false;
+  return "";
 };
 
 const createImages = async (
@@ -50,7 +50,7 @@ const createImages = async (
   });
   fomData.append("productId", productId);
 
-  return await fetch("/api/upload", {
+  return await fetch("/products/upload", {
     method: "POST",
     body: fomData,
   });

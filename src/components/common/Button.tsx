@@ -4,6 +4,7 @@ type ButtonProps = {
   width?: number | string;
   height?: number;
   disabled?: boolean;
+  className?: string;
   onClick?: () => void;
 };
 export default function Button({
@@ -11,6 +12,7 @@ export default function Button({
   height,
   text,
   width,
+  className,
   onClick,
   disabled = false,
 }: ButtonProps) {
@@ -18,16 +20,16 @@ export default function Button({
     color === undefined
       ? ""
       : color === "black"
-      ? "bg-[#2e2e2e] border-[#A6A6A6]"
-      : "bg-white border-text-gray";
+      ? "bg-[#2e2e2e] "
+      : "bg-white ";
 
   return (
     <button
       disabled={disabled}
       style={{ width, height }}
-      className={`border-solid rounded-lg text-white bg-point-color border-[1px] w-32 h-12 ${colorClassName}  ${
+      className={` rounded-lg text-white bg-point-color  w-32 h-12 ${colorClassName}  ${
         disabled && `bg-text-gray`
-      }`}
+      } ${className}`}
       onClick={onClick}
     >
       {text}

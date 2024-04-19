@@ -1,10 +1,10 @@
-import DefaultLayout from "@/components/layouts/DefaultLayout";
+"use client";
+
+import JoinPage from "./joinPage";
 
 export default function Join() {
 
   return (
-    <DefaultLayout>
-      <div>asdf</div>
-    </DefaultLayout>
+    <JoinPage></JoinPage>
   );
 }

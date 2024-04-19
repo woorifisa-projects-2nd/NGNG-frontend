@@ -18,8 +18,12 @@ export default function ImageUploadBox({
   const inputRef = useRef<HTMLInputElement>(null);
   const clickBox = () => inputRef.current?.click();
   const resetImage = () => image && deleteImage(image.id);
-  const changeFile = (e: React.ChangeEvent<HTMLInputElement>) =>
+  const changeFile = (e: React.ChangeEvent<HTMLInputElement>) => {
     e.target.files && uploadImage(e.target.files[0], image?.id);
+  };
+
+  console.log("image", image);
+
   return (
     <>
       {image === undefined ? (

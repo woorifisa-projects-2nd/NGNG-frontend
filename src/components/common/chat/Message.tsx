@@ -1,3 +1,4 @@
+import { getLocalTime } from "@/app/product/_api/api";
 import Image from "next/image";
 import React, { forwardRef } from "react";
 
@@ -6,46 +7,83 @@ type MessageProps = {
   direction: string;
   isImage?: boolean;
   userName: string;
+  isFirstOfTheDay?: boolean;
+  createdAt: string;
 };
 
 const Message = forwardRef<HTMLDivElement, MessageProps>(
-  ({ direction, text, isImage, userName }: MessageProps, ref) => {
+  (
+    {
+      direction,
+      text,
+      isImage,
+      userName,
+      createdAt,
+      isFirstOfTheDay = false,
+    }: MessageProps,
+    ref
+  ) => {
     const adminColor = `bg-point-color text-white`;
     const guestColor = `bg-light-lavender text-black dark:text-black`;
+
+    const time = getLocalTime(createdAt);
+
     return (
-      <div
-        ref={ref}
-        className={`relative w-full flex my-8 ${
-          direction === "left" ? "justify-start" : "justify-end"
-        }`}
-      >
-        <div>
-          <span className="">{userName}</span>
-          <div
-            style={{ wordBreak: "break-all" }}
-            className={`w-52 p-5 rounded-xl shadow-[0_3px_10px_rgb(0,0,0,0.2)] overflow-y-scroll scrollbar-hide ${
-              direction === "left" ? adminColor : guestColor
-            } whitespace-normal`}
-          >
-            {isImage ? (
-              <Image
-                src={URL.createObjectURL(text as unknown as Blob)}
-                alt="첨부파일"
-                width={0}
-                height={0}
-                className="w-full h-36 object-contain"
-              />
-            ) : (
-              text
-            )}
+      <>
+        {isFirstOfTheDay && (
+          <p className="w-full flex justify-center">
+            {createdAt?.split("T")[0]}
+          </p>
+        )}
+        <div
+          ref={ref}
+          className={`relative w-full flex my-8 ${
+            direction === "left" ? "justify-start" : "justify-end"
+          }`}
+        >
+          <div>
+            <span
+              className={` font-bold ${
+                direction === "right" ? "ml-10" : "ml-2"
+              }`}
+            >
+              {userName}
+            </span>
+            <div className="flex items-end gap-1">
+              {direction === "right" && (
+                <p className="text-sm text-right">{time}</p>
+              )}
+              <div
+                style={{ wordBreak: "break-all" }}
+                className={` w-60 p-5 rounded-xl shadow-[0_3px_10px_rgb(0,0,0,0.2)] overflow-y-scroll scrollbar-hide ${
+                  direction === "right" ? adminColor : guestColor
+                } whitespace-normal`}
+              >
+                {isImage ? (
+                  <Image
+                    src={URL.createObjectURL(text as unknown as Blob)}
+                    alt="첨부파일"
+                    width={0}
+                    height={0}
+                    className="w-full h-36 object-contain"
+                  />
+                ) : (
+                  text
+                )}
+              </div>
+              {direction === "left" && (
+                <p className="text-sm text-right">{time}</p>
+              )}
+            </div>
           </div>
         </div>
-      </div>
+      </>
     );
   }
 );
 // Error: Component definition is missing display name  react/display-name
 // 참고 : https://stackoverflow.com/questions/67992894/component-definition-is-missing-display-name-for-forwardref
+Message.displayName = "Message";
 Message.displayName = "Message";
 
 export default Message;
