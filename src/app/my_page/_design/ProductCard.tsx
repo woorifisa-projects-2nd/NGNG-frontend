@@ -14,7 +14,7 @@ export default function ProductCard({ status, imageSrc, title, price }: Props) {
     <div className="max-w-[200px] border rounded-lg p-2">
       <p className="float-right">{status}</p>
       <Image
-        className="rounded-md shadow-xl my-2"
+        className="rounded-md shadow-xl my-2 object-contain object-center w-full  h-[100px] "
         src={imageSrc}
         width={200}
         height={100}

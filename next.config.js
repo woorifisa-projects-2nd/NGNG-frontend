@@ -66,7 +66,7 @@ const nextConfig = {
       },
       {
         protocol: "https",
-        hostname: "team3-s3-test.s3.ap-northeast-2.amazonaws.com",
+        hostname: "team3-ngng.s3.ap-northeast-2.amazonaws.com",
         port: "",
         pathname: "**",
       },

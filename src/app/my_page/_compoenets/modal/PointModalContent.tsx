@@ -1,22 +1,20 @@
 "use client";
-import React, { useRef, useState } from "react";
+import React, { useState } from "react";
 import PointHistory from "../PointHistory";
-import { USER_ID } from "../../_constants/user";
 
-export default function PointModalContent({
-  point,
-  changePoint,
-}: {
-  point: number;
-  changePoint: (point: IPointHistory) => void;
-}) {
-  const [refsh, setRefsh] = useState(Math.random() * 1000);
+import useMypageSWR from "../../_hooks/useMypageSWR";
+import usePointHistory from "../../_hooks/usePointeHistory";
+import { addFetchPoint } from "../../_api/api";
+
+export default function PointModalContent({ point }: { point: number }) {
+  const { updateCost } = useMypageSWR();
+  const { refresh } = usePointHistory();
+
   const [cost, setCost] = useState<string>("");
   const [disabe, setDeisabe] = useState(false);
 
-  const chargingPoint = () => {
+  const chargingPoint = async () => {
     if (isNaN(+cost) || +cost < 0) {
-
       alert("유효하지 않은 형식입니다.");
 
       setCost("");
@@ -24,24 +22,13 @@ export default function PointModalContent({
     }
 
     setDeisabe(true);
-    fetch(`/api/points/${USER_ID}`, {
-      method: "post",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        addCost: +cost,
-        type: "충전",
-      }),
-    })
-      .then((res) => res.json())
-      .then((data: IPointHistory) => {
-        alert("충전되었습니다.");
-        setDeisabe(false);
-        setRefsh(Math.random() * 1000);
-        changePoint(data);
-        setCost("");
-      });
+
+    addFetchPoint(+cost, () => {
+      // api 성공시 Done 함수 호출 부분
+      updateCost(+cost);
+      refresh();
+      setCost("");
+    });
   };
 
   return (
@@ -67,7 +54,7 @@ export default function PointModalContent({
       </div>
       <p>포인트 내역</p>
       <div className="md:hidden">
-        <PointHistory key={refsh} />
+        <PointHistory />
       </div>
     </div>
   );
