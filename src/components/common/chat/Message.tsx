@@ -43,8 +43,8 @@ const Message = forwardRef<HTMLDivElement, MessageProps>(
         >
           <div>
             <span
-              className={`ml-2 font-bold ${
-                direction === "right" ? "ml-10" : ""
+              className={` font-bold ${
+                direction === "right" ? "ml-10" : "ml-2"
               }`}
             >
               {userName}

@@ -46,3 +46,38 @@ export const getLocalTime = (time: string) => {
 
   return utcTime.local().format("HH:mm");
 };
+
+export const findPrivateChatRoomByProductIdAndBuyerId = async (
+  productId: number,
+  buyerId: number
+) => {
+  return await fetch(`/private-chats/find/${productId}/${buyerId}`).then(
+    (res) => {
+      if (res.status === 404) {
+        return -1;
+      }
+      return res.json();
+    }
+  );
+};
+export const createPrivateChatRoom = async ({
+  buyerId,
+  productId,
+  sellerId,
+}: {
+  productId: number;
+  buyerId: number;
+  sellerId: number;
+}) => {
+  return await fetch(`/private-chats`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      productId,
+      buyerId,
+      sellerId,
+    }),
+  }).then((res) => res.json());
+};

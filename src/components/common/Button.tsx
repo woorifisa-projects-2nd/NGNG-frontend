@@ -4,6 +4,7 @@ type ButtonProps = {
   width?: number | string;
   height?: number;
   disabled?: boolean;
+  className?: string;
   onClick?: () => void;
 };
 export default function Button({
@@ -11,6 +12,7 @@ export default function Button({
   height,
   text,
   width,
+  className,
   onClick,
   disabled = false,
 }: ButtonProps) {
@@ -27,7 +29,7 @@ export default function Button({
       style={{ width, height }}
       className={` rounded-lg text-white bg-point-color  w-32 h-12 ${colorClassName}  ${
         disabled && `bg-text-gray`
-      }`}
+      } ${className}`}
       onClick={onClick}
     >
       {text}

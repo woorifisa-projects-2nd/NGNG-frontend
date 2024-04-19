@@ -22,6 +22,10 @@ export default function Chatting({ data, userId }: ChattingProps) {
   const [chatData, setChatData] = useState<Chat[]>(data.chats);
   const [message, setMessage] = useState<string>("");
   const [image, setImage] = useState<File | undefined>(undefined);
+  const isReported =
+    data.reports === null
+      ? false
+      : data.reports.filter((report) => report.isReport).length > 0;
 
   const enter = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === "Enter") {
@@ -166,7 +170,7 @@ export default function Chatting({ data, userId }: ChattingProps) {
       console.log("Broker reported error: " + frame.headers["message"]);
       console.log("Additional details: " + frame.body);
     };
-    setStompClient(client);
+    !isReported && setStompClient(client); // 신고 안 당한 경우에만 채팅 연결
 
     return () => {
       if (stompClient) stompClient.deactivate();
@@ -228,7 +232,10 @@ export default function Chatting({ data, userId }: ChattingProps) {
           onKeyDown={enter}
           onChange={changeMessage}
           rows={4}
-          placeholder="메시지를 입력하세요."
+          placeholder={
+            isReported ? "신고받은 상품입니다." : "메시지를 입력하세요."
+          }
+          disabled={isReported}
         ></textarea>
         {image && (
           <>

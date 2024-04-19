@@ -5,7 +5,7 @@ import TabContent from "./_components/TabContent";
 import TabHeader from "./_components/TabHeader";
 import Button from "@/components/common/Button";
 import { createProduct } from "./_api/api";
-import { log } from "console";
+import { redirect, useRouter } from "next/navigation";
 
 export type Product = {
   order: number;
@@ -45,6 +45,7 @@ const getDummyProduct = (order: number) => {
 };
 
 export default function Sell() {
+  const router = useRouter();
   const [currentOrder, setCurrentOrder] = useState<number>(0);
   const [products, setProducts] = useState<Product[]>([getDummyProduct(0)]);
   const allfullfilledSaveCondition =
@@ -74,8 +75,9 @@ export default function Sell() {
   const onClickButton = () => {
     products.forEach(async (product) => {
       const res = await createProduct(product);
+      console.log("res", res);
+      router.push(`../${res}`);
     });
-    // TODO 뭔가 리다이렉트시켜야 할 듯
   };
   return (
     <div className="px-5 lg:px-32 w-full">

@@ -1,5 +1,4 @@
 "use client";
-
 import CloseIcon from "@/assets/SVG/Close.svg";
 import ImagePlusIcon from "@/assets/SVG/Plus.svg";
 import MessageSendIcon from "@/assets/SVG/CaretLeft.svg";
@@ -8,18 +7,35 @@ import Message from "@/components/common/chat/Message";
 import * as StompJs from "@stomp/stompjs";
 import Image from "next/image";
 import { PrivateChat, PrivateChatMessage } from "../page";
-import { sendPublicChatMessage } from "@/app/product/_api/api";
-import { sendPrivateChatMessage } from "@/app/chat/api";
+import { sendPrivateChatMessage } from "../../_api";
+import { createPortal } from "react-dom";
+import TransferRequest from "./TransferRequest";
 
 type ChattingProps = {
   data: PrivateChat;
+  modalOpen: boolean;
+  onClose: () => void;
+  onChangePrice: (price: number) => void;
+  onChangeTransactionStatus: (status: string) => void;
+  isSeller: boolean;
+  transactionStatus: string;
 };
-export default function PrivateChatting({ data }: ChattingProps) {
+export default function PrivateChatting({
+  data,
+  modalOpen,
+  onClose,
+  onChangePrice,
+  onChangeTransactionStatus,
+  isSeller,
+  transactionStatus,
+}: ChattingProps) {
   const userId = 2;
   const recentChatRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const [stompClient, setStompClient] = useState<StompJs.Client | null>(null);
-  const [chatData, setChatData] = useState<PrivateChatMessage[]>(data.messages);
+  const [chatData, setChatData] = useState<PrivateChatMessage[]>(
+    data.messages ?? []
+  );
   const [message, setMessage] = useState<string>("");
   const [image, setImage] = useState<File | undefined>(undefined);
 
@@ -154,6 +170,15 @@ export default function PrivateChatting({ data }: ChattingProps) {
     ]);
   };
 
+  const onClickTransferRequestButton = () => {
+    // 거래상태 입금대기로 수정
+    onChangeTransactionStatus("");
+  };
+
+  const onClickTransactionRequestButton = () => {
+    onChangeTransactionStatus("구매요청");
+  };
+
   useEffect(() => {
     if (stompClient) {
       stompClient.activate();
@@ -206,9 +231,9 @@ export default function PrivateChatting({ data }: ChattingProps) {
   }, [chatData]);
 
   return (
-    <div className="relative w-full dark:bg-bg-black p-3">
+    <div className="relative w-full p-3 overflow-y-hidden ">
       <div
-        className="h-[22rem] flex flex-col items-start overflow-y-scroll scrollbar-hide"
+        className="h-[calc(100vh-18rem)]  flex flex-col items-start overflow-y-scroll scrollbar-hide"
         ref={recentChatRef}
       >
         {chatData &&
@@ -235,7 +260,7 @@ export default function PrivateChatting({ data }: ChattingProps) {
             })}
       </div>
 
-      <div className="fixed bottom-0 w-[calc(100%-30px)] mb-4 flex flex-col justify-between bg-light-gray h-32 border-2 border-light-gray p-5 pb-4 rounded-xl box-border">
+      <div className="fixed bottom-0 w-[calc(100%-20px)] mb-4 flex flex-col justify-between bg-light-gray h-32 border-2 border-light-gray p-5 pb-4 rounded-xl box-border z-10">
         <textarea
           className="w-full bg-light-gray resize-none focus:outline-none overflow-y-scroll scrollbar-hide dark:text-black"
           value={message}
@@ -286,6 +311,17 @@ export default function PrivateChatting({ data }: ChattingProps) {
           />
         </div>
       </div>
+      {modalOpen &&
+        createPortal(
+          <TransferRequest
+            discountable={data.product.discountable}
+            price={data.product.price}
+            onChangePrice={onChangePrice}
+            onClose={onClose}
+            onChangeTransactionStatus={onClickTransferRequestButton}
+          />,
+          document.body
+        )}
     </div>
   );
 }

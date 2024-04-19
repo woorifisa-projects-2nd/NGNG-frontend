@@ -1,4 +1,4 @@
-import Loading from "./_design/SVG/Loading.svg";
+import Loading from "@/assets/Loading.svg";
 import { getProductById } from "../_api/api";
 import { redirect } from "next/navigation";
 import Chatting from "./_components/Chatting";

@@ -1,32 +1,46 @@
 "use client";
 import Button from "@/components/common/Button";
-import { maskingName } from "@/utils";
 import Image from "next/image";
 import { Product } from "../../_types/type";
-import SirenIcon from "../_design/SVG/Siren.svg";
+import SirenIcon from "@/assets/SVG/Siren.svg";
 import { useState } from "react";
 import { createPortal } from "react-dom";
 import AccountAuthenticationWanringModal from "./AccountAuthenticationWanringModal";
-import Link from "next/link";
+import { useRouter } from "next/navigation";
+import {
+  createPrivateChatRoom,
+  findPrivateChatRoomByProductIdAndBuyerId,
+} from "../../_api/api";
+
 type ProductInfoProps = {
   data: Product;
   userId: number;
 };
+
 export default function ProudctInfo({ data, userId }: ProductInfoProps) {
   const [open, setOpen] = useState<boolean>(false);
+  const router = useRouter();
 
   // TODO : 사용자 계좌인증여부
   const isUserAccountOk = true;
 
+  const isReported =
+    data.reports === null
+      ? false
+      : data.reports.filter((report) => report.isReport).length > 0;
+  const isReportedByMe =
+    data.reports &&
+    data.reports.filter((report) => report.reporter.id === userId).length > 0;
+
   return (
-    <div className="px-3 py-5">
+    <div className="px-3 py-5 ">
       <div className="block xl:flex">
         <div className="w-full xl:w-1/2 justify-center mr-10 flex items-center">
           <div className="w-full">
             <Image
               className="object-contain w-full rounded h-auto"
               alt="상품 상세 이미지"
-              src={"/car.jpg"}
+              src={data.images[0].imageURL}
               width={600}
               height={600}
             />
@@ -39,10 +53,18 @@ export default function ProudctInfo({ data, userId }: ProductInfoProps) {
                   alt="프로필 사진"
                   className="rounded-[50%] h-9 w-9"
                 />
-                {data.user.nickname}
+                <span>{data.user.nickname}</span>
               </div>
-              <div className="flex text-red-500 font-medium justify-end items-center">
-                <SirenIcon /> 신고하기
+              <div className="flex text-red-500 font-medium justify-end items-center cursor-pointer">
+                {isReported ? (
+                  "신고받은 상품입니다"
+                ) : isReportedByMe ? (
+                  "이미 신고한 상품입니다"
+                ) : (
+                  <>
+                    <SirenIcon /> 신고하기
+                  </>
+                )}
               </div>
             </div>
           </div>
@@ -81,37 +103,60 @@ export default function ProudctInfo({ data, userId }: ProductInfoProps) {
               <p>{data.freeShipping ? "포함" : "미포함"}</p>
             </div>
           </div>
-          <div>
-            <a
-              href=""
-              onClick={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                if (isUserAccountOk) {
-                  window.open(
-                    `/chat/${data.id}/${userId}`,
-                    "_blank",
-                    "width=380, height=640,location=no,status=no,menubar=no,toolbar=no"
-                  );
-                } else {
-                  setOpen(true);
-                }
-              }}
-            >
-              <Button
-                text={`${
-                  data.available
-                    ? data.user.id === userId
-                      ? "채팅방 보기"
-                      : "1:1 채팅하기"
-                    : "거래완료"
-                }`}
-                width={"100%"}
-                disabled={!data.available}
-                onClick={() => {}}
-              />
-            </a>
-          </div>
+          {!isReported && (
+            <div>
+              <a
+                href=""
+                onClick={async (e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  if (data.user.id === userId) {
+                    // 판매자인 경우 채팅목록으로 이동
+                    router.push("../../chat");
+                  } else if (isUserAccountOk) {
+                    // 구매자인 경우 계좌 검사
+
+                    await findPrivateChatRoomByProductIdAndBuyerId(
+                      data.id,
+                      userId
+                    ).then(async (id) => {
+                      let roomId = id;
+                      if (id < 0) {
+                        // 없으면 채팅방 만들기
+                        roomId = await createPrivateChatRoom({
+                          productId: data.id,
+                          sellerId: data.user.id,
+                          buyerId: userId,
+                        });
+                      }
+                      // 채팅방으로 이동
+                      window.open(
+                        `/chat/${roomId}`,
+                        `/chat/${roomId}`,
+                        "width=380, height=640,location=no,status=no,menubar=no,toolbar=no"
+                      );
+                    });
+                  } else {
+                    // 계좌인증 먼저 하도록
+                    setOpen(true);
+                  }
+                }}
+              >
+                <Button
+                  text={`${
+                    data.forSale
+                      ? data.user.id === userId
+                        ? "채팅방 보기"
+                        : "1:1 채팅하기"
+                      : "거래완료"
+                  }`}
+                  width={"100%"}
+                  disabled={!data.forSale}
+                  onClick={() => {}}
+                />
+              </a>
+            </div>
+          )}
         </div>
       </div>
       <div>

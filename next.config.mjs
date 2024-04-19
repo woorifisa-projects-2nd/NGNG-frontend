@@ -41,6 +41,14 @@ const nextConfig = {
           source: "/products/:path*",
           destination: "http://localhost:8080/products/:path*",
         },
+        {
+          source: "/private-chats/:path*",
+          destination: "http://localhost:8081/private-chats/:path*",
+        },
+        {
+          source: "/transaction/:path*",
+          destination: "http://localhost:8080/transaction/:path*",
+        },
       ],
     };
   },
@@ -51,6 +59,12 @@ const nextConfig = {
       {
         protocol: "https",
         hostname: "source.unsplash.com",
+        port: "",
+        pathname: "**",
+      },
+      {
+        protocol: "http",
+        hostname: "localhost:3000",
         port: "",
         pathname: "**",
       },

@@ -52,4 +52,21 @@ export type Product = {
   tags: Tag[];
   images: Image[];
   chats: Chat[];
+  reports: Report[] | null;
+};
+
+export type Report = {
+  reportId: number;
+  createdAt: string;
+  isReport: null | boolean;
+  reportContents: string;
+  reportType: ReportType;
+  reporter: User;
+  updatedAt: string;
+  user: User;
+};
+
+export type ReportType = {
+  reportTypeId: number;
+  reportType: string;
 };
