@@ -1,7 +1,9 @@
-"use client";
-
 import { useState } from "react";
-import { useRouter } from 'next/navigation'
+import Link from "next/link";
+import EmailImage from './_image/email.svg';
+import PasswordImage from './_image/password.svg';
+import LogoImage from '../../components/layouts/header/design/SVG/logo.svg'
+import ColorMode from "@/components/layouts/header/components/ColorMode";
 
 interface User {
   id: number,
@@ -10,14 +12,13 @@ interface User {
 
 export default function LoginPage() {
 
-  const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLogin, setIsLogin] = useState(false);
   const [user, setUser] = useState<User>({
     id: -1,
     nickname: ""
-  });
+  }); // 전역으로 관리
 
   const loginSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 
@@ -50,35 +51,60 @@ export default function LoginPage() {
           nickname: data.nickname
         })
 
-        // accessToken은 localStorage에, refreshToken은 securityCookie에 저장
+        // accessToken은 localStorage에, refreshToken은 securityCookie에 저장(자동)
         localStorage.setItem("accessToken", JSON.stringify(data.accessToken));
+
+        setIsLogin(true);
       })
       .catch(e => console.error(e))
-
-    setIsLogin(true);
   };
 
   return (
-    <div className="flex justify-center w-full h-dvh">
-      <form onSubmit={loginSubmit}>
-        <div className="rounded-md border-[1px] border-black/15 w-full focus:outline-none focus:border-point-color p-2">
-          {/* 메일 이미지 */}
-          <input type="text"
-            placeholder="이메일"
-            value={email}
-            onChange={e => setEmail(e.target.value)} />
+    <div className="dark:bg-[#282828]">
+      <div className="absolute right-12 mt-6">
+        <ColorMode />
+      </div>
+      <div className="flex justify-center items-center h-screen">
+        <div className="flex-col justify-center items-center w-2/3 md:w-1/4 h-auto">
+          <Link href={"/"}>
+            <LogoImage width={"100%"} />
+          </Link>
+          <div>
+            <form onSubmit={loginSubmit} className="w-full mt-14">
+              <div className="flex items-center rounded-md border-[1px] dark:bg-[#3B3B3B] border-black/45 w-full h-14 p-2">
+                <EmailImage className="w-8 mr-4 ml-2 fill-black/50 dark:fill-[#9CA3AF]" />
+                <input className="w-full focus:outline-none text-xl" type="text" placeholder="이메일" value={email} onChange={e => setEmail(e.target.value)} />
+              </div>
+              <div className="flex items-center rounded-md border-[1px] dark:bg-[#3B3B3B] border-black/45 w-full h-14 p-2 mt-6">
+                <PasswordImage className="w-9 mr-4 ml-2 fill-black/50 dark:fill-[#9CA3AF]" />
+                <input className="w-full focus:outline-none text-xl" type="password" placeholder="비밀번호" value={password} onChange={(e) => setPassword(e.target.value)} />
+              </div>
+              <Link href={"/"}>
+                <button className="border-solid rounded-md text-white bg-point-color w-full h-16 text-3xl mt-12">로그인</button>
+              </Link>
+            </form>
+          </div>
+          <div className="flex justify-between text-gray-400 mt-4">
+            <div className="flex">
+              <div className="mr-2">
+                <Link href={"/find/email"}>
+                  <button type="button">이메일 찾기</button>
+                </Link>
+              </div>
+              <div>
+                <Link href={"/find/password"}>
+                  <button type="button">비밀번호 찾기</button>
+                </Link>
+              </div>
+            </div>
+            <div>
+              <Link href={"/join"}>
+                <button type="button">회원가입</button>
+              </Link>
+            </div>
+          </div>
         </div>
-        <div className="rounded-md border-[1px] border-black/15  w-full focus:outline-none focus:border-point-color p-2">
-          {/* 비밀번호 이미지(?) */}
-          <input type="password"
-            placeholder="비밀번호"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)} />
-        </div>
-        <button className="border-solid rounded-md text-white bg-point-color border-[1px] w-full h-10">로그인</button>
-      </form>
-      <button type="button">이메일 찾기</button>
-      <button type="button">비밀번호 찾기</button>
+      </div>
     </div>
   );
 };
