@@ -7,6 +7,9 @@ const config: Config = {
     "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
   ],
   theme: {
+    fill: {
+      current: "currentColor",
+    },
     extend: {
       colors: {
         black: "#272727",

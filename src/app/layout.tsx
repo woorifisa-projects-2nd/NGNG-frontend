@@ -23,7 +23,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="ko">
       <head>
         <meta name="application-name" content="내꺼니꺼" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
