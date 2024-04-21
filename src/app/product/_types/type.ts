@@ -70,3 +70,11 @@ export type ReportType = {
   reportTypeId: number;
   reportType: string;
 };
+
+export type RequestReport = {
+  reportContents: string,
+  reportTypeId: number,
+  reporterId: number,
+  userId: number,
+  productId: number,
+}

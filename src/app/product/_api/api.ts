@@ -1,5 +1,5 @@
 import * as StompJs from "@stomp/stompjs";
-import { Product } from "../_types/type";
+import { Product, RequestReport } from "../_types/type";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
 
@@ -80,4 +80,38 @@ export const createPrivateChatRoom = async ({
       sellerId,
     }),
   }).then((res) => res.json());
+};
+
+
+export const createReport = async (requestReport: RequestReport): Promise<boolean> => {
+  // console.log(mapProductToAPISepc(product));
+  console.log("신고 POST");
+  
+  const res = await fetch(`http://localhost:8080/admin/reports`, {
+      method: "POST",
+      headers: {
+          "Content-Type": "application/json",
+      },
+      body: JSON.stringify(requestReport),
+  });
+  console.log(res);
+  
+  console.log("신고 POST2");
+
+  return true;
+
+  // if (res.ok === true) {
+  //     const productId = await res.text();
+  //     if (product.images.length > 0) {
+  //         const resImages = await createImages(productId, product.images);
+  //         return resImages.ok;
+  //     }
+  //     return true;
+  // }
+
+  // return false;
+
+
+  // const resImages = await updateImages("1", product.images);
+  // return resImages.ok;
 };

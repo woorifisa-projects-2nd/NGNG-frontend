@@ -11,6 +11,7 @@ import {
   createPrivateChatRoom,
   findPrivateChatRoomByProductIdAndBuyerId,
 } from "../../_api/api";
+import ReportModal from "./ReportModal";
 
 type ProductInfoProps = {
   data: Product;
@@ -19,6 +20,7 @@ type ProductInfoProps = {
 
 export default function ProudctInfo({ data, userId }: ProductInfoProps) {
   const [open, setOpen] = useState<boolean>(false);
+  const [showReportModal, setShowReportModal] = useState<boolean>(false);
   const router = useRouter();
 
   // TODO : 사용자 계좌인증여부
@@ -61,14 +63,19 @@ export default function ProudctInfo({ data, userId }: ProductInfoProps) {
                 ) : isReportedByMe ? (
                   "이미 신고한 상품입니다"
                 ) : (
-                  <>
+                  <div onClick={() => setShowReportModal(true)}>
                     <SirenIcon /> 신고하기
-                  </>
+                  </div>
                 )}
               </div>
             </div>
           </div>
         </div>
+        {showReportModal &&
+          createPortal(
+            <ReportModal onClose={() => { setShowReportModal(false); }} data={data} userId={userId} />,
+            document.body
+          )}
 
         <div className="mt-10 xl:mt-0 w-full xl:w-2/5 flex flex-col justify-between">
           <div className="flex w-full justify-between mb-10">
@@ -79,9 +86,8 @@ export default function ProudctInfo({ data, userId }: ProductInfoProps) {
                 {data.price.toLocaleString()}원
               </span>
               <span
-                className={`inline font-medium text-sm  ${
-                  data.discountable ? "text-point-color" : "text-red-500"
-                } `}
+                className={`inline font-medium text-sm  ${data.discountable ? "text-point-color" : "text-red-500"
+                  } `}
               >
                 {data.discountable ? "할인가능" : "할인불가능"}
               </span>
@@ -143,16 +149,15 @@ export default function ProudctInfo({ data, userId }: ProductInfoProps) {
                 }}
               >
                 <Button
-                  text={`${
-                    data.forSale
+                  text={`${data.forSale
                       ? data.user.id === userId
                         ? "채팅방 보기"
                         : "1:1 채팅하기"
                       : "거래완료"
-                  }`}
+                    }`}
                   width={"100%"}
                   disabled={!data.forSale}
-                  onClick={() => {}}
+                  onClick={() => { }}
                 />
               </a>
             </div>
