@@ -51,6 +51,7 @@ export default function PrivateChatting({ data }: ChattingProps) {
         userId,
         isImage: true,
         privateChatRoomId: data.chatRoomId,
+        sellerId: data.product.seller.id,
       });
 
     chatData !== undefined &&
@@ -90,6 +91,7 @@ export default function PrivateChatting({ data }: ChattingProps) {
         buyerId: data.product.buyer.id,
         userId,
         privateChatRoomId: data.chatRoomId,
+        sellerId: data.product.seller.id,
       });
 
     chatData !== undefined &&

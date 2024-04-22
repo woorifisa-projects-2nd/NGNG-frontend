@@ -17,20 +17,28 @@ export const sendPrivateChatMessage = ({
   message,
   isImage,
   buyerId,
+  sellerId,
   userId,
   privateChatRoomId,
 }: {
   client: StompJs.Client;
   productId: number;
   buyerId: number;
+  sellerId: number;
   message: string;
   userId: number;
   privateChatRoomId: number;
   isImage?: boolean;
 }) => {
+  console.log(
+    `/chats/${productId}/${buyerId}/${userId === buyerId ? sellerId : buyerId}`
+  );
+
   if (isImage !== undefined) {
     client.publish({
-      destination: `/chats/${productId}/${buyerId}`,
+      destination: `/chats/${productId}/${buyerId}/${
+        userId === buyerId ? sellerId : buyerId
+      }`,
       body: JSON.stringify({
         message: message,
         userId,
@@ -40,7 +48,9 @@ export const sendPrivateChatMessage = ({
     });
   } else {
     client.publish({
-      destination: `/chats/${productId}/${buyerId}`,
+      destination: `/chats/${productId}/${buyerId}/${
+        userId === buyerId ? sellerId : buyerId
+      }`,
       body: JSON.stringify({
         message: message,
         userId,
