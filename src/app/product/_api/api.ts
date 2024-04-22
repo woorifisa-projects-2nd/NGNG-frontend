@@ -4,7 +4,7 @@ import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
 
 export const getProductById = async (id: string) => {
-  const res = await fetch(`http://localhost:3000/products/${id}`, {
+  const res = await fetch(`http://127.0.0.1:3000/products/${id}`, {
     cache: "no-store",
   });
 

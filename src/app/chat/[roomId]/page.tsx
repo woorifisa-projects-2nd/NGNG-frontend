@@ -3,13 +3,20 @@ import Loading from "@/assets/Loading.svg";
 import Image from "next/image";
 import PrivateChatting from "./_components/PrivateChatting";
 import { useParams } from "next/navigation";
-import { getAllChatMessages } from "../_api";
+import { createTransactionRequest, getAllChatMessages } from "../_api";
 import { useEffect, useState } from "react";
 import TransactionRequestButton from "./_components/TransactionRequestButton";
-import RequestAccept from "./_components/RequestAccept";
-import RequestDismiss from "./_components/RequestDismiss";
-import Stepper from "./_components/Stepper";
-
+import { createPortal } from "react-dom";
+import TransferRequest from "./_components/TransferRequest";
+export type TransactionRequest = {
+  buyerId: number;
+  createdAt: string;
+  isAccepted: boolean;
+  price: number;
+  productId: number;
+  sellerId: number;
+  updatedAt: string;
+};
 export type PrivateChat = {
   chatRoomId: number;
   product: {
@@ -22,6 +29,7 @@ export type PrivateChat = {
     transactionDetails?: TransactionDetails | null;
     seller: PrivateChatUser;
     buyer: PrivateChatUser;
+    requests: TransactionRequest[];
   };
   messages: PrivateChatMessage[] | null;
 };
@@ -67,21 +75,49 @@ export default function PrivateChat() {
   const [open, setOpen] = useState<boolean>(false);
   const transactionStatus =
     data?.product.transactionDetails?.status.status ?? null;
-  const isSeller = false; //data && data.product.seller.id === userId;
+  const isSeller = data && data.product.seller.id === userId;
+  const [price, setPrice] = useState<number>(data?.product.price ?? 0);
 
   const mapTransactionStatusToActiveButton = () => {
     if (!data) return;
-    else if (transactionStatus === null && !isSeller) {
-      return (
+    const alreadyRequetesd =
+      data.product.requests.filter((req) => req.buyerId === userId).length > 0;
+    const isPending = data.product.transactionDetails === null;
+    const isAccepted = data.product.requests.find(
+      (req) => req.buyerId === userId
+    )?.isAccepted;
+    if (transactionStatus === null && !isSeller) {
+      return alreadyRequetesd ? (
+        isPending ? (
+          <span
+            className="  text-black
+      font-semibold text-sm"
+          >
+            수락 대기중
+          </span>
+        ) : isAccepted ? (
+          <span
+            className="text-green-600 
+      font-semibold text-sm"
+          >
+            거래진행중
+          </span>
+        ) : (
+          <span
+            className="text-text-gray 
+      font-semibold text-sm"
+          >
+            거래거절
+          </span>
+        )
+      ) : (
         <TransactionRequestButton
-          productId={data.product.productId}
-          buyerId={data.product.buyer.id}
           onClick={() => {
-            fetchData(); // 상태 업데이트하고 데이터 다시받아오기
+            setOpen(true);
           }}
         />
       );
-    } else {
+    } else if (isSeller) {
       return "";
     }
   };
@@ -93,11 +129,15 @@ export default function PrivateChat() {
     }).then((res) => {
       console.log("result", res);
       setData(res);
+      setPrice(res.product.price);
     });
   };
 
   useEffect(() => {
     fetchData();
+    // fetch("/transaction/request/7")
+    //   .then((res) => res.json())
+    //   .then((res) => console.log("res", res));
   }, []);
 
   const onClose = () => {
@@ -105,11 +145,20 @@ export default function PrivateChat() {
   };
 
   const onChangePrice = (price: number) => {
-    data && setData({ ...data, product: { ...data.product, price } });
+    setPrice(price);
   };
 
-  const onChangeTransactionStatus = (status: string) => {
-    // setTransactionStatus(status);
+  const onChangeTransactionStatus = () => {
+    data &&
+      createTransactionRequest({
+        buyerId: userId,
+        productId: data?.product.productId,
+        sellerId: data.product.seller.id,
+        price,
+      }).then(() => {
+        fetchData();
+        setOpen(false);
+      });
   };
 
   if (data === undefined) {
@@ -122,7 +171,7 @@ export default function PrivateChat() {
 
   return (
     <div className="relative h-full scrollbar-hide max-h-[640px]">
-      <div className="fixed top-0 w-full bg-white dark:bg-black h-28 z-10">
+      <div className="fixed top-0 w-full bg-white dark:bg-black min-h-28 z-10">
         <div className="relative flex justify-center font-bold p-2 ">
           {data.product.seller.id === userId
             ? data.product.buyer.nickname
@@ -132,7 +181,7 @@ export default function PrivateChat() {
           </span>
         </div>
 
-        <div className="flex border-y-2 border-light-gray dark:border-text-gray justify-between p-2">
+        <div className="flex border-y-2 border-light-gray dark:border-text-gray justify-between items-center p-2">
           <div className="flex gap-4 items-center">
             <Image
               className="rounded-xl"
@@ -157,29 +206,20 @@ export default function PrivateChat() {
           {mapTransactionStatusToActiveButton()}
         </div>
       </div>
-      <div className="flex justify-around relative top-32">
-        <Stepper
-          currentStatusId={1}
-          isSeller={false}
-          onChangeStatus={(status) => {
-            console.log(status);
-          }}
-        />
-      </div>
-
       <div className="relative top-32 h-full w-full">
-        <PrivateChatting
-          data={data}
-          modalOpen={open}
-          onClose={onClose}
-          onChangePrice={onChangePrice}
-          onChangeTransactionStatus={onChangeTransactionStatus}
-          isSeller={data.product.seller.id === userId}
-          transactionStatus={
-            transactionStatus === null ? "" : transactionStatus
-          }
-        />
+        <PrivateChatting data={data} />
       </div>
+      {open &&
+        createPortal(
+          <TransferRequest
+            discountable={data.product.discountable}
+            price={price}
+            onChangePrice={onChangePrice}
+            onClose={onClose}
+            onChangeTransactionStatus={onChangeTransactionStatus}
+          />,
+          document.body
+        )}
     </div>
   );
 }
