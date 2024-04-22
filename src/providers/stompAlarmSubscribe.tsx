@@ -1,23 +1,29 @@
 "use client";
 import { useEffect } from "react";
-import client from "./stomp";
+import * as StompJs from "@stomp/stompjs";
 
 export default function StompAlarmSubscibe() {
-  const isLogin = true;
-  if (isLogin) {
-    const userId = 2;
-    client.onConnect = () => {
-      client.subscribe(`alarm/${userId}`, (message) => {
-        const datas = JSON.parse(message.body);
-        console.log("message", datas);
-        new Notification("text", {
-          body: "테스트 알림",
-          icon: "/car.jpg",
-        });
+  //   const isLogin = true;
+  //   if (isLogin) {
+  const userId = 1;
+  const client = new StompJs.Client({
+    brokerURL: "ws://localhost:8081/chat-server",
+    reconnectDelay: 5000,
+  });
+  client.onConnect = () => {
+    console.log("웹소켓연결", `/alarm/${userId}`);
+
+    client.subscribe(`/alarms/${userId}`, (message) => {
+      const datas = JSON.parse(message.body);
+      console.log("message", datas.body);
+      new Notification(datas.body.user.nickname, {
+        body: datas.body.message,
+        icon: datas.body.productThumbnail,
       });
-      client.activate();
-    };
-  }
+    });
+  };
+  //   }
+  client.activate();
 
   useEffect(() => {
     if (
@@ -26,6 +32,10 @@ export default function StompAlarmSubscibe() {
     ) {
       Notification.requestPermission();
     }
+
+    return () => {
+      client.deactivate();
+    };
   }, []);
 
   return (
