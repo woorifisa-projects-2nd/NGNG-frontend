@@ -69,7 +69,7 @@ export default function PrivateChat() {
   const params = useParams<{
     roomId: string;
   }>();
-  const userId = 2;
+  const userId = 1;
 
   const [data, setData] = useState<PrivateChat | undefined>(undefined);
   const [open, setOpen] = useState<boolean>(false);
@@ -206,7 +206,7 @@ export default function PrivateChat() {
           {mapTransactionStatusToActiveButton()}
         </div>
       </div>
-      <div className="relative top-32 h-full w-full">
+      <div className="relative h-full w-full">
         <PrivateChatting data={data} />
       </div>
       {open &&

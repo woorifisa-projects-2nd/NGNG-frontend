@@ -95,12 +95,14 @@ export default function TabContent({ data, onChangeData }: TabContentProps) {
   };
 
   const chanagePrice = (newPrice: string) => {
-    if (!isNaN(Number(newPrice))) {
+    const input = newPrice.replaceAll(",", "");
+    console.log("new price", input, !isNaN(Number(input)));
+    if (!isNaN(Number(input))) {
       onChangeData?.({
         order: data.order,
         product: {
           ...data,
-          price: Number(newPrice.replaceAll(",", "")),
+          price: Number(input),
         },
       });
     }

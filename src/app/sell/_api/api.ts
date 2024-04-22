@@ -14,7 +14,9 @@ const mapProductToAPISepc = (product: Product) => {
     freeShipping: product.freeShipping,
     statusId: product.statusId,
     categoryId: product.categoryId,
-    tags: product.tags,
+    tags: product.tags.map((tag) => {
+      return { tagName: tag.name };
+    }),
   };
 };
 

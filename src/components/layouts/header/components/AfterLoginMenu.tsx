@@ -1,3 +1,4 @@
+"use client";
 import SellIcon from "../design/SVG/sell.svg";
 import MyPageIcon from "../design/SVG/my_page.svg";
 import ChatIcon from "../design/SVG/chat.svg";
