@@ -28,13 +28,30 @@ export const mapCategoryIdToCategoryName = (categoryId: number): string => {
   return categories.find((category) => category.id === categoryId)?.name ?? "";
 };
 
-export const maskingName = (name: string): string => {
-  const mask = "*";
-  if (name.length === 1) {
-    return mask;
-  } else if (name.length === 2) {
-    return name.slice(0, 1) + mask;
+export function calculateTimeDifference(dateString: string): string {
+  // 주어진 날짜 문자열을 Date 객체로 변환합니다.
+  const givenDate: Date = new Date(dateString);
+
+  // 현재 시간을 가져옵니다.
+  const currentDate: Date = new Date();
+
+  // 시간 차이를 밀리초 단위로 계산합니다.
+  const timeDifference: number = currentDate.getTime() - givenDate.getTime();
+
+  // 밀리초를 분 단위로 변환합니다.
+  const minutesDifference: number = Math.floor(timeDifference / (1000 * 60));
+
+  // 분을 시간 단위로 변환합니다.
+  const hoursDifference: number = Math.floor(minutesDifference / 60);
+
+  // 시간을 일 단위로 변환합니다.
+  const daysDifference: number = Math.floor(hoursDifference / 24);
+
+  if (daysDifference > 0) {
+    return `${daysDifference}일 전`;
+  } else if (hoursDifference > 0) {
+    return `${hoursDifference}시간 전`;
   } else {
-    return name[0] + mask.repeat(name.length - 2) + name.slice(-1);
+    return `${minutesDifference}분 전`;
   }
-};
+}

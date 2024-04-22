@@ -65,11 +65,15 @@ export const getAllChatMessages = async ({
 export const createTransactionRequest = async ({
   buyerId,
   productId,
+  price,
+  sellerId,
 }: {
   productId: number;
   buyerId: number;
+  sellerId: number;
+  price: number;
 }) => {
-  return await fetch(`/transaction`, {
+  return await fetch(`/transaction/request`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -77,6 +81,8 @@ export const createTransactionRequest = async ({
     body: JSON.stringify({
       productId,
       buyerId,
+      sellerId,
+      price,
     }),
   });
 };
@@ -97,4 +103,8 @@ export const updateTransactionStatus = async ({
       statusId,
     }),
   });
+};
+
+export const getAllChatRoomData = async (userId: number) => {
+  return await fetch(`/private-chats/${userId}`).then((res) => res.json());
 };

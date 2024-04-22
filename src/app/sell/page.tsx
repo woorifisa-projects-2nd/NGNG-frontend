@@ -5,7 +5,7 @@ import TabContent from "./_components/TabContent";
 import TabHeader from "./_components/TabHeader";
 import Button from "@/components/common/Button";
 import { createProduct } from "./_api/api";
-import { redirect, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 export type Product = {
   order: number;
@@ -51,7 +51,6 @@ export default function Sell() {
   const allfullfilledSaveCondition =
     products.filter((product) => product.isFullfillSaveCondition === true)
       .length === products.length;
-  console.log(products);
 
   const addProduct = () => {
     setProducts([...products, getDummyProduct(products.length)]);
@@ -75,7 +74,6 @@ export default function Sell() {
   const onClickButton = () => {
     products.forEach(async (product) => {
       const res = await createProduct(product);
-      console.log("res", res);
       router.push(`../${res}`);
     });
   };

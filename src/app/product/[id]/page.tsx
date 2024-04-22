@@ -1,19 +1,9 @@
+export const dynamic = "force-dynamic";
 import Loading from "@/assets/Loading.svg";
 import { getProductById } from "../_api/api";
 import { redirect } from "next/navigation";
 import Chatting from "./_components/Chatting";
-import { Product } from "../_types/type";
 import ProudctInfo from "./_components/ProductInfo";
-
-export async function generateStaticParams() {
-  const products = await fetch(`http://localhost:3000/products`).then((res) =>
-    res.json()
-  );
-
-  return products.map((product: Product) => ({
-    params: { id: product.id.toString() },
-  }));
-}
 
 export default async function ProductDetail({
   params,

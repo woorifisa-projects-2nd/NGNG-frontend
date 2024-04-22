@@ -1,26 +1,11 @@
-/** @type {import('next').NextConfig} */
+import withPWAInit from "@ducanh2912/next-pwa";
 
-// const runtimeCaching = require("next-pwa/cache");
-// const withPWA = require("next-pwa")({
-//   dest: "public",
-//   register: true,
-//   skipWaiting: true,
-//   runtimeCaching,
-//   disable: prod ? false : true,
-// });
+const withPWA = withPWAInit({
+  dest: "public",
+});
 
-// const nextConfig = withPWA({
-//   webpack: (config) => {
-//     config.module.rules.push({
-//       test: /\.svg$/,
-//       use: ["@svgr/webpack"],
-//     });
-
-//     return config;
-//   },
-// });
-
-const nextConfig = {
+export default withPWA({
+  // Your Next.js config
   webpack: (config) => {
     config.module.rules.push({
       test: /\.svg$/,
@@ -39,7 +24,7 @@ const nextConfig = {
         },
         {
           source: "/products/:path*",
-          destination: "http://localhost:8080/products/:path*",
+          destination: "http://127.0.0.1:8080/products/:path*",
         },
         {
           source: "/private-chats/:path*",
@@ -80,5 +65,12 @@ const nextConfig = {
   reactStrictMode: false,
   output: "standalone",
   basePath: "",
-};
-export default nextConfig;
+});
+
+// /** @type {import('next').NextConfig} */
+// const nextConfig = {
+
+// };
+
+// module.exports = withPWA(nextConfig);
+// export default nextConfig;
