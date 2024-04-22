@@ -5,71 +5,15 @@ import Trash from "@/components/layouts/admin_menu/design/SVG/trash-2.svg";
 import { useState, useEffect } from 'react';
 import Link from "next/link";
 import { useRouter } from 'next/navigation';
-
-type User = {
-    id: number;
-    name: string;
-    nickname: string;
-};
-
-type Status = {
-    id: number;
-    name: string;
-};
-
-type Tag = {
-    tagName: string;
-};
-
-type Image = {
-    id: number;
-    imageURL: string;
-};
-
-type Chat = {
-    id: number;
-    message: string;
-    userId: number;
-    userName: string;
-    userNickName: string;
-    createAt: string;
-    isImage?: boolean;
-};
-
-type Product = {
-    id: number;
-    available: boolean;
-    title: string;
-    content: string;
-    price: number;
-    isEscrow: boolean;
-    discountable: boolean;
-    purchaseAt: string | null;
-    forSale: boolean;
-    createdAt: string;
-    updatedAt: string | null;
-    visible: boolean;
-    freeShipping: boolean;
-    refreshedAt: string | null;
-    user: User;
-    status: Status;
-    category: {
-        id: number;
-        name: string;
-    };
-    tags: Tag[];
-    images: Image[];
-    chats: Chat[];
-};
-
+import { User } from "./_types/type";
 
 export default function UserManagement() {
     const router = useRouter();
-    const [products, setProducts] = useState<Product[]>([]);
+    const [users, setUsers] = useState<User[]>([]);
     const [currentPage, setCurrentPage] = useState<number>(0);
     const [totalPages, setTotalPages] = useState<number>(0);
 
-    console.log(products);
+    console.log(users);
 
     // 페이지 관련
     const [itemsPerPage, setItemsPerPage] = useState<number>(0);
@@ -81,17 +25,17 @@ export default function UserManagement() {
 
     // 페이지를 변경할 때 해당 페이지의 데이터를 가져오는 함수
     async function fetchReportsByPage(pageNumber: number) {
-        const url = `http://localhost:8080/admin`;
+        const url = `http://localhost:8080/admin/users`;
 
         await fetch(url)
             .then(resp => resp.json())
             .then(result => {
-                setProducts(result.content);
-                console.log(result.content);
+                setUsers(result);
+                // console.log(result.content);
 
-                setCurrentPage(result.pageable.pageNumber);
-                setTotalPages(result.totalPages);
-                setItemsPerPage(result.pageable.pageSize)
+                // setCurrentPage(result.pageable.pageNumber);
+                // setTotalPages(result.totalPages);
+                // setItemsPerPage(result.pageable.pageSize)
             });
     }
 
@@ -134,7 +78,7 @@ export default function UserManagement() {
         const pageNumbers = [];
         for (let i = startPage; i < endPage; i++) {
             pageNumbers.push(
-                <Link key={i} href={`/admin/products?page=${i + 1}`}
+                <Link key={i} href={`/admin/users?page=${i + 1}`}
                     onClick={(e) => {
                         if (currentPage === i) {
                             e.preventDefault();
@@ -152,14 +96,14 @@ export default function UserManagement() {
     };
 
     const handleCreateProduct = () => {
-        router.push('/sell'); // '/sell' 경로로 이동합니다.
+        router.push('/admin/users'); // '/sell' 경로로 이동합니다.
     };
 
     const handleDelete = async (productId: number) => {
         const shouldDelete = window.confirm('정말로 삭제하시겠습니까?');
 
         if (shouldDelete) {
-            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}products/${productId}`, {
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}users/${productId}`, {
                 method: "DELETE",
                 headers: {
                     "Content-Type": "application/json",
@@ -184,27 +128,27 @@ export default function UserManagement() {
             <div>
                 <div className="flex text-center h-10 bg-slate-100 p-8">
                     <div className="w-1/6 font-bold">No.</div>
-                    <div className="w-1/6 font-bold">상품 ID</div>
-                    <div className="w-1/6 font-bold">제목</div>
-                    <div className="w-1/6 font-bold">가격</div>
-                    <div className="w-1/6 font-bold">판매자</div>
-                    <div className="w-1/6 font-bold">카테고리</div>
+                    <div className="w-1/6 font-bold">사용자 ID</div>
+                    <div className="w-1/6 font-bold">이름/닉네임</div>
+                    <div className="w-1/6 font-bold">전화번호</div>
+                    <div className="w-1/6 font-bold">이메일</div>
+                    <div className="w-1/6 font-bold">주소</div>
                     <div className="w-1/6"></div>
                 </div>
 
                 <div className="text-center">
-                    {products.map((product, index) => (
-                        <div key={product.id} className="border-b border-gray-300 rounded p-3 flex items-center">
+                    {users.map((user, index) => (
+                        <div key={user.userId} className="border-b border-gray-300 rounded p-3 flex items-center">
                             <div className="w-1/6">{index + 1 + currentPage * itemsPerPage}</div>
-                            <div className="w-1/6">{product.id}</div>
-                            <div className="w-1/6">{product.title}</div>
-                            <div className="w-1/6">{product.price.toLocaleString()}</div>
-                            <div className="w-1/6">{product.user.name}</div>
-                            <div className="w-1/6">{product.category.name}</div>
+                            <div className="w-1/6">{user.userId}</div>
+                            <div className="w-1/6">{user.name + '\n@' + user.nickName}</div>
+                            <div className="w-1/6">{user.phoneNumber}</div>
+                            <div className="w-1/6">{user.email}</div>
+                            <div className="w-1/6">{user.address}</div>
                             <div className="w-1/6">
                                 <div className="p-5 flex">
-                                    <Link href={`/admin/products/${product.id}`}><CheckReport /></Link>
-                                    <div className="cursor-pointer" onClick={() => handleDelete(product.id)} >
+                                    <Link href={`/admin/users/${user.userId}`}><CheckReport /></Link>
+                                    <div className="cursor-pointer" onClick={() => handleDelete(user.userId)} >
                                         <Trash />
                                     </div>
                                 </div>
