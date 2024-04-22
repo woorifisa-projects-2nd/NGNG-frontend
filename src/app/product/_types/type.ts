@@ -77,4 +77,5 @@ export type RequestReport = {
   reporterId: number,
   userId: number,
   productId: number,
+  images: { id: number; imageURL: File; }[],
 }

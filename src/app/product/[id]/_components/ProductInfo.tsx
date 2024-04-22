@@ -21,7 +21,13 @@ type ProductInfoProps = {
 export default function ProudctInfo({ data, userId }: ProductInfoProps) {
   const [open, setOpen] = useState<boolean>(false);
   const [showReportModal, setShowReportModal] = useState<boolean>(false);
+  // const [isReported, setIsReported] = useState<boolean>(false);
+  // const [isReportedByMe, setIsReportedByMe] = useState<boolean>(false);
   const router = useRouter();
+
+  const handleReportSuccess = (newData: Product): void => {
+
+  };
 
   // TODO : 사용자 계좌인증여부
   const isUserAccountOk = true;
@@ -30,6 +36,7 @@ export default function ProudctInfo({ data, userId }: ProductInfoProps) {
     data.reports === null
       ? false
       : data.reports.filter((report) => report.isReport).length > 0;
+
   const isReportedByMe =
     data.reports &&
     data.reports.filter((report) => report.reporter.id === userId).length > 0;
@@ -57,13 +64,13 @@ export default function ProudctInfo({ data, userId }: ProductInfoProps) {
                 />
                 <span>{data.user.nickname}</span>
               </div>
-              <div className="flex text-red-500 font-medium justify-end items-center cursor-pointer">
+              <div className="flex text-red-500 font-medium justify-end items-center">
                 {isReported ? (
                   "신고받은 상품입니다"
                 ) : isReportedByMe ? (
                   "이미 신고한 상품입니다"
                 ) : (
-                  <div onClick={() => setShowReportModal(true)}>
+                  <div className="cursor-pointer" onClick={() => setShowReportModal(true)}>
                     <SirenIcon /> 신고하기
                   </div>
                 )}
@@ -73,7 +80,11 @@ export default function ProudctInfo({ data, userId }: ProductInfoProps) {
         </div>
         {showReportModal &&
           createPortal(
-            <ReportModal onClose={() => { setShowReportModal(false); }} data={data} userId={userId} />,
+            <ReportModal
+              onClose={() => { setShowReportModal(false); }}
+              onSuccessReport={handleReportSuccess}
+              data={data}
+              userId={userId} />,
             document.body
           )}
 
@@ -150,10 +161,10 @@ export default function ProudctInfo({ data, userId }: ProductInfoProps) {
               >
                 <Button
                   text={`${data.forSale
-                      ? data.user.id === userId
-                        ? "채팅방 보기"
-                        : "1:1 채팅하기"
-                      : "거래완료"
+                    ? data.user.id === userId
+                      ? "채팅방 보기"
+                      : "1:1 채팅하기"
+                    : "거래완료"
                     }`}
                   width={"100%"}
                   disabled={!data.forSale}

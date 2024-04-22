@@ -85,33 +85,50 @@ export const createPrivateChatRoom = async ({
 
 export const createReport = async (requestReport: RequestReport): Promise<boolean> => {
   // console.log(mapProductToAPISepc(product));
-  console.log("신고 POST");
-  
+
   const res = await fetch(`http://localhost:8080/admin/reports`, {
-      method: "POST",
-      headers: {
-          "Content-Type": "application/json",
-      },
-      body: JSON.stringify(requestReport),
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(requestReport),
   });
-  console.log(res);
-  
-  console.log("신고 POST2");
 
-  return true;
+  if (res.ok === true) {
+    const reportIdResponse = await res.text();
+    const reportIdObject = JSON.parse(reportIdResponse);
+    const reportId = reportIdObject.reportId;
 
-  // if (res.ok === true) {
-  //     const productId = await res.text();
-  //     if (product.images.length > 0) {
-  //         const resImages = await createImages(productId, product.images);
-  //         return resImages.ok;
-  //     }
-  //     return true;
-  // }
+    if (requestReport.images.length > 0) {
+      const resImages = await createImages(reportId, requestReport.images);
+      return resImages.ok;
+    }
+    return true;
+  }
 
-  // return false;
+  return false;
 
+};
 
-  // const resImages = await updateImages("1", product.images);
-  // return resImages.ok;
+const createImages = async (
+  reportId: string,
+  images: {
+    id: number;
+    imageURL: File;
+  }[]
+) => {
+  const fomData = new FormData();
+
+  images.forEach((image) => {
+    fomData.append("files", image.imageURL);
+  });
+  fomData.append("reportId", reportId);
+
+  console.log(fomData);
+
+  // return await fetch("/api/upload", {
+  return await fetch(`http://localhost:8080/reportImages/upload`, {
+    method: "POST",
+    body: fomData,
+  });
 };
