@@ -6,6 +6,7 @@ export const viewport: Viewport = {
   themeColor: "#873EAC",
 };
 export const metadata: Metadata = {
+  applicationName: "내꺼니꺼",
   title: "내꺼니꺼",
   description: "사기 잡는 안전한 C2C 거래 플랫폼 내꺼니꺼",
   icons: {
@@ -25,9 +26,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="ko">
+    <html lang="ko" dir="ltr">
       <head>
-        <meta name="application-name" content="내꺼니꺼" />
+        {/* <meta name="application-name" content="내꺼니꺼" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="default" />
         <meta name="apple-mobile-web-app-title" content="내꺼니꺼" />
@@ -84,7 +85,7 @@ export default function RootLayout({
           href="splashscreens/ipadpro2_splash.png"
           media="(device-width: 1024px) and (device-height: 1366px) and (-webkit-device-pixel-ratio: 2)"
           rel="apple-touch-startup-image"
-        />
+        /> */}
       </head>
       <body className={pretendard.className}>
         <ColorModeProvider>{children}</ColorModeProvider>

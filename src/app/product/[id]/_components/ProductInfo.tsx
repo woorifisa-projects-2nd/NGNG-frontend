@@ -121,6 +121,8 @@ export default function ProudctInfo({ data, userId }: ProductInfoProps) {
                       userId
                     ).then(async (id) => {
                       let roomId = id;
+                      console.log("roodId", id);
+
                       if (id < 0) {
                         // 없으면 채팅방 만들기
                         roomId = await createPrivateChatRoom({
@@ -174,7 +176,11 @@ export default function ProudctInfo({ data, userId }: ProductInfoProps) {
           <div className="flex border-t-2 border-text-gray w-full py-5 font-medium text-text-gray">
             <span className="mr-10">#태그</span>
             {data.tags.map((tag) => {
-              return <span key={tag.tagName}>#{tag.tagName}</span>;
+              return (
+                <span className="mr-2" key={tag.tagName}>
+                  #{tag.tagName}
+                </span>
+              );
             })}
           </div>
         </div>

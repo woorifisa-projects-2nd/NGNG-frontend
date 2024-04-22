@@ -1,7 +1,7 @@
 {
   "theme_color": "#873EAC",
   "background_color": "#873EAC",
-  "display": "browser",
+  "display": "standalone",
   "scope": "/",
   "start_url": "/",
   "name": "내꺼니꺼",
@@ -11,7 +11,8 @@
     {
       "src": "/192x192.png",
       "sizes": "192x192",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "maskable"
     },
     {
       "src": "/256x256.png",
