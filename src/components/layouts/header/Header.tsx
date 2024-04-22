@@ -1,3 +1,4 @@
+"use client";
 import Logo from "./design/SVG/logo.svg";
 import SearchInput from "./components/SearchInput";
 import Menu from "./components/Menu";
@@ -43,12 +44,18 @@ export default function Header() {
       <div className="hidden md:flex justify-center items-center shadow-md w-full h-12">
         <div className="hidden md:flex justify-around items-center w-[90%]">
           {categories.map((category) => {
+            console.log(
+              "path",
+              pathname.split("/")[2] === category.link.split("/")[2]
+            );
+
             return (
               <Link
                 key={category.name}
                 href={category.link}
                 className={`${
-                  pathname === category.link && "text-point-color font-bold"
+                  pathname.split("/")[2] === category.link.split("/")[2] &&
+                  "text-point-color font-bold"
                 }`}
               >
                 {category.name}
