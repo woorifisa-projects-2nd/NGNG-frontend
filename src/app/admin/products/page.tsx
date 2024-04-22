@@ -1,6 +1,7 @@
 "use client"
 import Refresh from "@/components/layouts/admin_menu/design/SVG/refresh.svg";
 import CheckReport from "@/components/layouts/admin_menu/design/SVG/check_report.svg";
+import Trash from "@/components/layouts/admin_menu/design/SVG/trash-2.svg";
 import { useState, useEffect } from 'react';
 import Link from "next/link";
 import { useRouter } from 'next/navigation';
@@ -67,9 +68,9 @@ export default function ProductManagement() {
     const [products, setProducts] = useState<Product[]>([]);
     const [currentPage, setCurrentPage] = useState<number>(0);
     const [totalPages, setTotalPages] = useState<number>(0);
-    
+
     console.log(products);
-    
+
     // 페이지 관련
     const [itemsPerPage, setItemsPerPage] = useState<number>(0);
     const [maxPageButtons, setMaxPageButtons] = useState<number>(5); // 최대 페이지 버튼 수
@@ -80,16 +81,18 @@ export default function ProductManagement() {
 
     // 페이지를 변경할 때 해당 페이지의 데이터를 가져오는 함수
     async function fetchReportsByPage(pageNumber: number) {
-        const url = `${process.env.NEXT_PUBLIC_API_URL}products`;
+        const url = `${process.env.NEXT_PUBLIC_API_URL}products?page=${pageNumber}`;
         // const url = `${process.env.NEXT_PUBLIC_API_URL}products/page=${pageNumber}`;
 
         await fetch(url)
             .then(resp => resp.json())
             .then(result => {
-                setProducts(result);
-                // setCurrentPage(result.pageable.pageNumber);
-                // setTotalPages(result.totalPages);
-                // setItemsPerPage(result.pageable.pageSize)
+                setProducts(result.content);
+                console.log(result.content);
+
+                setCurrentPage(result.pageable.pageNumber);
+                setTotalPages(result.totalPages);
+                setItemsPerPage(result.pageable.pageSize)
             });
     }
 
@@ -153,6 +156,20 @@ export default function ProductManagement() {
         router.push('/sell'); // '/sell' 경로로 이동합니다.
     };
 
+    const handleDelete = async (productId: number) => {
+        const shouldDelete = window.confirm('정말로 삭제하시겠습니까?');
+
+        if (shouldDelete) {
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}products/${productId}`, {
+                method: "DELETE",
+                headers: {
+                    "Content-Type": "application/json",
+                }
+            });
+        }
+        fetchReportsByPage(currentPage);
+    };
+
     return (
         <div className="p-5">
             <div className="text-3xl font-bold mb-16">상품 관리</div>
@@ -167,6 +184,7 @@ export default function ProductManagement() {
 
             <div>
                 <div className="flex text-center h-10 bg-slate-100 p-8">
+                    <div className="w-1/6 font-bold">No.</div>
                     <div className="w-1/6 font-bold">상품 ID</div>
                     <div className="w-1/6 font-bold">제목</div>
                     <div className="w-1/6 font-bold">가격</div>
@@ -176,16 +194,20 @@ export default function ProductManagement() {
                 </div>
 
                 <div className="text-center">
-                    {products.map(product => (
+                    {products.map((product, index) => (
                         <div key={product.id} className="border-b border-gray-300 rounded p-3 flex items-center">
+                            <div className="w-1/6">{index + 1 + currentPage * itemsPerPage}</div>
                             <div className="w-1/6">{product.id}</div>
                             <div className="w-1/6">{product.title}</div>
                             <div className="w-1/6">{product.price.toLocaleString()}</div>
                             <div className="w-1/6">{product.user.name}</div>
                             <div className="w-1/6">{product.category.name}</div>
                             <div className="w-1/6">
-                                <div className="p-5">
+                                <div className="p-5 flex">
                                     <Link href={`/admin/products/${product.id}`}><CheckReport /></Link>
+                                    <div className="cursor-pointer" onClick={() => handleDelete(product.id)} >
+                                        <Trash />
+                                    </div>
                                 </div>
                             </div>
                         </div>
