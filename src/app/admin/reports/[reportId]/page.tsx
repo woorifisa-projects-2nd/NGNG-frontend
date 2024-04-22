@@ -239,6 +239,7 @@ export default function ReportDetail({ params }: { params: { reportId: number } 
                                 showStatus={false} // 우측상단 상태값
                                 // autoPlay={true}
                                 infiniteLoop={true}
+                            // selectedItem={0}
                             >
 
                                 {report?.reportImages.map((media, index) => (
