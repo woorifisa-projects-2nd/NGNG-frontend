@@ -1,10 +1,9 @@
 import { Product } from "../[id]/page";
 
 export const getProductById = async (id: number) => {
-    const res = await fetch(`http://localhost:3000/products/${id}`);
+    const res = await fetch(`/products/${id}`);
     return res.json();
 };
-
 
 const mapProductToAPISepc = (product: Product) => {
     // TODO 관리자가 수정
@@ -49,22 +48,21 @@ export const createProduct = async (product: Product): Promise<boolean> => {
 
     return false;
 
-
     // const resImages = await updateImages("1", product.images);
     // return resImages.ok;
 };
 
 export const deleteImageById = async (productId: number, imageURL: string) => {
     const deleteData = {
-        imageURL: imageURL
+        imageURL: imageURL,
     };
 
     const response = await fetch(`/api/deleteImage/${productId}`, {
-        method: 'DELETE',
+        method: "DELETE",
         headers: {
-            'Content-Type': 'application/json'
+            "Content-Type": "application/json",
         },
-        body: JSON.stringify(deleteData)
+        body: JSON.stringify(deleteData),
     });
     return response.ok;
 };

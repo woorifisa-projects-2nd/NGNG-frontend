@@ -11,6 +11,7 @@ import {
   createPrivateChatRoom,
   findPrivateChatRoomByProductIdAndBuyerId,
 } from "../../_api/api";
+import ReportModal from "./ReportModal";
 
 type ProductInfoProps = {
   data: Product;
@@ -19,7 +20,14 @@ type ProductInfoProps = {
 
 export default function ProudctInfo({ data, userId }: ProductInfoProps) {
   const [open, setOpen] = useState<boolean>(false);
+  const [showReportModal, setShowReportModal] = useState<boolean>(false);
+  // const [isReported, setIsReported] = useState<boolean>(false);
+  // const [isReportedByMe, setIsReportedByMe] = useState<boolean>(false);
   const router = useRouter();
+
+  const handleReportSuccess = (newData: Product): void => {
+
+  };
 
   // TODO : 사용자 계좌인증여부
   const isUserAccountOk = true;
@@ -28,6 +36,7 @@ export default function ProudctInfo({ data, userId }: ProductInfoProps) {
     data.reports === null
       ? false
       : data.reports.filter((report) => report.isReport).length > 0;
+
   const isReportedByMe =
     data.reports &&
     data.reports.filter((report) => report.reporter.id === userId).length > 0;
@@ -55,20 +64,29 @@ export default function ProudctInfo({ data, userId }: ProductInfoProps) {
                 />
                 <span>{data.user.nickname}</span>
               </div>
-              <div className="flex text-red-500 font-medium justify-end items-center cursor-pointer">
+              <div className="flex text-red-500 font-medium justify-end items-center">
                 {isReported ? (
                   "신고받은 상품입니다"
                 ) : isReportedByMe ? (
                   "이미 신고한 상품입니다"
                 ) : (
-                  <>
+                  <div className="cursor-pointer" onClick={() => setShowReportModal(true)}>
                     <SirenIcon /> 신고하기
-                  </>
+                  </div>
                 )}
               </div>
             </div>
           </div>
         </div>
+        {showReportModal &&
+          createPortal(
+            <ReportModal
+              onClose={() => { setShowReportModal(false); }}
+              onSuccessReport={handleReportSuccess}
+              data={data}
+              userId={userId} />,
+            document.body
+          )}
 
         <div className="mt-10 xl:mt-0 w-full xl:w-2/5 flex flex-col justify-between">
           <div className="flex w-full justify-between mb-10">
@@ -79,9 +97,8 @@ export default function ProudctInfo({ data, userId }: ProductInfoProps) {
                 {data.price.toLocaleString()}원
               </span>
               <span
-                className={`inline font-medium text-sm  ${
-                  data.discountable ? "text-point-color" : "text-red-500"
-                } `}
+                className={`inline font-medium text-sm  ${data.discountable ? "text-point-color" : "text-red-500"
+                  } `}
               >
                 {data.discountable ? "할인가능" : "할인불가능"}
               </span>
@@ -121,6 +138,8 @@ export default function ProudctInfo({ data, userId }: ProductInfoProps) {
                       userId
                     ).then(async (id) => {
                       let roomId = id;
+                      console.log("roodId", id);
+
                       if (id < 0) {
                         // 없으면 채팅방 만들기
                         roomId = await createPrivateChatRoom({
@@ -143,16 +162,15 @@ export default function ProudctInfo({ data, userId }: ProductInfoProps) {
                 }}
               >
                 <Button
-                  text={`${
-                    data.forSale
-                      ? data.user.id === userId
-                        ? "채팅방 보기"
-                        : "1:1 채팅하기"
-                      : "거래완료"
-                  }`}
+                  text={`${data.forSale
+                    ? data.user.id === userId
+                      ? "채팅방 보기"
+                      : "1:1 채팅하기"
+                    : "거래완료"
+                    }`}
                   width={"100%"}
                   disabled={!data.forSale}
-                  onClick={() => {}}
+                  onClick={() => { }}
                 />
               </a>
             </div>
@@ -174,7 +192,11 @@ export default function ProudctInfo({ data, userId }: ProductInfoProps) {
           <div className="flex border-t-2 border-text-gray w-full py-5 font-medium text-text-gray">
             <span className="mr-10">#태그</span>
             {data.tags.map((tag) => {
-              return <span key={tag.tagName}>#{tag.tagName}</span>;
+              return (
+                <span className="mr-2" key={tag.tagName}>
+                  #{tag.tagName}
+                </span>
+              );
             })}
           </div>
         </div>

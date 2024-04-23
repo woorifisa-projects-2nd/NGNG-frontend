@@ -45,8 +45,8 @@ export default function AdminMenu({ children }: { children: ReactNode }) {
                         {item.subMenu && (
                             <div className="ml-4">
                                 {item.subMenu.map((subItem, subIndex) => (
-                                    <div className="py-2 text-left ml-4">
-                                        <Link href={subItem.link} key={subIndex}>
+                                    <div key={subIndex} className="py-2 text-left ml-4">
+                                        <Link href={subItem.link}>
                                             <div className="cursor-pointer inline-block">{subItem.name}</div>
                                         </Link>
                                     </div>

@@ -8,27 +8,11 @@ import * as StompJs from "@stomp/stompjs";
 import Image from "next/image";
 import { PrivateChat, PrivateChatMessage } from "../page";
 import { sendPrivateChatMessage } from "../../_api";
-import { createPortal } from "react-dom";
-import TransferRequest from "./TransferRequest";
 
 type ChattingProps = {
   data: PrivateChat;
-  modalOpen: boolean;
-  onClose: () => void;
-  onChangePrice: (price: number) => void;
-  onChangeTransactionStatus: (status: string) => void;
-  isSeller: boolean;
-  transactionStatus: string;
 };
-export default function PrivateChatting({
-  data,
-  modalOpen,
-  onClose,
-  onChangePrice,
-  onChangeTransactionStatus,
-  isSeller,
-  transactionStatus,
-}: ChattingProps) {
+export default function PrivateChatting({ data }: ChattingProps) {
   const userId = 2;
   const recentChatRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -67,6 +51,7 @@ export default function PrivateChatting({
         userId,
         isImage: true,
         privateChatRoomId: data.chatRoomId,
+        sellerId: data.product.seller.id,
       });
 
     chatData !== undefined &&
@@ -106,6 +91,7 @@ export default function PrivateChatting({
         buyerId: data.product.buyer.id,
         userId,
         privateChatRoomId: data.chatRoomId,
+        sellerId: data.product.seller.id,
       });
 
     chatData !== undefined &&
@@ -168,15 +154,6 @@ export default function PrivateChatting({
         contentType: data.contentType,
       },
     ]);
-  };
-
-  const onClickTransferRequestButton = () => {
-    // 거래상태 입금대기로 수정
-    onChangeTransactionStatus("");
-  };
-
-  const onClickTransactionRequestButton = () => {
-    onChangeTransactionStatus("구매요청");
   };
 
   useEffect(() => {
@@ -311,17 +288,6 @@ export default function PrivateChatting({
           />
         </div>
       </div>
-      {modalOpen &&
-        createPortal(
-          <TransferRequest
-            discountable={data.product.discountable}
-            price={data.product.price}
-            onChangePrice={onChangePrice}
-            onClose={onClose}
-            onChangeTransactionStatus={onClickTransferRequestButton}
-          />,
-          document.body
-        )}
     </div>
   );
 }

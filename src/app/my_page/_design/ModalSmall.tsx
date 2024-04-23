@@ -6,17 +6,17 @@ type Props = {
   title: string;
 };
 
-export default function Modal({ children, onClose, title }: Props) {
+export default function ModalSmall({ children, onClose, title }: Props) {
   return (
     <div className="fixed inset-0  bg-black bg-opacity-40 snap-y z-10 ">
       {/* 배경 */}
       {/* content 중앙 정렬 */}
       <div className="flex justify-center items-center w-[100vw] h-[100vh] ">
         {/* content */}
-        <div className=" max-w-[480px] w-[90vw] h-[85svh] bg-white p-2 rounded-lg overflow-scroll">
-          <div className="flex justify-center relative border-b-2 ">
+        <div className="relative max-w-[480px] w-[90vw] h-[85svh] bg-white px-2 rounded-lg overflow-scroll">
+          <div className="flex sticky top-0 bg-white justify-center  border-b-2 py-2 z-20 ">
             <button
-              className="absolute left-2 top-[0.4rem] text-[1.5rem] "
+              className="absolute left-2 top-[.6rem] text-[2rem] "
               onClick={() => onClose()}
             >
               &lt;

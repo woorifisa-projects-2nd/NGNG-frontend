@@ -17,20 +17,28 @@ export const sendPrivateChatMessage = ({
   message,
   isImage,
   buyerId,
+  sellerId,
   userId,
   privateChatRoomId,
 }: {
   client: StompJs.Client;
   productId: number;
   buyerId: number;
+  sellerId: number;
   message: string;
   userId: number;
   privateChatRoomId: number;
   isImage?: boolean;
 }) => {
+  console.log(
+    `/chats/${productId}/${buyerId}/${userId === buyerId ? sellerId : buyerId}`
+  );
+
   if (isImage !== undefined) {
     client.publish({
-      destination: `/chats/${productId}/${buyerId}`,
+      destination: `/chats/${productId}/${buyerId}/${
+        userId === buyerId ? sellerId : buyerId
+      }`,
       body: JSON.stringify({
         message: message,
         userId,
@@ -40,7 +48,9 @@ export const sendPrivateChatMessage = ({
     });
   } else {
     client.publish({
-      destination: `/chats/${productId}/${buyerId}`,
+      destination: `/chats/${productId}/${buyerId}/${
+        userId === buyerId ? sellerId : buyerId
+      }`,
       body: JSON.stringify({
         message: message,
         userId,
@@ -65,11 +75,15 @@ export const getAllChatMessages = async ({
 export const createTransactionRequest = async ({
   buyerId,
   productId,
+  price,
+  sellerId,
 }: {
   productId: number;
   buyerId: number;
+  sellerId: number;
+  price: number;
 }) => {
-  return await fetch(`/transaction`, {
+  return await fetch(`/transaction/request`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -77,6 +91,8 @@ export const createTransactionRequest = async ({
     body: JSON.stringify({
       productId,
       buyerId,
+      sellerId,
+      price,
     }),
   });
 };
@@ -97,4 +113,8 @@ export const updateTransactionStatus = async ({
       statusId,
     }),
   });
+};
+
+export const getAllChatRoomData = async (userId: number) => {
+  return await fetch(`/private-chats/${userId}`).then((res) => res.json());
 };

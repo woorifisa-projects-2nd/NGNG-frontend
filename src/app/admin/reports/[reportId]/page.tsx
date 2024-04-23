@@ -239,11 +239,14 @@ export default function ReportDetail({ params }: { params: { reportId: number } 
                                 showStatus={false} // 우측상단 상태값
                                 // autoPlay={true}
                                 infiniteLoop={true}
+                            // selectedItem={0}
                             >
 
-                                {report?.reportImages.map(media => (
+                                {report?.reportImages.map((media, index) => (
                                     media.contentType === 'IMAGE' ? ( // 이미지인 경우
-                                        <div onClick={() => handleImageClick(media.imageUrl, media.reportImageId - 1)}>
+                                        <div
+                                            key={index}
+                                            onClick={() => handleImageClick(media.imageUrl, media.reportImageId - 1)}>
                                             <img
                                                 key={media.reportImageId}
                                                 src={media.imageUrl}
@@ -252,7 +255,9 @@ export default function ReportDetail({ params }: { params: { reportId: number } 
                                             />
                                         </div>
                                     ) : ( // 동영상인 경우
-                                        <div onClick={() => handleImageClick(media.imageUrl, media.reportImageId - 1)}>
+                                        <div
+                                            key={index}
+                                            onClick={() => handleImageClick(media.imageUrl, media.reportImageId - 1)}>
                                             <ReactPlayer
                                                 key={media.reportImageId}
                                                 url={media.imageUrl}
