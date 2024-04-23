@@ -1,10 +1,11 @@
-import withPWAInit from "@ducanh2912/next-pwa";
+// import withPWAInit from "@ducanh2912/next-pwa";
 
-const withPWA = withPWAInit({
-  dest: "public",
-});
+// const withPWA = ({
+//   dest: "public",
+//   customWorkerSrc: "/src/worker",
+// });
 
-export default withPWA({
+export default {
   // Your Next.js config
   webpack: (config) => {
     config.module.rules.push({
@@ -28,7 +29,7 @@ export default withPWA({
         },
         {
           source: "/private-chats/:path*",
-          destination: "http://localhost:8081/private-chats/:path*",
+          destination: "http://localhost:8081/:path*",
         },
         {
           source: "/transaction/:path*",
@@ -65,7 +66,7 @@ export default withPWA({
   reactStrictMode: false,
   output: "standalone",
   basePath: "",
-});
+};
 
 // /** @type {import('next').NextConfig} */
 // const nextConfig = {
