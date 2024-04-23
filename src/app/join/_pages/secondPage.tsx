@@ -6,6 +6,7 @@ import AuthCheck from "../_image/authCheck.svg";
 import Link from "next/link";
 import LogoImage from '../../../components/layouts/header/design/SVG/logo.svg'
 import { userInfo } from "../joinPage";
+import { useRouter } from "next/navigation";
 
 type SecondPageProps = {
   user: userInfo;
@@ -15,6 +16,8 @@ type SecondPageProps = {
 }
 
 export default function SecondPage({ user, setUser, currentPage, setCurrentPage }: SecondPageProps) {
+
+  const router = useRouter();
 
   const [insertName, setInsertName] = useState("");
   const [insertPhoneNumber, setInsertPhoneNumber] = useState("");
@@ -78,9 +81,9 @@ export default function SecondPage({ user, setUser, currentPage, setCurrentPage 
       </div>
       <div className="flex justify-center items-center h-screen">
         <div className="flex-col justify-center items-center w-5/6 md:w-1/4 h-auto">
-          <Link href={"/"}>
+          <button type="button" onClick={() => router.push("/")}>
             <LogoImage width={"100%"} />
-          </Link>
+          </button>
           <div className="text-sm mt-14">
             <button type="button" onClick={() => setCurrentPage(1)}>약관동의</button>
             <span> {">"} </span>
