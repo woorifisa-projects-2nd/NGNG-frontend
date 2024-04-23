@@ -1,8 +1,7 @@
 import { useState } from "react";
-import Link from "next/link";
 import EmailImage from './_image/email.svg';
 import PasswordImage from './_image/password.svg';
-import LogoImage from '../../components/layouts/header/design/SVG/logo.svg'
+import LogoImage from './_image/logo.svg';
 import ColorMode from "@/components/layouts/header/components/ColorMode";
 import { useRouter } from "next/navigation";
 
@@ -69,9 +68,11 @@ export default function LoginPage() {
       </div>
       <div className="flex justify-center items-center h-screen">
         <div className="flex-col justify-center items-center w-2/3 md:w-1/4 h-auto">
-          <Link href={"/"}>
-            <LogoImage width={"100%"} />
-          </Link>
+          <div className="flex justify-center w-full h-auto">
+            <button type="button" onClick={() => router.push("/")}>
+              <LogoImage className="w-full" />
+            </button>
+          </div>
           <div>
             <form onSubmit={loginSubmit} className="w-full mt-14">
               <div className="flex items-center rounded-md border-[1px] dark:bg-[#3B3B3B] border-black/45 w-full h-14 p-2">

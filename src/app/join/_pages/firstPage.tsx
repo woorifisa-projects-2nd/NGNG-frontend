@@ -2,6 +2,7 @@ import ColorMode from "@/components/layouts/header/components/ColorMode";
 import Link from "next/link";
 import { useState } from "react";
 import LogoImage from '../../../components/layouts/header/design/SVG/logo.svg'
+import { useRouter } from "next/navigation";
 
 type FirstPageProps = {
   currentPage: number,
@@ -9,6 +10,8 @@ type FirstPageProps = {
 };
 
 export default function FirstPage({ currentPage, setCurrentPage }: FirstPageProps) {
+
+  const router = useRouter();
 
   const [checkbox1, setCheckbox1] = useState<boolean>(false);
   const [checkbox2, setCheckbox2] = useState<boolean>(false);
@@ -48,9 +51,9 @@ export default function FirstPage({ currentPage, setCurrentPage }: FirstPageProp
       </div>
       <div className="flex justify-center items-center h-screen">
         <div className="flex-col justify-center items-center w-5/6 md:w-1/4 h-auto">
-          <Link href={"/"}>
+          <button type="button" onClick={() => router.push("/")}>
             <LogoImage width={"100%"} />
-          </Link>
+          </button>
           <div className="text-sm mt-14">
             <button type="button" className="font-bold">약관동의</button>
             <span> {">"} </span>
@@ -61,7 +64,6 @@ export default function FirstPage({ currentPage, setCurrentPage }: FirstPageProp
             <span>가입완료</span>
           </div>
           <div className="mt-2">
-            {/* <div className="flex justify-start padding"> */}
             <label htmlFor="selectAll">
               <div className="flex pl-4 md:pl-16 items-center border-t-2 border-b-2 border-black/45 dark:border-[#8E8E8E] bg-[#EFEFEF] dark:bg-[#303030] w-full h-24 p-2">
                 <input type="checkbox" name="selectAll" id="selectAll" className="form-checkbox text-black h-5 w-5 bg-transparent border-gray-300 mr-4" checked={selectAll} onChange={handleCheckboxChange} />
@@ -72,23 +74,18 @@ export default function FirstPage({ currentPage, setCurrentPage }: FirstPageProp
                 <br />
               </div>
             </label>
-            {/* </div> */}
-            {/* <div className="flex justify-start"> */}
             <label htmlFor="checkbox1">
               <div className="flex pl-4 md:pl-16 items-center border-b border-black/45 dark:border-[#8E8E8E] dark:bg-[#282828] w-full h-20 p-2">
                 <input type="checkbox" name="checkbox1" id="checkbox1" className="form-checkbox text-black h-5 w-5 bg-transparent border-gray-300 mr-4" checked={checkbox1} onChange={(event) => { setCheckbox1(event.target.checked); setSelectAll(event.target.checked && checkbox2); }} />
                 <span className="text-lg">내꺼니꺼 서비스 이용약관 동의 (필수)</span>
               </div>
             </label>
-            {/* </div> */}
-            {/* <div className="flex justify-start"> */}
             <label htmlFor="checkbox2">
               <div className="flex pl-4 md:pl-16 items-center border-b border-black/45 dark:border-[#8E8E8E] dark:bg-[#282828] w-full h-20 p-2">
                 <input type="checkbox" name="checkbox2" id="checkbox2" className="form-checkbox text-black h-5 w-5 bg-transparent border-gray-300 mr-4" checked={checkbox2} onChange={(event) => { setCheckbox2(event.target.checked); setSelectAll(checkbox1 && event.target.checked); }} />
                 <span className="text-lg">개인정보 수집 및 이용 동의 (필수)</span>
               </div>
             </label>
-            {/* </div> */}
             <div>
               <button onClick={getNextPage} className="border-solid rounded-md text-white bg-point-color w-full h-16 text-3xl mt-12">다음</button>
             </div>

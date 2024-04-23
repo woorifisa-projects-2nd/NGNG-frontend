@@ -7,10 +7,10 @@ const config: Config = {
     "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
   ],
   theme: {
-    fill: {
-      current: "currentColor",
-    },
-    extend: {
+    extend: {      
+      fill: {
+        current: "currentColor",
+      },
       colors: {
         black: "#272727",
         "light-gray": "#EFEFEF",

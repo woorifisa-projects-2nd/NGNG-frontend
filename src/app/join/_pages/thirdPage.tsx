@@ -105,9 +105,9 @@ export default function ThirdPage({ user, setUser, currentPage, setCurrentPage }
       </div>
       <div className="flex justify-center items-center h-screen">
         <div className="flex-col justify-center items-center w-5/6 md:w-1/4 h-auto">
-          <Link href={"/"}>
+          <button type="button" onClick={() => router.push("/")}>
             <LogoImage width={"100%"} />
-          </Link>
+          </button>
           <div className="text-sm mt-14">
             <button type="button" onClick={() => setCurrentPage(1)}>약관동의</button>
             <span> {">"} </span>
