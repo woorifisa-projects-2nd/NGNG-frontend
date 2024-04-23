@@ -6,14 +6,15 @@ import { calculateTimeDifference } from "@/utils";
 
 const Badges = [
   { id: 1, name: "전체" },
-  { id: 2, name: "판매" },
-  { id: 3, name: "구매" },
+  { id: 2, name: "거래 요청" },
+  { id: 3, name: "판매" },
+  { id: 4, name: "구매" },
 ];
 export type ChatData = {
   privateChatRoomId: number;
   seller: { id: number; nickname: string; name: string };
   buyer: { id: number; nickname: string; name: string };
-  transactionDetail: null;
+  transactionDetails: null;
   recentMessage: { message: string; createdAt: string; contentType: string };
   product: {
     productId: number;
@@ -22,6 +23,15 @@ export type ChatData = {
   };
   createdAt: string;
   unreadMessageCount: number;
+  request: {
+    productId: number;
+    sellerId: number;
+    buyerId: number;
+    price: number;
+    createdAt: string;
+    updatedAt: string;
+    isAccepted: boolean;
+  };
 };
 export default function Chat() {
   const userId = 2;
@@ -31,11 +41,17 @@ export default function Chat() {
     "bg-purple-100 text-point-color   dark:bg-purple-900 dark:text-purple-300";
   const defaultClassName =
     "bg-gray-100 text-gray-800  dark:bg-gray-700 dark:text-gray-300";
+  console.log("chat", chatData);
 
   const filtredData =
     currentBadge === 1
       ? chatData
       : currentBadge === 2
+      ? chatData.filter(
+          (data) =>
+            data.seller.id === userId && data.transactionDetails === null
+        )
+      : currentBadge == 3
       ? chatData.filter((data) => data.seller.id === userId)
       : chatData.filter((data) => data.buyer.id === userId);
 
@@ -44,10 +60,12 @@ export default function Chat() {
       setChatData(res);
     });
   }, []);
+
   return (
     <div className="flex justify-center items-center m-4">
       <div
         className="
+        w-2/5
         min-w-[400px]
         rounded-lg
         h-[calc(100vh-160px)]
@@ -76,10 +94,21 @@ export default function Chat() {
         <div className="flex flex-col gap-5 ">
           {filtredData
             .sort((a, b) =>
-              a.recentMessage.createdAt < b.recentMessage.createdAt ? 1 : -1
+              a.recentMessage === null
+                ? 1
+                : b.recentMessage === null
+                ? -1
+                : a.recentMessage.createdAt < b.recentMessage.createdAt
+                ? 1
+                : -1
             )
             .map((chatRoom) => {
               const isSeller = chatRoom.seller.id === userId;
+              console.log(
+                "reuqe",
+                chatRoom.request && chatRoom.request.isAccepted === false
+              );
+
               return (
                 <div
                   key={chatRoom.privateChatRoomId}
@@ -105,9 +134,11 @@ export default function Chat() {
                         alt="프로필 이미지"
                       />
                       <div className="w-0 h-0">
-                        <div className="relative left-8 bottom-4 w-4 h-4 bg-red-500 rounded-full text-white text-center font-semibold text-xs">
-                          {chatRoom.unreadMessageCount}
-                        </div>
+                        {chatRoom.unreadMessageCount > 0 && (
+                          <div className="relative left-8 bottom-12 w-4 h-4 bg-red-500 rounded-full text-white text-center font-semibold text-xs">
+                            {chatRoom.unreadMessageCount}
+                          </div>
+                        )}
                       </div>
                     </div>
 
@@ -123,18 +154,31 @@ export default function Chat() {
                         </span>
                       </div>
                       <div className="text-black">
-                        {chatRoom.recentMessage.message}
+                        {chatRoom.recentMessage &&
+                          chatRoom.recentMessage.message}
                       </div>
                     </div>
                   </div>
-                  <div className="">
-                    {chatRoom.transactionDetail && (
-                      <div className="mb-4 font-medium">배송중</div>
-                    )}
+                  <div className="h-full">
                     <div className="text-xs">
-                      {calculateTimeDifference(
-                        chatRoom.recentMessage.createdAt
-                      )}
+                      <div className="mb-5">
+                        {chatRoom.recentMessage &&
+                          calculateTimeDifference(
+                            chatRoom.recentMessage.createdAt
+                          )}
+                      </div>
+
+                      <div className="font-bold">
+                        {chatRoom.request &&
+                          chatRoom.request.isAccepted === null && (
+                            <div>수락 대기</div>
+                          )}
+                        {chatRoom.request &&
+                          chatRoom.request.isAccepted === false && (
+                            <div>요청 거절</div>
+                          )}
+                        {chatRoom.transactionDetails && <div>배송중</div>}
+                      </div>
                     </div>
                   </div>
                 </div>

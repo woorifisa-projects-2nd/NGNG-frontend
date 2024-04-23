@@ -118,3 +118,22 @@ export const updateTransactionStatus = async ({
 export const getAllChatRoomData = async (userId: number) => {
   return await fetch(`/private-chats/${userId}`).then((res) => res.json());
 };
+
+export const updateTransactionRequest = async ({
+  isAccepted,
+  transactionRequestId,
+}: {
+  transactionRequestId: number;
+  isAccepted: boolean;
+}) => {
+  return await fetch(`/transaction/request`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      transactionRequestId,
+      isAccepted,
+    }),
+  });
+};
