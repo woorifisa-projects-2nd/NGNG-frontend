@@ -1,8 +1,10 @@
 "use client";
+import Loading from "@/assets/Loading.svg";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { getAllChatRoomData } from "./_api";
 import { calculateTimeDifference } from "@/utils";
+import usePrivateChatRoom from "./_hooks/usePrivateChatRoom";
 
 const Badges = [
   { id: 1, name: "전체" },
@@ -35,7 +37,8 @@ export type ChatData = {
 };
 export default function Chat() {
   const userId = 2;
-  const [chatData, setChatData] = useState<ChatData[]>([]);
+
+  const { chatData } = usePrivateChatRoom(userId);
   const [currentBadge, setCurrentBadge] = useState<number>(1);
   const selectedClassName =
     "bg-purple-100 text-point-color   dark:bg-purple-900 dark:text-purple-300";
@@ -45,21 +48,25 @@ export default function Chat() {
 
   const filtredData =
     currentBadge === 1
-      ? chatData
+      ? chatData ?? []
       : currentBadge === 2
-      ? chatData.filter(
+      ? chatData?.filter(
           (data) =>
             data.seller.id === userId && data.transactionDetails === null
-        )
+        ) ?? []
       : currentBadge == 3
-      ? chatData.filter((data) => data.seller.id === userId)
-      : chatData.filter((data) => data.buyer.id === userId);
+      ? chatData?.filter((data) => data.seller.id === userId) ?? []
+      : chatData?.filter((data) => data.buyer.id === userId) ?? [];
 
-  useEffect(() => {
-    getAllChatRoomData(userId).then((res) => {
-      setChatData(res);
-    });
-  }, []);
+  if (filtredData === undefined || chatData === undefined) {
+    return (
+      <div role="status" className="flex justify-center h-[calc(100vh-128px)]">
+        <Loading />
+      </div>
+    );
+  }
+
+  console.log(filtredData);
 
   return (
     <div className="flex justify-center items-center m-4">
@@ -91,9 +98,9 @@ export default function Chat() {
             );
           })}
         </div>
-        <div className="flex flex-col gap-5 ">
+        <div className="flex flex-col gap-5 h-[600px] overflow-y-scroll scrollbar-hide">
           {filtredData
-            .sort((a, b) =>
+            ?.sort((a, b) =>
               a.recentMessage === null
                 ? 1
                 : b.recentMessage === null
@@ -104,10 +111,6 @@ export default function Chat() {
             )
             .map((chatRoom) => {
               const isSeller = chatRoom.seller.id === userId;
-              console.log(
-                "reuqe",
-                chatRoom.request && chatRoom.request.isAccepted === false
-              );
 
               return (
                 <div
@@ -149,7 +152,7 @@ export default function Chat() {
                             ? chatRoom.buyer.nickname
                             : chatRoom.seller.nickname}
                         </span>
-                        <span className="text-gray-500">
+                        <span className="text-gray-500 w-48 text-ellipsis overflow-hidden whitespace-nowrap">
                           {chatRoom.product.productTitle}
                         </span>
                       </div>

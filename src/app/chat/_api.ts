@@ -1,4 +1,5 @@
 import * as StompJs from "@stomp/stompjs";
+import { getAccessToken } from "../my_page/_utils/auth-header";
 
 export const statusList = [
   { id: 1, name: "거래요청" },
@@ -116,7 +117,11 @@ export const updateTransactionStatus = async ({
 };
 
 export const getAllChatRoomData = async (userId: number) => {
-  return await fetch(`/private-chats/${userId}`).then((res) => res.json());
+  return await fetch(`/private-chats/${userId}`, {
+    headers: {
+      Authorization: getAccessToken(),
+    },
+  }).then((res) => res.json());
 };
 
 export const updateTransactionRequest = async ({
