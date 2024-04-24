@@ -4,7 +4,7 @@ import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
 
 export const getProductById = async (id: string) => {
-  const res = await fetch(`http://127.0.0.1:3000/products/${id}`, {
+  const res = await fetch(`http://${process.env.BACKEND_URL}/products/${id}`, {
     cache: "no-store",
   });
 
@@ -82,11 +82,12 @@ export const createPrivateChatRoom = async ({
   }).then((res) => res.json());
 };
 
-
-export const createReport = async (requestReport: RequestReport): Promise<boolean> => {
+export const createReport = async (
+  requestReport: RequestReport
+): Promise<boolean> => {
   // console.log(mapProductToAPISepc(product));
 
-  const res = await fetch(`http://localhost:8080/admin/reports`, {
+  const res = await fetch(`/api/admin/reports`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -107,7 +108,6 @@ export const createReport = async (requestReport: RequestReport): Promise<boolea
   }
 
   return false;
-
 };
 
 const createImages = async (
@@ -127,7 +127,7 @@ const createImages = async (
   console.log(fomData);
 
   // return await fetch("/api/upload", {
-  return await fetch(`http://localhost:8080/reportImages/upload`, {
+  return await fetch(`/api/reportImages/upload`, {
     method: "POST",
     body: fomData,
   });
