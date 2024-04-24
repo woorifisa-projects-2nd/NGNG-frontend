@@ -2,10 +2,14 @@ import * as StompJs from "@stomp/stompjs";
 import { Product, RequestReport } from "../_types/type";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
+import { getAccessToken } from "@/app/my_page/_utils/auth-header";
 
-export const getProductById = async (id: string) => {
-  const res = await fetch(`http://127.0.0.1:3000/products/${id}`, {
-    cache: "no-store",
+export const getProductById = async (id: number) => {
+  // SSR을 하기 위해서 풀 URL 써줘야 함
+  const res = await fetch(`http://localhost:8080/products/${id}`, {
+    headers: {
+      Authorization: getAccessToken(),
+    },
   });
 
   if (res.status === 404) {
@@ -51,14 +55,16 @@ export const findPrivateChatRoomByProductIdAndBuyerId = async (
   productId: number,
   buyerId: number
 ) => {
-  return await fetch(`/private-chats/find/${productId}/${buyerId}`).then(
-    (res) => {
-      if (res.status === 404) {
-        return -1;
-      }
-      return res.json();
+  return await fetch(`/private-chats/find/${productId}/${buyerId}`, {
+    headers: {
+      Authorization: getAccessToken(),
+    },
+  }).then((res) => {
+    if (res.status === 404) {
+      return -1;
     }
-  );
+    return res.json();
+  });
 };
 export const createPrivateChatRoom = async ({
   buyerId,
@@ -73,6 +79,7 @@ export const createPrivateChatRoom = async ({
     method: "POST",
     headers: {
       "Content-Type": "application/json",
+      Authorization: getAccessToken(),
     },
     body: JSON.stringify({
       productId,
@@ -82,14 +89,16 @@ export const createPrivateChatRoom = async ({
   }).then((res) => res.json());
 };
 
-
-export const createReport = async (requestReport: RequestReport): Promise<boolean> => {
+export const createReport = async (
+  requestReport: RequestReport
+): Promise<boolean> => {
   // console.log(mapProductToAPISepc(product));
 
   const res = await fetch(`http://localhost:8080/admin/reports`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
+      Authorization: getAccessToken(),
     },
     body: JSON.stringify(requestReport),
   });
@@ -107,7 +116,6 @@ export const createReport = async (requestReport: RequestReport): Promise<boolea
   }
 
   return false;
-
 };
 
 const createImages = async (
@@ -130,5 +138,8 @@ const createImages = async (
   return await fetch(`http://localhost:8080/reportImages/upload`, {
     method: "POST",
     body: fomData,
+    headers: {
+      Authorization: getAccessToken(),
+    },
   });
 };

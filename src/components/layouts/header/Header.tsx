@@ -24,7 +24,7 @@ export default function Header() {
     <div className="dark:bg-bg-header-dark sticky top-0 z-10 bg-white">
       <div className="hidden md:flex justify-center items-center w-full p-5">
         <div className="flex justify-between items-center w-[90%]">
-          <Link href="/">
+          <Link href="/" className="w-28 h-5">
             <Logo />
           </Link>
           <SearchInput />
@@ -34,7 +34,7 @@ export default function Header() {
 
       <div className="block md:hidden">
         <div className="flex justify-between items-center p-5 w-full">
-          <Link href="/">
+          <Link href="/" className="w-5 h-5">
             <Logo />
           </Link>
           <Menu />
@@ -44,11 +44,6 @@ export default function Header() {
       <div className="hidden md:flex justify-center items-center shadow-md w-full h-12">
         <div className="hidden md:flex justify-around items-center w-[90%]">
           {categories.map((category) => {
-            console.log(
-              "path",
-              pathname.split("/")[2] === category.link.split("/")[2]
-            );
-
             return (
               <Link
                 key={category.name}

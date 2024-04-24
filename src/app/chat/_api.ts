@@ -31,10 +31,6 @@ export const sendPrivateChatMessage = ({
   privateChatRoomId: number;
   isImage?: boolean;
 }) => {
-  console.log(
-    `/chats/${productId}/${buyerId}/${userId === buyerId ? sellerId : buyerId}`
-  );
-
   if (isImage !== undefined) {
     client.publish({
       destination: `/chats/${productId}/${buyerId}/${
@@ -68,12 +64,14 @@ export const getAllChatMessages = async ({
   chatRoomId: number;
   userId: number;
 }) => {
-  return await fetch(`/private-chats/${chatRoomId}/${userId}`).then((res) =>
-    res.json()
-  );
+  return await fetch(`/private-chats/${chatRoomId}/${userId}`, {
+    headers: {
+      Authorization: getAccessToken(),
+    },
+  }).then((res) => res.json());
 };
 
-export const createTransactionRequest = async ({
+export const createTransactionRequestAPI = async ({
   buyerId,
   productId,
   price,
@@ -88,6 +86,7 @@ export const createTransactionRequest = async ({
     method: "POST",
     headers: {
       "Content-Type": "application/json",
+      Authorization: getAccessToken(),
     },
     body: JSON.stringify({
       productId,
@@ -109,6 +108,7 @@ export const updateTransactionStatus = async ({
     method: "PUT",
     headers: {
       "Content-Type": "application/json",
+      Authorization: getAccessToken(),
     },
     body: JSON.stringify({
       statusId,
@@ -124,7 +124,7 @@ export const getAllChatRoomData = async (userId: number) => {
   }).then((res) => res.json());
 };
 
-export const updateTransactionRequest = async ({
+export const updateTransactionRequestAPI = async ({
   isAccepted,
   transactionRequestId,
 }: {
@@ -135,6 +135,7 @@ export const updateTransactionRequest = async ({
     method: "PUT",
     headers: {
       "Content-Type": "application/json",
+      Authorization: getAccessToken(),
     },
     body: JSON.stringify({
       transactionRequestId,

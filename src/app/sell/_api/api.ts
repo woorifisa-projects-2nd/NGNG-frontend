@@ -1,7 +1,7 @@
 import { Product } from "../page";
 const mapProductToAPISepc = (product: Product) => {
   // TODO userId로그인한 사람거로 수정하기
-  const userId = 2;
+  const userId = 1;
 
   return {
     userId,

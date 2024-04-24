@@ -1,8 +1,7 @@
 "use client";
 import Loading from "@/assets/Loading.svg";
 import Image from "next/image";
-import { useEffect, useState } from "react";
-import { getAllChatRoomData } from "./_api";
+import { useState } from "react";
 import { calculateTimeDifference } from "@/utils";
 import usePrivateChatRoom from "./_hooks/usePrivateChatRoom";
 
@@ -16,7 +15,14 @@ export type ChatData = {
   privateChatRoomId: number;
   seller: { id: number; nickname: string; name: string };
   buyer: { id: number; nickname: string; name: string };
-  transactionDetails: null;
+  transactionDetails: {
+    id: number;
+    address: string | null;
+    status: {
+      id: number;
+      status: string;
+    };
+  } | null;
   recentMessage: { message: string; createdAt: string; contentType: string };
   product: {
     productId: number;
@@ -47,16 +53,22 @@ export default function Chat() {
   console.log("chat", chatData);
 
   const filtredData =
-    currentBadge === 1
+    currentBadge === 1 // 전체
       ? chatData ?? []
-      : currentBadge === 2
+      : currentBadge === 2 // 요청
       ? chatData?.filter(
           (data) =>
-            data.seller.id === userId && data.transactionDetails === null
+            data.seller.id === userId &&
+            (data.request === null ||
+              data.request.isAccepted === null ||
+              data.request.isAccepted === false)
         ) ?? []
-      : currentBadge == 3
-      ? chatData?.filter((data) => data.seller.id === userId) ?? []
-      : chatData?.filter((data) => data.buyer.id === userId) ?? [];
+      : currentBadge == 3 //판매
+      ? chatData?.filter(
+          (data) =>
+            data.seller.id === userId && data.request && data.request.isAccepted
+        ) ?? []
+      : chatData?.filter((data) => data.buyer.id === userId) ?? []; // 구매
 
   if (filtredData === undefined || chatData === undefined) {
     return (
@@ -66,8 +78,6 @@ export default function Chat() {
     );
   }
 
-  console.log(filtredData);
-
   return (
     <div className="flex justify-center items-center m-4">
       <div
@@ -75,7 +85,7 @@ export default function Chat() {
         w-2/5
         min-w-[400px]
         rounded-lg
-        h-[calc(100vh-160px)]
+        h-[calc(100vh-180px)]
       p-5
       flex flex-col gap-4
       shadow-[0px_2px_3px_-1px_rgba(0,0,0,0.1),0px_1px_0px_0px_rgba(25,28,33,0.02),0px_0px_0px_1px_rgba(25,28,33,0.08)]"
@@ -135,6 +145,8 @@ export default function Chat() {
                         width={40}
                         height={40}
                         alt="프로필 이미지"
+                        placeholder="blur"
+                        blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAFklEQVR42mN8//HLfwYiAOOoQvoqBABbWyZJf74GZgAAAABJRU5ErkJggg=="
                       />
                       <div className="w-0 h-0">
                         {chatRoom.unreadMessageCount > 0 && (
@@ -164,7 +176,7 @@ export default function Chat() {
                   </div>
                   <div className="h-full">
                     <div className="text-xs">
-                      <div className="mb-5">
+                      <div className="mb-5 text-right">
                         {chatRoom.recentMessage &&
                           calculateTimeDifference(
                             chatRoom.recentMessage.createdAt
@@ -180,7 +192,13 @@ export default function Chat() {
                           chatRoom.request.isAccepted === false && (
                             <div>요청 거절</div>
                           )}
-                        {chatRoom.transactionDetails && <div>배송중</div>}
+                        {chatRoom.request &&
+                          chatRoom.request.isAccepted &&
+                          chatRoom.transactionDetails && (
+                            <div>
+                              {chatRoom.transactionDetails.status.status}
+                            </div>
+                          )}
                       </div>
                     </div>
                   </div>

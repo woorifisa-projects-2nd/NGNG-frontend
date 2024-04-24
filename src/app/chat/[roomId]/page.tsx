@@ -3,99 +3,45 @@ import Loading from "@/assets/Loading.svg";
 import Image from "next/image";
 import PrivateChatting from "./_components/PrivateChatting";
 import { useParams } from "next/navigation";
-import {
-  createTransactionRequest,
-  getAllChatMessages,
-  updateTransactionRequest,
-} from "../_api";
 import { useEffect, useState } from "react";
 import TransactionRequestButton from "./_components/TransactionRequestButton";
 import { createPortal } from "react-dom";
 import TransferRequest from "./_components/TransferRequest";
 import RequestProcess from "./_components/RequestProcess";
 import RequestProcessModal from "./_components/RequestProcessModal";
-export type TransactionRequest = {
-  requestId: number;
-  buyerId: number;
-  createdAt: string;
-  isAccepted: boolean;
-  price: number;
-  productId: number;
-  sellerId: number;
-  updatedAt: string;
-};
-export type PrivateChat = {
-  chatRoomId: number;
-  product: {
-    productId: number;
-    productTitle: string;
-    price: number;
-    isEscrow: boolean;
-    discountable: false;
-    thumbnailUrl: string;
-    transactionDetails?: TransactionDetails | null;
-    seller: PrivateChatUser;
-    buyer: PrivateChatUser;
-    requests: TransactionRequest[];
-  };
-  messages: PrivateChatMessage[] | null;
-};
-
-export type TransactionDetails = {
-  address: string | null;
-  id: number;
-  status: {
-    id: number;
-    status: string;
-  };
-};
-export type PrivateChatUser = {
-  id: number;
-  name: string;
-  nickname: string;
-  address: string;
-  accountBank: null | string;
-  accountNumber: null | string;
-};
-export type PrivateChatMessage = {
-  chatId: number;
-  message: string;
-  createdAt: string;
-  user: {
-    id: number;
-    name: string;
-    nickname: string;
-    address: string;
-    accountBank?: string | null;
-    accountNumber?: string | null;
-  };
-  contentType: string;
-};
+import usePrivateChatMessage from "../_hooks/usePrivateChatMessgae";
+import { mutate } from "swr";
 
 export default function PrivateChat() {
   const params = useParams<{
     roomId: string;
   }>();
-  const userId = 2;
+  const userId = 1;
 
-  const [data, setData] = useState<PrivateChat | undefined>(undefined);
+  const { data, updateTransactionRequest, createTransactionRequest } =
+    usePrivateChatMessage({
+      chatRoomId: Number(params.roomId),
+      userId,
+    });
   const [open, setOpen] = useState<boolean>(false);
   const [requestProcessModalOpen, setRequestProcessModalOpen] =
     useState<boolean>(false);
   const transactionStatus =
     data?.product?.transactionDetails?.status.status ?? null;
-  const isSeller = data && data.product.seller.id === userId;
+  const isSeller = data && data.product?.seller.id === userId;
+  console.log(isSeller, data);
+
   const [price, setPrice] = useState<number>(data?.product?.price ?? 0);
 
   const mapTransactionStatusToActiveButton = () => {
     if (!data) return;
 
-    const alreadyRequetesd =
-      data.product.requests.filter((req) => req.buyerId === userId).length > 0;
+    const alreadyRequetesd = !!data.request;
     const isPending = data.product.transactionDetails === null;
     const isAccepted =
-      data.product.requests.find((req) => req.buyerId === userId)?.isAccepted ??
-      false;
+      data.request &&
+      data.request.isAccepted &&
+      data.request.isAccepted === true;
 
     if (transactionStatus === null && !isSeller) {
       return alreadyRequetesd ? (
@@ -150,20 +96,9 @@ export default function PrivateChat() {
     }
   };
 
-  const fetchData = () => {
-    getAllChatMessages({
-      chatRoomId: Number(params.roomId),
-      userId,
-    }).then((res) => {
-      console.log("result", res);
-      setData(res);
-      setPrice(res.product.price);
-    });
-  };
-
   useEffect(() => {
-    fetchData();
-  }, []);
+    if (data) setPrice(data.product.price);
+  }, [data]);
 
   const onClose = () => {
     setOpen(false);
@@ -181,36 +116,34 @@ export default function PrivateChat() {
         sellerId: data.product.seller.id,
         price,
       }).then(() => {
-        fetchData();
         setOpen(false);
       });
   };
 
   const onAccept = () => {
-    const request = data?.product.requests.find(
-      (req) => req.buyerId === data.product.buyer.id
-    );
+    const request = data?.request;
+    console.log("accept", request);
+
     request &&
       updateTransactionRequest({
-        transactionRequestId: request?.requestId,
+        requestId: request?.requestId,
         isAccepted: true,
       }).then(() => {
-        fetchData();
-        setOpen(false);
+        setRequestProcessModalOpen(false);
+        mutate("/chat/private-chat/chat-room-id/user-id");
       });
   };
 
   const onDismiss = () => {
-    const request = data?.product.requests.find(
-      (req) => req.buyerId === data.product.buyer.id
-    );
+    const request = data?.request;
+    console.log("dismiss", request);
     request &&
       updateTransactionRequest({
-        transactionRequestId: request?.requestId,
+        requestId: request?.requestId,
         isAccepted: false,
       }).then(() => {
-        fetchData();
-        setOpen(false);
+        setRequestProcessModalOpen(false);
+        mutate("/chat/private-chat/chat-room-id/user-id");
       });
   };
 
@@ -278,11 +211,7 @@ export default function PrivateChat() {
       {requestProcessModalOpen &&
         createPortal(
           <RequestProcessModal
-            requestPrice={
-              data.product.requests.find(
-                (req) => req.buyerId === data.product.buyer.id
-              )?.price ?? data.product.price
-            }
+            requestPrice={data.request?.price ?? data.product.price}
             onClose={() => {
               setRequestProcessModalOpen(false);
             }}

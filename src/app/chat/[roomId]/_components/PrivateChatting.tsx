@@ -6,8 +6,12 @@ import { useEffect, useRef, useState } from "react";
 import Message from "@/components/common/chat/Message";
 import * as StompJs from "@stomp/stompjs";
 import Image from "next/image";
-import { PrivateChat, PrivateChatMessage } from "../page";
+
 import { sendPrivateChatMessage } from "../../_api";
+import {
+  PrivateChat,
+  PrivateChatMessage,
+} from "../../_hooks/usePrivateChatMessgae";
 
 type ChattingProps = {
   data: PrivateChat;

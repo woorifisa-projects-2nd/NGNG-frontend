@@ -18,10 +18,12 @@
     "next": "14.1.4",
     "next-compose-plugins": "^2.2.1",
     "next-themes": "^0.3.0",
+    "plaiceholder": "^3.0.0",
     "react": "^18",
     "react-dom": "^18",
     "react-player": "^2.16.0",
     "react-responsive-carousel": "^3.2.23",
+    "sharp": "^0.33.3",
     "swr": "^2.2.5",
     "tailwind-scrollbar-hide": "^1.1.7",
     "uuid": "^9.0.1"

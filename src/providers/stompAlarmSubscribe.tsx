@@ -61,18 +61,18 @@ export default function StompAlarmSubscibe() {
   //   }
   client.activate();
 
-  useEffect(() => {
-    if (
-      Notification.permission === "denied" ||
-      Notification.permission === "default"
-    ) {
-      Notification.requestPermission();
-    }
+  // useEffect(() => {
+  //   if (
+  //     Notification.permission === "denied" ||
+  //     Notification.permission === "default"
+  //   ) {
+  //     Notification.requestPermission();
+  //   }
 
-    return () => {
-      client.deactivate();
-    };
-  }, []);
+  //   return () => {
+  //     client.deactivate();
+  //   };
+  // }, []);
 
   return (
     <div
