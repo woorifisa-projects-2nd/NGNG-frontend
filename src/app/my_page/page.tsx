@@ -13,6 +13,7 @@ import UpdateAddress from "./_compoenets/modal/UpdateAddress";
 import ConfirmEmail from "./_compoenets/modal/ConfirmEmail";
 import ConfirmAccount from "./_compoenets/modal/ConfirmAccount";
 import useMypageSWR from "./_hooks/useMypageSWR";
+import SkeletonMyinfo from "./_compoenets/skeleton/SkeletonMyinfo";
 
 export default function Page() {
   const { user: userInfo, deleteProduct } = useMypageSWR();
@@ -30,7 +31,7 @@ export default function Page() {
   };
 
   //   추후 Suspense 로바꾸면 좋을거 같음
-  if (!userInfo) return <div>로딩중..</div>;
+  if (!userInfo) return <SkeletonMyinfo />;
 
   return (
     <div className="max-w-[1240px] flex-col justify-center mx-auto p-4">
