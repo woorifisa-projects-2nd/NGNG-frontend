@@ -92,15 +92,14 @@ export default function ProductDetail() {
                     images: addedImages
                 };
 
-                // if (addedImages.length > 0) {
-                //     const response2 = await updateImages(product.id, updatedProduct);
-                // }
-
-                createProduct(updatedProduct);
+                const success: boolean = await createProduct(updatedProduct);
+                if (success) {
+                    alert('수정 완료되었습니다.');
+                    window.location.reload();
+                } else {
+                    alert('수정에 실패했습니다.');
+                }
             }
-
-
-
 
         }
     };

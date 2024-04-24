@@ -16,6 +16,7 @@ export type Tag = {
 type Image = {
   id: number;
   imageURL: string;
+  contentType: string;
 };
 
 export type Chat = {

@@ -1,11 +1,12 @@
 "use client"
-import Refresh from "@/components/layouts/admin_menu/design/SVG/refresh.svg";
 import CheckReport from "@/components/layouts/admin_menu/design/SVG/check_report.svg";
 import Trash from "@/components/layouts/admin_menu/design/SVG/trash-2.svg";
+import Plus from "@/components/layouts/admin_menu/design/SVG/Plus.svg";
 import { useState, useEffect } from 'react';
 import Link from "next/link";
 import { useRouter } from 'next/navigation';
 import { User } from "./_types/type";
+import { getAccessToken } from "./_utils/auth-header";
 
 export default function UserManagement() {
     const router = useRouter();
@@ -25,17 +26,21 @@ export default function UserManagement() {
 
     // 페이지를 변경할 때 해당 페이지의 데이터를 가져오는 함수
     async function fetchReportsByPage(pageNumber: number) {
-        const url = `http://localhost:8080/admin/users`;
+        const url = `http://localhost:8080/admin/users?page=${pageNumber}`;
 
-        await fetch(url)
+        await fetch(url, {
+            headers: {
+                Authorization: getAccessToken(),
+            },
+        })
             .then(resp => resp.json())
             .then(result => {
-                setUsers(result);
+                setUsers(result.content);
                 // console.log(result.content);
 
-                // setCurrentPage(result.pageable.pageNumber);
-                // setTotalPages(result.totalPages);
-                // setItemsPerPage(result.pageable.pageSize)
+                setCurrentPage(result.pageable.pageNumber);
+                setTotalPages(result.totalPages);
+                setItemsPerPage(result.pageable.pageSize)
             });
     }
 
@@ -95,18 +100,19 @@ export default function UserManagement() {
         return pageNumbers;
     };
 
-    const handleCreateProduct = () => {
+    const handleCreateuser = () => {
         router.push('/admin/users'); // '/sell' 경로로 이동합니다.
     };
 
-    const handleDelete = async (productId: number) => {
+    const handleDelete = async (userId: number) => {
         const shouldDelete = window.confirm('정말로 삭제하시겠습니까?');
 
         if (shouldDelete) {
-            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}users/${productId}`, {
+            const res = await fetch(`http://localhost:8080/admin/users/${userId}`, {
                 method: "DELETE",
                 headers: {
                     "Content-Type": "application/json",
+                    Authorization: getAccessToken(),
                 }
             });
         }
@@ -119,10 +125,10 @@ export default function UserManagement() {
 
             <div className="flex justify-between mb-5">
 
-                <div className="flex cursor-pointer" onClick={handleCreateProduct}>
-                    <Refresh className="mr-2" />
+                {/* <div className="flex cursor-pointer items-center" onClick={handleCreateuser}>
+                    <Plus />
                     <div>사용자 등록</div>
-                </div>
+                </div> */}
             </div>
 
             <div>
@@ -141,12 +147,15 @@ export default function UserManagement() {
                         <div key={user.userId} className="border-b border-gray-300 rounded p-3 flex items-center">
                             <div className="w-1/6">{index + 1 + currentPage * itemsPerPage}</div>
                             <div className="w-1/6">{user.userId}</div>
-                            <div className="w-1/6">{user.name + '\n@' + user.nickName}</div>
+                            <div className="w-1/6">
+                                <p>{user.name}</p>
+                                <p className="text-gray-400">@{user.nickName}</p>
+                            </div>
                             <div className="w-1/6">{user.phoneNumber}</div>
                             <div className="w-1/6">{user.email}</div>
                             <div className="w-1/6">{user.address}</div>
                             <div className="w-1/6">
-                                <div className="p-5 flex">
+                                <div className="p-5 flex items-center">
                                     <Link href={`/admin/users/${user.userId}`}><CheckReport /></Link>
                                     <div className="cursor-pointer" onClick={() => handleDelete(user.userId)} >
                                         <Trash />
@@ -160,7 +169,7 @@ export default function UserManagement() {
 
             <div className="flex justify-center space-x-4">
                 <Link
-                    href={!disablePrevious ? `/admin/products?page=${Math.floor(currentPage / maxPageButtons) * maxPageButtons - maxPageButtons + 1}` : "#"}
+                    href={!disablePrevious ? `/admin/users?page=${Math.floor(currentPage / maxPageButtons) * maxPageButtons - maxPageButtons + 1}` : "#"}
                     onClick={e => {
                         if (disablePrevious) {
                             e.preventDefault();
@@ -174,7 +183,7 @@ export default function UserManagement() {
                 </Link>
                 {renderPageNumbers()}
                 <Link
-                    href={!disableNext ? `/admin/products?page=${Math.floor(currentPage / maxPageButtons) * maxPageButtons + maxPageButtons + 1}` : "#"}
+                    href={!disableNext ? `/admin/users?page=${Math.floor(currentPage / maxPageButtons) * maxPageButtons + maxPageButtons + 1}` : "#"}
                     onClick={e => {
                         if (disableNext) {
                             e.preventDefault();

@@ -2,9 +2,12 @@
 import Refresh from "@/components/layouts/admin_menu/design/SVG/refresh.svg";
 import CheckReport from "@/components/layouts/admin_menu/design/SVG/check_report.svg";
 import Trash from "@/components/layouts/admin_menu/design/SVG/trash-2.svg";
+import Plus from "@/components/layouts/admin_menu/design/SVG/Plus.svg";
 import { useState, useEffect } from 'react';
 import Link from "next/link";
 import { useRouter } from 'next/navigation';
+import Sell from "@/app/sell/page";
+import { getAccessToken } from "./_utils/auth-header";
 
 type User = {
     id: number;
@@ -66,12 +69,11 @@ type Product = {
 export default function ProductManagement() {
     const router = useRouter();
     const [products, setProducts] = useState<Product[]>([]);
-    const [currentPage, setCurrentPage] = useState<number>(0);
-    const [totalPages, setTotalPages] = useState<number>(0);
-
-    console.log(products);
+    const [view, setView] = useState<string>('list');  // 'list' 또는 'create'
 
     // 페이지 관련
+    const [currentPage, setCurrentPage] = useState<number>(0);
+    const [totalPages, setTotalPages] = useState<number>(0);
     const [itemsPerPage, setItemsPerPage] = useState<number>(0);
     const [maxPageButtons, setMaxPageButtons] = useState<number>(5); // 최대 페이지 버튼 수
     const [startPage, setStartPage] = useState<number>(0); // 페이징 번호 시작 페이지
@@ -84,7 +86,11 @@ export default function ProductManagement() {
         const url = `${process.env.NEXT_PUBLIC_API_URL}products?page=${pageNumber}`;
         // const url = `${process.env.NEXT_PUBLIC_API_URL}products/page=${pageNumber}`;
 
-        await fetch(url)
+        await fetch(url, {
+            headers: {
+                Authorization: getAccessToken(),
+            },
+        })
             .then(resp => resp.json())
             .then(result => {
                 setProducts(result.content);
@@ -152,10 +158,6 @@ export default function ProductManagement() {
         return pageNumbers;
     };
 
-    const handleCreateProduct = () => {
-        router.push('/sell'); // '/sell' 경로로 이동합니다.
-    };
-
     const handleDelete = async (productId: number) => {
         const shouldDelete = window.confirm('정말로 삭제하시겠습니까?');
 
@@ -170,14 +172,32 @@ export default function ProductManagement() {
         fetchReportsByPage(currentPage);
     };
 
+    const handleCreateProduct = () => {
+        setView('create');  // 뷰 상태를 'create'로 변경
+    };
+
+    const handleReturnToList = () => {
+        setView('list');  // 뷰 상태를 'list'로 변경
+    };
+
+
+    if (view === 'create') {
+        return (
+            <div>
+                <button onClick={handleReturnToList}>목록으로 돌아가기</button>
+                <Sell />
+            </div>
+        );
+    }
+
     return (
         <div className="p-5">
             <div className="text-3xl font-bold mb-16">상품 관리</div>
 
             <div className="flex justify-between mb-5">
 
-                <div className="flex cursor-pointer" onClick={handleCreateProduct}>
-                    <Refresh className="mr-2" />
+                <div className="flex cursor-pointer items-center" onClick={handleCreateProduct}>
+                    <Plus />
                     <div>상품 등록</div>
                 </div>
             </div>
@@ -203,7 +223,7 @@ export default function ProductManagement() {
                             <div className="w-1/6">{product.user.name}</div>
                             <div className="w-1/6">{product.category.name}</div>
                             <div className="w-1/6">
-                                <div className="p-5 flex">
+                                <div className="p-5 flex items-center">
                                     <Link href={`/admin/products/${product.id}`}><CheckReport /></Link>
                                     <div className="cursor-pointer" onClick={() => handleDelete(product.id)} >
                                         <Trash />

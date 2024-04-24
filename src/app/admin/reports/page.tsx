@@ -3,6 +3,7 @@ import Refresh from "@/components/layouts/admin_menu/design/SVG/refresh.svg";
 import CheckReport from "@/components/layouts/admin_menu/design/SVG/check_report.svg";
 import { useState, useEffect } from 'react';
 import Link from "next/link";
+import { getAccessToken } from "./_utils/auth-header";
 
 type ReportTypeDetails = {
     reportTypeId: number;
@@ -46,13 +47,14 @@ export default function ReportManagement() {
 
     // 페이지를 변경할 때 해당 페이지의 데이터를 가져오는 함수
     async function fetchReportsByPage(pageNumber: number, unprocessedOnly: boolean) {
-        // const url = unprocessedOnly
-        //     ? `${process.env.NEXT_PUBLIC_API_URL}admin/reports/unprocessed?page=${pageNumber}`
-        //     : `${process.env.NEXT_PUBLIC_API_URL}admin/reports?page=${pageNumber}`;
 
-        const url2 = `${process.env.NEXT_PUBLIC_API_URL}admin/reports?page=${pageNumber}&unprocessedOnly=${unprocessedOnly}`;
+        const url = `${process.env.NEXT_PUBLIC_API_URL}admin/reports?page=${pageNumber}&unprocessedOnly=${unprocessedOnly}`;
 
-        await fetch(url2)
+        await fetch(url, {
+            headers: {
+                Authorization: getAccessToken(),
+            },
+        })
             .then(resp => resp.json())
             .then(result => {
                 setReports(result.content);
@@ -167,7 +169,7 @@ export default function ReportManagement() {
                                 <p className="text-gray-400">@{report.user.nickname}</p>
                             </div>
                             <div className="w-1/6">{report.reportType.reportType}</div>
-                            <div className={`w-1/6 ${report.isReport ? 'text-green-500' : 'text-red-500'}`}>
+                            <div className={`w-1/6 ${report.isReport ? 'bg-green-100 text-green-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-green-900 dark:text-green-300' : 'bg-red-100 text-red-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-red-900 dark:text-red-300'}`}>
                                 {report.isReport ? 'True' : 'False'}
                             </div>
                             <div className="w-1/6">

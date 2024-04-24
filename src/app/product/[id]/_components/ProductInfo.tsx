@@ -12,6 +12,10 @@ import {
   findPrivateChatRoomByProductIdAndBuyerId,
 } from "../../_api/api";
 import ReportModal from "./ReportModal";
+import "react-responsive-carousel/lib/styles/carousel.min.css";
+import { Carousel } from 'react-responsive-carousel';
+import ReactPlayer from 'react-player';
+import ImageModal from "./ImageModal";
 
 type ProductInfoProps = {
   data: Product;
@@ -25,8 +29,39 @@ export default function ProudctInfo({ data, userId }: ProductInfoProps) {
   // const [isReportedByMe, setIsReportedByMe] = useState<boolean>(false);
   const router = useRouter();
 
+  // 이미지 보기
+  const [showModal, setShowModal] = useState<boolean>(false);
+  const [currentImageIndex, setCurrentImageIndex] = useState<number>(0);
+
   const handleReportSuccess = (newData: Product): void => {
 
+  };
+
+  // 이미지를 클릭했을 때 모달을 열고 해당 이미지를 표시하는 함수
+  const handleImageClick = (imageUrl: string, index: number) => {
+    setCurrentImageIndex(index);
+    setShowModal(true);
+  };
+
+  // 다음 이미지로 이동하는 함수
+  const goToNextImage = () => {
+    if (data?.images) {
+      const nextIndex = (currentImageIndex + 1) % data?.images.length;
+      setCurrentImageIndex(nextIndex);
+    }
+  };
+
+  // 이전 이미지로 이동하는 함수
+  const goToPreviousImage = () => {
+    if (data?.images) {
+      const previousIndex = (currentImageIndex - 1 + data?.images.length) % data?.images.length;
+      setCurrentImageIndex(previousIndex);
+    }
+  };
+
+  // 모달을 닫는 함수
+  const closeModal = () => {
+    setShowModal(false);
   };
 
   // TODO : 사용자 계좌인증여부
@@ -45,14 +80,60 @@ export default function ProudctInfo({ data, userId }: ProductInfoProps) {
     <div className="px-3 py-5 ">
       <div className="block xl:flex">
         <div className="w-full xl:w-1/2 justify-center mr-10 flex items-center">
-          <div className="w-full">
-            <Image
-              className="object-contain w-full rounded h-auto"
-              alt="상품 상세 이미지"
-              src={data.images[0].imageURL}
-              width={600}
-              height={600}
-            />
+          <div className="w-80">
+            <Carousel
+              className=""
+              showArrows={true}
+              showThumbs={false}
+              showStatus={false} // 우측상단 상태값
+              infiniteLoop={true}
+            >
+              {data?.images.map((media, index) => (
+                media.contentType === 'IMAGE' ? ( // 이미지인 경우
+                  <div
+                    key={index}
+                    onClick={() => handleImageClick(media.imageURL, index)}
+                  >
+                    <Image
+                      key={media.id}
+                      className="object-contain object-center h-96 w-h-96"
+                      src={media.imageURL}
+                      width={600}
+                      height={600}
+                      alt={`productImage_${media.id}`}
+                    />
+                  </div>
+                ) : ( // 동영상인 경우
+                  <div
+                    key={index}
+                    className="flex justify-center"
+                    onClick={() => handleImageClick(media.imageURL, index)}
+                  >
+                    <ReactPlayer
+                      key={media.id}
+                      className="object-cover object-center h-80 max-w-max"
+                      url={media.imageURL}
+                      alt={`productVideo_${media.id}`}
+                      controls={true}
+                    />
+                  </div>
+                )
+              ))}
+            </Carousel>
+
+            {showModal &&
+              createPortal(
+                <ImageModal
+                  showModal={showModal}
+                  closeModal={closeModal}
+                  data={data}
+                  currentImageIndex={currentImageIndex}
+                  goToPreviousImage={goToPreviousImage}
+                  goToNextImage={goToNextImage}
+                />,
+                document.body
+              )}
+
             <div className="flex justify-between items-center mt-4">
               <div className="flex items-center gap-4  text-xl">
                 <Image
@@ -70,8 +151,9 @@ export default function ProudctInfo({ data, userId }: ProductInfoProps) {
                 ) : isReportedByMe ? (
                   "이미 신고한 상품입니다"
                 ) : (
-                  <div className="cursor-pointer" onClick={() => setShowReportModal(true)}>
-                    <SirenIcon /> 신고하기
+                  <div className="cursor-pointer flex items-center gap-1" onClick={() => setShowReportModal(true)}>
+                    <SirenIcon />
+                    <div>신고하기</div>
                   </div>
                 )}
               </div>

@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import { Carousel } from 'react-responsive-carousel';
 import ReactPlayer from 'react-player';
+import { getAccessToken } from "../_utils/auth-header";
 
 type ReportTypeDetails = {
     reportTypeId: number;
@@ -81,7 +82,11 @@ export default function ReportDetail({ params }: { params: { reportId: number } 
 
     // API로부터 신고 데이터를 가져오는 함수
     async function fetchReport() {
-        fetch(process.env.NEXT_PUBLIC_API_URL + `admin/reports/${params.reportId}`)
+        fetch(`http://localhost:8080/admin/reports/${params.reportId}`, {
+            headers: {
+                Authorization: getAccessToken(),
+            },
+        })
             .then(resp => resp.json())
             .then(result => {
 
@@ -94,7 +99,11 @@ export default function ReportDetail({ params }: { params: { reportId: number } 
 
     // API로부터 패널티 데이터를 가져오는 함수
     async function fetchPenalty(results: any) {
-        fetch(process.env.NEXT_PUBLIC_API_URL + `admin/penalties/${params.reportId}`)
+        fetch(process.env.NEXT_PUBLIC_API_URL + `admin/penalties/${params.reportId}`, {
+            headers: {
+                Authorization: getAccessToken(),
+            },
+        })
             .then(resp => resp.json())
             .then(result => {
                 const findPenaltyLevel = penaltyLevels.find(level => level.id === result.penaltyLevel.penaltyLevelId);
@@ -124,7 +133,8 @@ export default function ReportDetail({ params }: { params: { reportId: number } 
                 const response = await fetch(process.env.NEXT_PUBLIC_API_URL + "admin/penalties", {
                     method: 'POST',
                     headers: {
-                        'Content-Type': 'application/json'
+                        'Content-Type': 'application/json',
+                        Authorization: getAccessToken(),
                     },
                     body: JSON.stringify(postData)
                 });
@@ -192,7 +202,7 @@ export default function ReportDetail({ params }: { params: { reportId: number } 
         setShowModal(false);
     };
 
-    console.log(penalty);
+    console.log(report?.reportImages);
 
 
 
@@ -246,7 +256,8 @@ export default function ReportDetail({ params }: { params: { reportId: number } 
                                     media.contentType === 'IMAGE' ? ( // 이미지인 경우
                                         <div
                                             key={index}
-                                            onClick={() => handleImageClick(media.imageUrl, media.reportImageId - 1)}>
+                                            onClick={() => handleImageClick(media.imageUrl, index)}
+                                        >
                                             <img
                                                 key={media.reportImageId}
                                                 src={media.imageUrl}
@@ -257,7 +268,8 @@ export default function ReportDetail({ params }: { params: { reportId: number } 
                                     ) : ( // 동영상인 경우
                                         <div
                                             key={index}
-                                            onClick={() => handleImageClick(media.imageUrl, media.reportImageId - 1)}>
+                                            onClick={() => handleImageClick(media.imageUrl, index)}
+                                        >
                                             <ReactPlayer
                                                 key={media.reportImageId}
                                                 url={media.imageUrl}

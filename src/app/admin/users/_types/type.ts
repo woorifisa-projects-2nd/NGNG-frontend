@@ -4,8 +4,8 @@ export type User = {
   nickName: string,
   phoneNumber: string,
   email: string,
-  accountBank: string | null;
-  accountNumber: string | null;
+  accountBank: string | number;
+  accountNumber: string | number;
   address: string,
   role: {
     roleId: number,
