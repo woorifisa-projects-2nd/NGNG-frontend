@@ -1,3 +1,3 @@
 export const getAccessToken = () => {
-  return `Bearer ${localStorage.getItem("accessToken")?.slice(1, -1)}`;
+  return `${localStorage.getItem("accessToken")?.slice(1, -1)}`;
 };

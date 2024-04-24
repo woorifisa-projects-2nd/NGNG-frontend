@@ -8,6 +8,7 @@ import ModalSmall from "../_design/ModalSmall";
 import SellProductDetail from "./modal/SellProductDetail";
 import useMypageSWR from "../_hooks/useMypageSWR";
 import ModalLarge from "../_design/ModalLarge";
+import { updateProductPurchaseById } from "../_api/api";
 
 type Props = {
   sellList: Product[];
@@ -15,43 +16,28 @@ type Props = {
 };
 
 export default function SellHistory({ sellList, deleteProduct }: Props) {
-  const { UpdateTransactionDetailStatus } = useMypageSWR();
-
   const [isOnlySell, setIsOnlySell] = useState<boolean>(false);
   const [isOpenProductModal, setIsOpenModal] = useState<boolean>(false);
 
-  const [selectProduct, setSelectProduct] = useState<Product>();
+  const [selectIndex, setSelectIndex] = useState<number>();
 
   const handleDeleteProduct = (productId: number) => {
     if (confirm("정말 삭제 하실 겁니까?")) {
       deleteProduct(productId);
-      setSelectProduct(undefined);
       setIsOpenModal(false);
     }
   };
 
-  const openModalProduct = (productId: number) => {
-    const select = sellList.filter((sell) => sell.id === productId)[0];
-    setSelectProduct(select);
-    setIsOpenModal(true);
-  };
+  const updateDate = async () => {
+    if (!selectIndex) return;
 
-  const updateDate = () => {
-    console.log("끌어 올리기");
-  };
+    const data = (await updateProductPurchaseById(
+      sellList[selectIndex].id
+    )) as string;
 
-  const handleChangeProductStatus = (status: string) => {
-    if (!selectProduct) return;
-
-    UpdateTransactionDetailStatus({
-      data: {
-        transactionDetailsId: +selectProduct.transactionDetails!.id,
-        status,
-      },
-      Done: () => {
-        setIsOpenModal(false);
-      },
-    });
+    if (+data == sellList[selectIndex].id) {
+      alert("상품의 게시 시간을 갱신 하였습니다.");
+    }
   };
 
   return (
@@ -74,11 +60,14 @@ export default function SellHistory({ sellList, deleteProduct }: Props) {
             .filter((item) =>
               isOnlySell ? !item.transactionDetails?.status?.status : true
             )
-            .map((slae, key) => (
+            .map((slae, index) => (
               <div
-                key={key}
+                key={index}
                 className="relative cursor-pointer hmx-auto hover:scale-110 transition-all"
-                onClick={() => openModalProduct(slae.id)}
+                onClick={() => {
+                  setIsOpenModal(true);
+                  setSelectIndex(index);
+                }}
               >
                 <ProductCard
                   imageSrc={
@@ -93,15 +82,13 @@ export default function SellHistory({ sellList, deleteProduct }: Props) {
               </div>
             ))}
         {isOpenProductModal &&
-          selectProduct &&
           createPortal(
             <ModalLarge
-              title={selectProduct.title}
+              title={sellList[selectIndex!].title}
               onClose={() => setIsOpenModal(false)}
             >
               <SellProductDetail
-                product={selectProduct}
-                chnageStatus={handleChangeProductStatus}
+                product={sellList[selectIndex!]}
                 deleteProduct={handleDeleteProduct}
                 updateDate={updateDate}
               />
