@@ -1,9 +1,11 @@
 "use client";
 import Loading from "@/assets/Loading.svg";
 import Image from "next/image";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { calculateTimeDifference } from "@/utils";
 import usePrivateChatRoom from "./_hooks/usePrivateChatRoom";
+import { UserContext } from "@/providers/UserContext";
+import { redirect } from "next/navigation";
 
 const Badges = [
   { id: 1, name: "전체" },
@@ -42,9 +44,13 @@ export type ChatData = {
   };
 };
 export default function Chat() {
-  const userId = 2;
+  const { getUser } = useContext(UserContext);
+  const user = getUser();
+  if (user === undefined) {
+    redirect("/login");
+  }
 
-  const { chatData } = usePrivateChatRoom(userId);
+  const { chatData } = usePrivateChatRoom(user.id);
   const [currentBadge, setCurrentBadge] = useState<number>(1);
   const selectedClassName =
     "bg-purple-100 text-point-color   dark:bg-purple-900 dark:text-purple-300";
@@ -58,7 +64,7 @@ export default function Chat() {
       : currentBadge === 2 // 요청
       ? chatData?.filter(
           (data) =>
-            data.seller.id === userId &&
+            data.seller.id === user.id &&
             (data.request === null ||
               data.request.isAccepted === null ||
               data.request.isAccepted === false)
@@ -66,9 +72,11 @@ export default function Chat() {
       : currentBadge == 3 //판매
       ? chatData?.filter(
           (data) =>
-            data.seller.id === userId && data.request && data.request.isAccepted
+            data.seller.id === user.id &&
+            data.request &&
+            data.request.isAccepted
         ) ?? []
-      : chatData?.filter((data) => data.buyer.id === userId) ?? []; // 구매
+      : chatData?.filter((data) => data.buyer.id === user.id) ?? []; // 구매
 
   if (filtredData === undefined || chatData === undefined) {
     return (
@@ -120,7 +128,7 @@ export default function Chat() {
                 : -1
             )
             .map((chatRoom) => {
-              const isSeller = chatRoom.seller.id === userId;
+              const isSeller = chatRoom.seller.id === user.id;
 
               return (
                 <div
@@ -186,16 +194,16 @@ export default function Chat() {
                       <div className="font-bold">
                         {chatRoom.request &&
                           chatRoom.request.isAccepted === null && (
-                            <div>수락 대기</div>
+                            <div className="min-w-[45px]">수락 대기</div>
                           )}
                         {chatRoom.request &&
                           chatRoom.request.isAccepted === false && (
-                            <div>요청 거절</div>
+                            <div className="min-w-[45px]">요청 거절</div>
                           )}
                         {chatRoom.request &&
                           chatRoom.request.isAccepted &&
                           chatRoom.transactionDetails && (
-                            <div>
+                            <div className="min-w-[45px]">
                               {chatRoom.transactionDetails.status.status}
                             </div>
                           )}

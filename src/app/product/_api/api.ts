@@ -16,8 +16,6 @@ export const getProductById = async (id: number) => {
     return { status: res.status, data: undefined };
   } else {
     return res.json().then((data) => {
-      console.log("data", data);
-
       return { status: res.status, data: data as Product };
     });
   }
@@ -27,17 +25,19 @@ export const sendPublicChatMessage = ({
   productId,
   message,
   isImage,
+  userId,
 }: {
   client: StompJs.Client;
   productId: number;
   message: string;
   isImage?: boolean;
+  userId: number;
 }) => {
   client.publish({
     destination: `/chats/${productId}`,
     body: JSON.stringify({
       message: message,
-      userId: 1,
+      userId,
       isImage,
     }),
   });

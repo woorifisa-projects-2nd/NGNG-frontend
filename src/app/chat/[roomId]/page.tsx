@@ -2,8 +2,8 @@
 import Loading from "@/assets/Loading.svg";
 import Image from "next/image";
 import PrivateChatting from "./_components/PrivateChatting";
-import { useParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { redirect, useParams } from "next/navigation";
+import { useContext, useEffect, useState } from "react";
 import TransactionRequestButton from "./_components/TransactionRequestButton";
 import { createPortal } from "react-dom";
 import TransferRequest from "./_components/TransferRequest";
@@ -11,24 +11,29 @@ import RequestProcess from "./_components/RequestProcess";
 import RequestProcessModal from "./_components/RequestProcessModal";
 import usePrivateChatMessage from "../_hooks/usePrivateChatMessgae";
 import { mutate } from "swr";
+import { UserContext } from "@/providers/UserContext";
 
 export default function PrivateChat() {
   const params = useParams<{
     roomId: string;
   }>();
-  const userId = 1;
+  const { getUser } = useContext(UserContext);
+  const user = getUser();
+  if (user === undefined) {
+    redirect("/login");
+  }
 
   const { data, updateTransactionRequest, createTransactionRequest } =
     usePrivateChatMessage({
       chatRoomId: Number(params.roomId),
-      userId,
+      userId: user.id,
     });
   const [open, setOpen] = useState<boolean>(false);
   const [requestProcessModalOpen, setRequestProcessModalOpen] =
     useState<boolean>(false);
   const transactionStatus =
     data?.product?.transactionDetails?.status.status ?? null;
-  const isSeller = data && data.product?.seller.id === userId;
+  const isSeller = data && data.product?.seller.id === user.id;
   console.log(isSeller, data);
 
   const [price, setPrice] = useState<number>(data?.product?.price ?? 0);
@@ -111,7 +116,7 @@ export default function PrivateChat() {
   const onChangeTransactionStatus = () => {
     data &&
       createTransactionRequest({
-        buyerId: userId,
+        buyerId: user.id,
         productId: data?.product.productId,
         sellerId: data.product.seller.id,
         price,
@@ -159,7 +164,7 @@ export default function PrivateChat() {
     <div className="relative h-full scrollbar-hide max-h-[640px]">
       <div className="fixed top-0 w-full bg-white dark:bg-black min-h-28 z-10">
         <div className="relative flex justify-center font-bold p-2 ">
-          {data.product.seller.id === userId
+          {data.product.seller.id === user.id
             ? data.product.buyer.nickname
             : data.product.seller.nickname}
           <span className="cursor-pointer absolute right-2 flex items-center text-red-500 text-sm">

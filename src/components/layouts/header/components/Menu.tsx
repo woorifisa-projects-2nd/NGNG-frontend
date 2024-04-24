@@ -1,12 +1,15 @@
 import ColorMode from "./ColorMode";
 import AtferLoginMenu from "./AfterLoginMenu";
 import BeforeLoginMenu from "./BeforeLoginMenu";
-import { getAccessToken } from "@/app/my_page/_utils/auth-header";
+import { useContext } from "react";
+import { UserContext } from "@/providers/UserContext";
 
 export default function Menu() {
-  // TODO : 로그인여부 확인
-  const isLogin = true;
-  console.log("토큰 = ", getAccessToken());
+  const { getUser } = useContext(UserContext);
+  const user = getUser();
+  console.log("user", user);
+
+  const isLogin = user !== undefined;
 
   return (
     <div className="flex justify-between items-center gap-4">

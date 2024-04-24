@@ -34,7 +34,7 @@ export default function Header() {
 
       <div className="block md:hidden">
         <div className="flex justify-between items-center p-5 w-full">
-          <Link href="/" className="w-5 h-5">
+          <Link href="/" className="w-24 h-5">
             <Logo />
           </Link>
           <Menu />
@@ -48,9 +48,9 @@ export default function Header() {
               <Link
                 key={category.name}
                 href={category.link}
-                className={`${
+                className={`hover:bg-light-gray/50 p-2 ${
                   pathname.split("/")[2] === category.link.split("/")[2] &&
-                  "text-point-color font-bold"
+                  "text-point-color font-bold "
                 }`}
               >
                 {category.name}

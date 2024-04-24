@@ -4,24 +4,33 @@ import NoticeIcon from "../_design/SVG/Megaphone.svg";
 import CloseIcon from "@/assets/SVG/Close.svg";
 import ImagePlusIcon from "@/assets/SVG/Plus.svg";
 import MessageSendIcon from "@/assets/SVG/CaretLeft.svg";
-import { useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import Message from "@/components/common/chat/Message";
 import * as StompJs from "@stomp/stompjs";
 import { sendPublicChatMessage } from "../../_api/api";
 import Image from "next/image";
 import { Chat, Product } from "../../_types/type";
+import { UserContext } from "@/providers/UserContext";
+import { redirect } from "next/navigation";
 
 type ChattingProps = {
   data: Product;
-  userId: number;
 };
-export default function Chatting({ data, userId }: ChattingProps) {
+export default function Chatting({ data }: ChattingProps) {
+  const { getUser } = useContext(UserContext);
+  const user = getUser();
+
   const recentChatRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const [stompClient, setStompClient] = useState<StompJs.Client | null>(null);
   const [chatData, setChatData] = useState<Chat[]>(data.chats);
   const [message, setMessage] = useState<string>("");
   const [image, setImage] = useState<File | undefined>(undefined);
+
+  if (user === undefined) {
+    redirect("/login");
+  }
+
   const isReported =
     data.reports === null
       ? false
@@ -52,6 +61,7 @@ export default function Chatting({ data, userId }: ChattingProps) {
         message: URL.createObjectURL(image),
         productId: data.id,
         isImage: true,
+        userId: user.id,
       });
 
     chatData !== undefined &&
@@ -61,7 +71,7 @@ export default function Chatting({ data, userId }: ChattingProps) {
           id: chatData?.slice(-1)[0].id + 1,
           createdAt: new Date().toUTCString(),
           message: URL.createObjectURL(image),
-          userId: 2,
+          userId: user.id,
           userName: "테스트",
           userNickName: "테스트",
         },
@@ -84,6 +94,7 @@ export default function Chatting({ data, userId }: ChattingProps) {
         client: stompClient,
         message,
         productId: data.id,
+        userId: user.id,
       });
 
     chatData !== undefined &&
@@ -93,7 +104,7 @@ export default function Chatting({ data, userId }: ChattingProps) {
           id: chatData?.slice(-1)[0]?.id + 1,
           createdAt: new Date().toUTCString(),
           message: message,
-          userId,
+          userId: user.id,
           userName: "테스트",
           userNickName: "테스트",
         },
@@ -186,7 +197,7 @@ export default function Chatting({ data, userId }: ChattingProps) {
   return (
     <div className="lg:sticky relative w-full lg:w-[30%] dark:lg:shadow-gray-950 lg:shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px] p-5 h-[calc(100vh-128px)]  lg:top-[128px]  min-w-80 shadow-none dark:bg-bg-black">
       <div className="bg-transparent border-b-[1px] border-text-gray text-center w-full text-2xl pb-2 font-bold text-point-color">
-        {data.user.id === userId ? "내꺼채팅" : "니꺼채팅"}
+        {data.user.id === user.id ? "내꺼채팅" : "니꺼채팅"}
 
         <div className="flex items-center text-sm font-normal text-black  justify-center w-full">
           <NoticeIcon className="mr-2 fill-black dark:fill-white " />
@@ -210,7 +221,7 @@ export default function Chatting({ data, userId }: ChattingProps) {
               return (
                 <Message
                   key={chat.id}
-                  direction={userId === chat.userId ? "right" : "left"}
+                  direction={user.id === chat.userId ? "right" : "left"}
                   userName={data.user.nickname}
                   text={chat.message}
                   isImage={chat.isImage}

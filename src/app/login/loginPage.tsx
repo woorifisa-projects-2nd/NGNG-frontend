@@ -1,24 +1,17 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import EmailImage from "./_image/email.svg";
 import PasswordImage from "./_image/password.svg";
 import LogoImage from "./_image/logo.svg";
 import ColorMode from "@/components/layouts/header/components/ColorMode";
 import { useRouter } from "next/navigation";
-
-interface User {
-  id: number;
-  nickname: string;
-}
+import { UserContext } from "@/providers/UserContext";
 
 export default function LoginPage() {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLogin, setIsLogin] = useState(false);
-  const [user, setUser] = useState<User>({
-    id: -1,
-    nickname: "",
-  }); // 전역으로 관리
+  const { setUser } = useContext(UserContext);
 
   const loginSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault(); // submit해도 화면이 새로고침되지 않게 하는 메서드
@@ -49,6 +42,7 @@ export default function LoginPage() {
         setUser({
           id: data.id,
           nickname: data.nickname,
+          name: data.name,
         });
 
         console.log(
