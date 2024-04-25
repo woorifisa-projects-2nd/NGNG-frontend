@@ -1,10 +1,14 @@
 import ColorMode from "./ColorMode";
 import AtferLoginMenu from "./AfterLoginMenu";
 import BeforeLoginMenu from "./BeforeLoginMenu";
+import { useContext } from "react";
+import { UserContext } from "@/providers/UserContext";
 
 export default function Menu() {
-  // TODO : 로그인여부 확인
-  const isLogin = true;
+  const { getUser } = useContext(UserContext);
+  const user = getUser();
+
+  const isLogin = user !== undefined;
 
   return (
     <div className="flex justify-between items-center gap-4">

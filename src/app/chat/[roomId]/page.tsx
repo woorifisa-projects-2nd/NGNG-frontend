@@ -2,109 +2,71 @@
 import Loading from "@/assets/Loading.svg";
 import Image from "next/image";
 import PrivateChatting from "./_components/PrivateChatting";
-import { useParams } from "next/navigation";
-import { createTransactionRequest, getAllChatMessages } from "../_api";
-import { useEffect, useState } from "react";
+import { redirect, useParams } from "next/navigation";
+import { useContext, useEffect, useState } from "react";
 import TransactionRequestButton from "./_components/TransactionRequestButton";
 import { createPortal } from "react-dom";
 import TransferRequest from "./_components/TransferRequest";
-export type TransactionRequest = {
-  buyerId: number;
-  createdAt: string;
-  isAccepted: boolean;
-  price: number;
-  productId: number;
-  sellerId: number;
-  updatedAt: string;
-};
-export type PrivateChat = {
-  chatRoomId: number;
-  product: {
-    productId: number;
-    productTitle: string;
-    price: number;
-    isEscrow: boolean;
-    discountable: false;
-    thumbnailUrl: string;
-    transactionDetails?: TransactionDetails | null;
-    seller: PrivateChatUser;
-    buyer: PrivateChatUser;
-    requests: TransactionRequest[];
-  };
-  messages: PrivateChatMessage[] | null;
-};
-
-export type TransactionDetails = {
-  address: string | null;
-  id: number;
-  status: {
-    id: number;
-    status: string;
-  };
-};
-export type PrivateChatUser = {
-  id: number;
-  name: string;
-  nickname: string;
-  address: string;
-  accountBank: null | string;
-  accountNumber: null | string;
-};
-export type PrivateChatMessage = {
-  chatId: number;
-  message: string;
-  createdAt: string;
-  user: {
-    id: number;
-    name: string;
-    nickname: string;
-    address: string;
-    accountBank?: string | null;
-    accountNumber?: string | null;
-  };
-  contentType: string;
-};
+import RequestProcess from "./_components/RequestProcess";
+import RequestProcessModal from "./_components/RequestProcessModal";
+import usePrivateChatMessage from "../_hooks/usePrivateChatMessgae";
+import { mutate } from "swr";
+import { UserContext } from "@/providers/UserContext";
 
 export default function PrivateChat() {
   const params = useParams<{
     roomId: string;
   }>();
-  const userId = 1;
+  const { getUser } = useContext(UserContext);
+  const user = getUser();
+  if (user === undefined) {
+    redirect("/login");
+  }
 
-  const [data, setData] = useState<PrivateChat | undefined>(undefined);
+  const { data, updateTransactionRequest, createTransactionRequest } =
+    usePrivateChatMessage({
+      chatRoomId: Number(params.roomId),
+      userId: user.id,
+    });
   const [open, setOpen] = useState<boolean>(false);
+  const [requestProcessModalOpen, setRequestProcessModalOpen] =
+    useState<boolean>(false);
   const transactionStatus =
-    data?.product.transactionDetails?.status.status ?? null;
-  const isSeller = data && data.product.seller.id === userId;
-  const [price, setPrice] = useState<number>(data?.product.price ?? 0);
+    data?.product?.transactionDetails?.status.status ?? null;
+  const isSeller = data && data.product?.seller.id === user.id;
+  console.log(isSeller, data);
+
+  const [price, setPrice] = useState<number>(data?.product?.price ?? 0);
 
   const mapTransactionStatusToActiveButton = () => {
     if (!data) return;
-    const alreadyRequetesd =
-      data.product.requests.filter((req) => req.buyerId === userId).length > 0;
+
+    const alreadyRequetesd = !!data.request;
     const isPending = data.product.transactionDetails === null;
-    const isAccepted = data.product.requests.find(
-      (req) => req.buyerId === userId
-    )?.isAccepted;
+    const isAccepted =
+      data.request &&
+      data.request.isAccepted &&
+      data.request.isAccepted === true;
+
     if (transactionStatus === null && !isSeller) {
       return alreadyRequetesd ? (
         isPending ? (
           <span
-            className="  text-black
+            className="min-w-[72px]  text-black
       font-semibold text-sm"
           >
             수락 대기중
           </span>
         ) : isAccepted ? (
           <span
-            className="text-green-600 
+            className="min-w-[72px]  text-green-600 
       font-semibold text-sm"
           >
             거래진행중
           </span>
         ) : (
           <span
-            className="text-text-gray 
+            className="min-w-[72px]  text-text-gray 
       font-semibold text-sm"
           >
             거래거절
@@ -117,28 +79,31 @@ export default function PrivateChat() {
           }}
         />
       );
-    } else if (isSeller) {
+    } else if (isSeller && isPending) {
+      return (
+        <RequestProcess
+          onClick={() => {
+            setRequestProcessModalOpen(true);
+          }}
+        />
+      );
+    } else if (isSeller && !isAccepted) {
+      return (
+        <span
+          className="min-w-[72px]  text-text-gray 
+      font-semibold text-sm"
+        >
+          요청 거절
+        </span>
+      );
+    } else {
       return "";
     }
   };
 
-  const fetchData = () => {
-    getAllChatMessages({
-      chatRoomId: Number(params.roomId),
-      userId,
-    }).then((res) => {
-      console.log("result", res);
-      setData(res);
-      setPrice(res.product.price);
-    });
-  };
-
   useEffect(() => {
-    fetchData();
-    // fetch("/transaction/request/7")
-    //   .then((res) => res.json())
-    //   .then((res) => console.log("res", res));
-  }, []);
+    if (data) setPrice(data.product.price);
+  }, [data]);
 
   const onClose = () => {
     setOpen(false);
@@ -151,13 +116,39 @@ export default function PrivateChat() {
   const onChangeTransactionStatus = () => {
     data &&
       createTransactionRequest({
-        buyerId: userId,
+        buyerId: user.id,
         productId: data?.product.productId,
         sellerId: data.product.seller.id,
         price,
       }).then(() => {
-        fetchData();
         setOpen(false);
+      });
+  };
+
+  const onAccept = () => {
+    const request = data?.request;
+    console.log("accept", request);
+
+    request &&
+      updateTransactionRequest({
+        requestId: request?.requestId,
+        isAccepted: true,
+      }).then(() => {
+        setRequestProcessModalOpen(false);
+        mutate("/chat/private-chat/chat-room-id/user-id");
+      });
+  };
+
+  const onDismiss = () => {
+    const request = data?.request;
+    console.log("dismiss", request);
+    request &&
+      updateTransactionRequest({
+        requestId: request?.requestId,
+        isAccepted: false,
+      }).then(() => {
+        setRequestProcessModalOpen(false);
+        mutate("/chat/private-chat/chat-room-id/user-id");
       });
   };
 
@@ -173,7 +164,7 @@ export default function PrivateChat() {
     <div className="relative h-full scrollbar-hide max-h-[640px]">
       <div className="fixed top-0 w-full bg-white dark:bg-black min-h-28 z-10">
         <div className="relative flex justify-center font-bold p-2 ">
-          {data.product.seller.id === userId
+          {data.product.seller.id === user.id
             ? data.product.buyer.nickname
             : data.product.seller.nickname}
           <span className="cursor-pointer absolute right-2 flex items-center text-red-500 text-sm">
@@ -191,7 +182,9 @@ export default function PrivateChat() {
               alt={data.product.productTitle}
             />
             <div>
-              <p className="">{data.product.productTitle}</p>
+              <p className="text-ellipsis w-48 overflow-hidden whitespace-nowrap">
+                {data.product.productTitle}
+              </p>
               <div className="flex items-baseline">
                 <p className="mr-2 font-bold">
                   {data.product.price.toLocaleString()}원
@@ -217,6 +210,18 @@ export default function PrivateChat() {
             onChangePrice={onChangePrice}
             onClose={onClose}
             onChangeTransactionStatus={onChangeTransactionStatus}
+          />,
+          document.body
+        )}
+      {requestProcessModalOpen &&
+        createPortal(
+          <RequestProcessModal
+            requestPrice={data.request?.price ?? data.product.price}
+            onClose={() => {
+              setRequestProcessModalOpen(false);
+            }}
+            onAccept={onAccept}
+            onDismiss={onDismiss}
           />,
           document.body
         )}

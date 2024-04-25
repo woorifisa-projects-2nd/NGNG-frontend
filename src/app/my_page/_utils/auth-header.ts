@@ -1,3 +1,8 @@
 export const getAccessToken = () => {
-  return `${localStorage.getItem("accessToken")?.slice(1, -1)}`;
+  if (typeof window !== "undefined") {
+    const token = localStorage.getItem("accessToken")?.replaceAll('"', "");
+    return token !== undefined ? `${token}` : "";
+  } else {
+    return "";
+  }
 };
