@@ -1,6 +1,8 @@
 import { getAccessToken } from "../_utils/auth-header";
 
 export const getFetchMyPage = async () => {
+  console.log("acces", getAccessToken());
+
   const res = await fetch(`/api/users/mypage`, {
     headers: {
       Authorization: getAccessToken(),
