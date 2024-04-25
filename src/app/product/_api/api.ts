@@ -2,38 +2,48 @@ import * as StompJs from "@stomp/stompjs";
 import { Product, RequestReport } from "../_types/type";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
+import { getAccessToken } from "@/app/my_page/_utils/auth-header";
 
+<<<<<<< HEAD
+export const getProductById = async (id: number) => {
+  return await fetch(`http://localhost:8080/products/${id}`, {
+    headers: {
+      Authorization: getAccessToken(),
+    },
+  }).then(async (res) => {
+    if (res.status === 404) {
+      return { status: res.status, data: undefined };
+    } else {
+      return {
+        status: res.status,
+        data: (await res.json()) as unknown as Product,
+      };
+    }
+=======
 export const getProductById = async (id: string) => {
-  const res = await fetch(`http://127.0.0.1:3000/products/${id}`, {
+  const res = await fetch(`http://${process.env.BACKEND_URL}/products/${id}`, {
     cache: "no-store",
+>>>>>>> 56852bf37344b88c8706a935ba2889a300978b95
   });
-
-  if (res.status === 404) {
-    return { status: res.status, data: undefined };
-  } else {
-    return res.json().then((data) => {
-      console.log("data", data);
-
-      return { status: res.status, data: data as Product };
-    });
-  }
 };
 export const sendPublicChatMessage = ({
   client,
   productId,
   message,
   isImage,
+  userId,
 }: {
   client: StompJs.Client;
   productId: number;
   message: string;
   isImage?: boolean;
+  userId: number;
 }) => {
   client.publish({
     destination: `/chats/${productId}`,
     body: JSON.stringify({
       message: message,
-      userId: 1,
+      userId,
       isImage,
     }),
   });
@@ -51,14 +61,16 @@ export const findPrivateChatRoomByProductIdAndBuyerId = async (
   productId: number,
   buyerId: number
 ) => {
-  return await fetch(`/private-chats/find/${productId}/${buyerId}`).then(
-    (res) => {
-      if (res.status === 404) {
-        return -1;
-      }
-      return res.json();
+  return await fetch(`/private-chats/find/${productId}/${buyerId}`, {
+    headers: {
+      Authorization: getAccessToken(),
+    },
+  }).then((res) => {
+    if (res.status === 404) {
+      return -1;
     }
-  );
+    return res.json();
+  });
 };
 export const createPrivateChatRoom = async ({
   buyerId,
@@ -73,6 +85,7 @@ export const createPrivateChatRoom = async ({
     method: "POST",
     headers: {
       "Content-Type": "application/json",
+      Authorization: getAccessToken(),
     },
     body: JSON.stringify({
       productId,
@@ -82,14 +95,16 @@ export const createPrivateChatRoom = async ({
   }).then((res) => res.json());
 };
 
-
-export const createReport = async (requestReport: RequestReport): Promise<boolean> => {
+export const createReport = async (
+  requestReport: RequestReport
+): Promise<boolean> => {
   // console.log(mapProductToAPISepc(product));
 
-  const res = await fetch(`http://localhost:8080/admin/reports`, {
+  const res = await fetch(`/api/admin/reports`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
+      Authorization: getAccessToken(),
     },
     body: JSON.stringify(requestReport),
   });
@@ -107,7 +122,6 @@ export const createReport = async (requestReport: RequestReport): Promise<boolea
   }
 
   return false;
-
 };
 
 const createImages = async (
@@ -127,8 +141,11 @@ const createImages = async (
   console.log(fomData);
 
   // return await fetch("/api/upload", {
-  return await fetch(`http://localhost:8080/reportImages/upload`, {
+  return await fetch(`/api/reportImages/upload`, {
     method: "POST",
     body: fomData,
+    headers: {
+      Authorization: getAccessToken(),
+    },
   });
 };

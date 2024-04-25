@@ -1,11 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useContext, useState } from "react";
 import TabContent from "./_components/TabContent";
 import TabHeader from "./_components/TabHeader";
 import Button from "@/components/common/Button";
 import { createProduct } from "./_api/api";
 import { useRouter } from "next/navigation";
+import { UserContext } from "@/providers/UserContext";
 
 export type Product = {
   order: number;
@@ -46,6 +47,8 @@ const getDummyProduct = (order: number) => {
 
 export default function Sell() {
   const router = useRouter();
+  const { getUser } = useContext(UserContext);
+  const user = getUser();
   const [currentOrder, setCurrentOrder] = useState<number>(0);
   const [products, setProducts] = useState<Product[]>([getDummyProduct(0)]);
   const allfullfilledSaveCondition =
@@ -73,8 +76,9 @@ export default function Sell() {
 
   const onClickButton = () => {
     products.forEach(async (product) => {
-      const res = await createProduct(product);
+      const res = await createProduct({ product, userId: user?.id ?? -1 });
       router.push(`../${res}`);
+      console.log("create", res);
     });
   };
   return (

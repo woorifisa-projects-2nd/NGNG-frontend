@@ -11,12 +11,13 @@ export async function generateMetadata(
   parent: ResolvingMetadata
 ): Promise<Metadata> {
   // read route params
+
   const id = params.userId;
 
   // fetch data
-  const userInfo = await fetch(`http://localhost:8080/user/${id}`).then((res) =>
-    res.json()
-  );
+  const userInfo = await fetch(
+    `${process.env.BACKEND_URL}/products/${id}`
+  ).then((res) => res.json());
 
   return {
     // title: userInfo.name + "이야",
@@ -24,6 +25,18 @@ export async function generateMetadata(
       description: userInfo.name + "입니다.",
     },
   };
+}
+
+export async function generateStaticParams() {
+  console.log(process.env.TEST);
+
+  // const posts = await fetch('https://.../posts').then((res) => res.json())
+
+  return [
+    {
+      userId: process.env.TEST,
+    },
+  ];
 }
 
 const delayFetch = (url: any, options?: any) =>
@@ -34,16 +47,13 @@ const delayFetch = (url: any, options?: any) =>
   });
 
 export default async function Page({ params, searchParams }: Props) {
-  const userInfo = await delayFetch(
-    `http://localhost:8080/user/${params.userId}`,
-    {
-      delay: 2000,
-    }
-  ).then((res: any) => res.json());
+  const userInfo = await delayFetch(`/products/${params.userId}`, {
+    delay: 2000,
+  }).then((res: any) => res.json());
 
   return (
     <div>
-      <p>User hi {userInfo.name}</p>
+      <p>User hi {userInfo.title}</p>
     </div>
   );
 }

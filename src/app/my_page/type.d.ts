@@ -1,17 +1,7 @@
 type TransactionDetails = {
   id: number;
   address: string;
-  product: {
-    productId: number;
-    title: string;
-    price: number;
-    isEscrow: boolean;
-    purchaseAt: Date | null;
-    visible: boolean;
-    freeShipping: boolean;
-    status: string;
-    category: string;
-  };
+  product: Product;
   consumer: {
     name: string;
     phoneNumber: string;
