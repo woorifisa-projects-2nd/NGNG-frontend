@@ -1,17 +1,36 @@
+<<<<<<< HEAD
 import { useContext, useState } from "react";
+=======
+import { useState } from "react";
+>>>>>>> 56852bf37344b88c8706a935ba2889a300978b95
 import EmailImage from "./_image/email.svg";
 import PasswordImage from "./_image/password.svg";
 import LogoImage from "./_image/logo.svg";
 import ColorMode from "@/components/layouts/header/components/ColorMode";
 import { useRouter } from "next/navigation";
+<<<<<<< HEAD
 import { UserContext } from "@/providers/UserContext";
+=======
+
+interface User {
+  id: number;
+  nickname: string;
+}
+>>>>>>> 56852bf37344b88c8706a935ba2889a300978b95
 
 export default function LoginPage() {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLogin, setIsLogin] = useState(false);
+<<<<<<< HEAD
   const { setUser } = useContext(UserContext);
+=======
+  const [user, setUser] = useState<User>({
+    id: -1,
+    nickname: "",
+  }); // 전역으로 관리
+>>>>>>> 56852bf37344b88c8706a935ba2889a300978b95
 
   const loginSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault(); // submit해도 화면이 새로고침되지 않게 하는 메서드
@@ -28,7 +47,7 @@ export default function LoginPage() {
     formData.append("email", email);
     formData.append("password", password);
 
-    const url = "http://localhost:8080/login";
+    const url = "/api/login";
     const options = {
       method: "POST",
       body: formData,
@@ -37,11 +56,16 @@ export default function LoginPage() {
     console.log("url", url);
 
     fetch(url, options)
+<<<<<<< HEAD
       .then((res) => res.json())
+=======
+      .then((res: Response) => res.json())
+>>>>>>> 56852bf37344b88c8706a935ba2889a300978b95
       .then((data) => {
         setUser({
           id: data.id,
           nickname: data.nickname,
+<<<<<<< HEAD
           name: data.name,
         });
 
@@ -50,6 +74,9 @@ export default function LoginPage() {
           data,
           JSON.stringify(data.accessToken)
         );
+=======
+        });
+>>>>>>> 56852bf37344b88c8706a935ba2889a300978b95
 
         // accessToken은 localStorage에, refreshToken은 securityCookie에 저장(자동)
         localStorage.setItem("accessToken", JSON.stringify(data.accessToken));

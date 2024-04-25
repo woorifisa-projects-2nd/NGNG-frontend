@@ -29,7 +29,7 @@ export default function StompAlarmSubscibe() {
     }
   }
   const client = new StompJs.Client({
-    brokerURL: "ws://localhost:8081/chat-server",
+    brokerURL: `${process.env.NEXT_PUBLIC_CHAT_SOCKET}/chat-server`,
     reconnectDelay: 5000,
   });
   client.onConnect = () => {
