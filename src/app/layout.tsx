@@ -2,6 +2,8 @@ import type { Metadata, Viewport } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
 import ColorModeProvider from "@/providers/ColorModeProvider";
+import UserContext from "@/providers/UserContext";
+import UserContextProvider from "@/providers/UserContext";
 export const viewport: Viewport = {
   themeColor: "#873EAC",
 };
@@ -88,7 +90,9 @@ export default function RootLayout({
         /> */}
       </head>
       <body className={pretendard.className}>
-        <ColorModeProvider>{children}</ColorModeProvider>
+        <UserContextProvider>
+          <ColorModeProvider>{children}</ColorModeProvider>
+        </UserContextProvider>
       </body>
     </html>
   );
