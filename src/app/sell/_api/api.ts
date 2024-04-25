@@ -1,3 +1,4 @@
+import { getAccessToken } from "@/app/my_page/_utils/auth-header";
 import { Product } from "../page";
 
 const mapProductToAPISepc = ({
@@ -35,6 +36,7 @@ export const createProduct = async ({
     method: "POST",
     headers: {
       "Content-Type": "application/json",
+      "Authorization": getAccessToken()
     },
     body: JSON.stringify(mapProductToAPISepc({ product, userId })),
   });
@@ -64,6 +66,9 @@ const createImages = async (
 
   return await fetch("/products/upload", {
     method: "POST",
+    headers: {
+      "Authorization": getAccessToken()
+    },
     body: fomData,
   });
 };

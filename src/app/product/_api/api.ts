@@ -4,26 +4,9 @@ import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
 import { getAccessToken } from "@/app/my_page/_utils/auth-header";
 
-<<<<<<< HEAD
-export const getProductById = async (id: number) => {
-  return await fetch(`http://localhost:8080/products/${id}`, {
-    headers: {
-      Authorization: getAccessToken(),
-    },
-  }).then(async (res) => {
-    if (res.status === 404) {
-      return { status: res.status, data: undefined };
-    } else {
-      return {
-        status: res.status,
-        data: (await res.json()) as unknown as Product,
-      };
-    }
-=======
 export const getProductById = async (id: string) => {
   const res = await fetch(`http://${process.env.BACKEND_URL}/products/${id}`, {
     cache: "no-store",
->>>>>>> 56852bf37344b88c8706a935ba2889a300978b95
   });
 };
 export const sendPublicChatMessage = ({
