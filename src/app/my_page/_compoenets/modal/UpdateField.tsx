@@ -1,13 +1,18 @@
 import React, { useRef, useState } from "react";
 import useMypageSWR from "../../_hooks/useMypageSWR";
+import {
+  ModalStatus,
+  useModalController,
+} from "../../_provider/ModalProovider";
 
 type Props = {
   filedName: string;
-  onCloseModal: () => void;
+  type: ModalStatus;
 };
 
-export default function UpdateField({ filedName, onCloseModal }: Props) {
+export default function UpdateField({ filedName, type }: Props) {
   const { updateProfile } = useMypageSWR();
+  const [_, setModal] = useModalController();
 
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -17,7 +22,7 @@ export default function UpdateField({ filedName, onCloseModal }: Props) {
         {
           nickname: inputRef.current.value,
         },
-        () => onCloseModal()
+        () => setModal({ type, isOpen: false })
       );
   };
 
