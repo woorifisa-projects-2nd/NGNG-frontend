@@ -2,14 +2,14 @@ import useSWR from "swr";
 import { getProductById } from "../../_api/api";
 import { Product } from "../../_types/type";
 
-type ProductRespons = {
+export type ProductRespons = {
   status: number;
-  data: Product;
+  data?: Product;
 };
 const useProduct = (productId: number) => {
   const { data: product, mutate } = useSWR<ProductRespons>(
     "/api/products/id",
-    () => getProductById(productId)
+    () => getProductById(productId).then((res) => res as ProductRespons)
   );
 
   return {

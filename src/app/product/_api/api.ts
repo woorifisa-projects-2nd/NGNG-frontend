@@ -3,8 +3,9 @@ import { Product, RequestReport } from "../_types/type";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
 import { getAccessToken } from "@/app/my_page/_utils/auth-header";
+import { ProductRespons } from "../[id]/_hooks/useProduct";
 
-export const getProductById = async (id: number) => {
+export const getProductById = async (id: number): Promise<ProductRespons> => {
   return await fetch(`/products/${id}`, {
     headers: {
       Authorization: getAccessToken(),
