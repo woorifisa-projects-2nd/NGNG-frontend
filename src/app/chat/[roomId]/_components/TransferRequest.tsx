@@ -26,7 +26,7 @@ export default function TransferRequest({
         />
         <div className=" h-48 w-full">
           <div className="ml-2 mb-3 font-semibold text-lg ">
-            얼마를 받을까요?
+            얼마에 거래 요청할까요?
           </div>
           <div className="flex relative items-center font-medium mb-5 w-full">
             <Input

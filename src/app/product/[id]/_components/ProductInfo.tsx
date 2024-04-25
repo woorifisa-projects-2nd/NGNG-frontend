@@ -3,31 +3,34 @@ import Button from "@/components/common/Button";
 import Image from "next/image";
 import { Product } from "../../_types/type";
 import SirenIcon from "@/assets/SVG/Siren.svg";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { createPortal } from "react-dom";
 import AccountAuthenticationWanringModal from "./AccountAuthenticationWanringModal";
-import { useRouter } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
 import {
   createPrivateChatRoom,
   findPrivateChatRoomByProductIdAndBuyerId,
 } from "../../_api/api";
 import ReportModal from "./ReportModal";
+import { UserContext } from "@/providers/UserContext";
 
 type ProductInfoProps = {
   data: Product;
-  userId: number;
 };
 
-export default function ProudctInfo({ data, userId }: ProductInfoProps) {
+export default function ProudctInfo({ data }: ProductInfoProps) {
+  const { getUser } = useContext(UserContext);
+  const user = getUser();
   const [open, setOpen] = useState<boolean>(false);
   const [showReportModal, setShowReportModal] = useState<boolean>(false);
   // const [isReported, setIsReported] = useState<boolean>(false);
   // const [isReportedByMe, setIsReportedByMe] = useState<boolean>(false);
   const router = useRouter();
 
-  const handleReportSuccess = (newData: Product): void => {
-
-  };
+  const handleReportSuccess = (newData: Product): void => {};
+  if (user === undefined) {
+    redirect("/login");
+  }
 
   // TODO : 사용자 계좌인증여부
   const isUserAccountOk = true;
@@ -39,8 +42,11 @@ export default function ProudctInfo({ data, userId }: ProductInfoProps) {
 
   const isReportedByMe =
     data.reports &&
-    data.reports.filter((report) => report.reporter.id === userId).length > 0;
-
+    data.reports.filter((report) => report.reporter.id === user.id).length > 0;
+  const fetchTime = async () => {
+    const res = (await 3) + 4;
+    return res;
+  };
   return (
     <div className="px-3 py-5 ">
       <div className="block xl:flex">
@@ -70,7 +76,10 @@ export default function ProudctInfo({ data, userId }: ProductInfoProps) {
                 ) : isReportedByMe ? (
                   "이미 신고한 상품입니다"
                 ) : (
-                  <div className="cursor-pointer" onClick={() => setShowReportModal(true)}>
+                  <div
+                    className="cursor-pointer"
+                    onClick={() => setShowReportModal(true)}
+                  >
                     <SirenIcon /> 신고하기
                   </div>
                 )}
@@ -81,10 +90,13 @@ export default function ProudctInfo({ data, userId }: ProductInfoProps) {
         {showReportModal &&
           createPortal(
             <ReportModal
-              onClose={() => { setShowReportModal(false); }}
+              onClose={() => {
+                setShowReportModal(false);
+              }}
               onSuccessReport={handleReportSuccess}
               data={data}
-              userId={userId} />,
+              userId={user.id}
+            />,
             document.body
           )}
 
@@ -97,8 +109,9 @@ export default function ProudctInfo({ data, userId }: ProductInfoProps) {
                 {data.price.toLocaleString()}원
               </span>
               <span
-                className={`inline font-medium text-sm  ${data.discountable ? "text-point-color" : "text-red-500"
-                  } `}
+                className={`inline font-medium text-sm  ${
+                  data.discountable ? "text-point-color" : "text-red-500"
+                } `}
               >
                 {data.discountable ? "할인가능" : "할인불가능"}
               </span>
@@ -127,7 +140,7 @@ export default function ProudctInfo({ data, userId }: ProductInfoProps) {
                 onClick={async (e) => {
                   e.preventDefault();
                   e.stopPropagation();
-                  if (data.user.id === userId) {
+                  if (data.user.id === user.id) {
                     // 판매자인 경우 채팅목록으로 이동
                     router.push("../../chat");
                   } else if (isUserAccountOk) {
@@ -135,7 +148,7 @@ export default function ProudctInfo({ data, userId }: ProductInfoProps) {
 
                     await findPrivateChatRoomByProductIdAndBuyerId(
                       data.id,
-                      userId
+                      user.id
                     ).then(async (id) => {
                       let roomId = id;
                       console.log("roodId", id);
@@ -145,15 +158,18 @@ export default function ProudctInfo({ data, userId }: ProductInfoProps) {
                         roomId = await createPrivateChatRoom({
                           productId: data.id,
                           sellerId: data.user.id,
-                          buyerId: userId,
+                          buyerId: user.id,
                         });
                       }
                       // 채팅방으로 이동
-                      window.open(
-                        `/chat/${roomId}`,
-                        `/chat/${roomId}`,
-                        "width=380, height=640,location=no,status=no,menubar=no,toolbar=no"
-                      );
+                      fetchTime().then(() => {
+                        const chat = window.open(
+                          `/chat/${roomId}`,
+                          `/chat/${roomId}`,
+                          "width=380, height=640,location=no,status=no,menubar=no,toolbar=no"
+                        );
+                        if (chat) chat.location.href = `/chat/${roomId}`;
+                      });
                     });
                   } else {
                     // 계좌인증 먼저 하도록
@@ -162,15 +178,16 @@ export default function ProudctInfo({ data, userId }: ProductInfoProps) {
                 }}
               >
                 <Button
-                  text={`${data.forSale
-                    ? data.user.id === userId
-                      ? "채팅방 보기"
-                      : "1:1 채팅하기"
-                    : "거래완료"
-                    }`}
+                  text={`${
+                    data.forSale
+                      ? data.user.id === user.id
+                        ? "채팅방 보기"
+                        : "1:1 채팅하기"
+                      : "거래완료"
+                  }`}
                   width={"100%"}
                   disabled={!data.forSale}
-                  onClick={() => { }}
+                  onClick={() => {}}
                 />
               </a>
             </div>

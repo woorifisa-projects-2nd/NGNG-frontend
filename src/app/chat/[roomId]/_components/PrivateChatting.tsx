@@ -2,18 +2,25 @@
 import CloseIcon from "@/assets/SVG/Close.svg";
 import ImagePlusIcon from "@/assets/SVG/Plus.svg";
 import MessageSendIcon from "@/assets/SVG/CaretLeft.svg";
-import { useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import Message from "@/components/common/chat/Message";
 import * as StompJs from "@stomp/stompjs";
 import Image from "next/image";
-import { PrivateChat, PrivateChatMessage } from "../page";
+
 import { sendPrivateChatMessage } from "../../_api";
+import {
+  PrivateChat,
+  PrivateChatMessage,
+} from "../../_hooks/usePrivateChatMessgae";
+import { UserContext } from "@/providers/UserContext";
+import { redirect } from "next/navigation";
 
 type ChattingProps = {
   data: PrivateChat;
 };
 export default function PrivateChatting({ data }: ChattingProps) {
-  const userId = 2;
+  const { getUser } = useContext(UserContext);
+  const user = getUser();
   const recentChatRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const [stompClient, setStompClient] = useState<StompJs.Client | null>(null);
@@ -22,6 +29,10 @@ export default function PrivateChatting({ data }: ChattingProps) {
   );
   const [message, setMessage] = useState<string>("");
   const [image, setImage] = useState<File | undefined>(undefined);
+
+  if (user === undefined) {
+    redirect("/login");
+  }
 
   const enter = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === "Enter") {
@@ -48,7 +59,7 @@ export default function PrivateChatting({ data }: ChattingProps) {
         message: URL.createObjectURL(image),
         productId: data.product.productId,
         buyerId: data.product.buyer.id,
-        userId,
+        userId: user.id,
         isImage: true,
         privateChatRoomId: data.chatRoomId,
         sellerId: data.product.seller.id,
@@ -62,10 +73,10 @@ export default function PrivateChatting({ data }: ChattingProps) {
           createdAt: new Date().toUTCString(),
           message: URL.createObjectURL(image),
           user: {
-            id: userId,
-            name: "test",
-            nickname: "test",
-            address: "test",
+            id: user.id,
+            name: user.name,
+            nickname: user.nickname,
+            address: "",
           },
           contentType: "IMAGE",
         },
@@ -89,7 +100,7 @@ export default function PrivateChatting({ data }: ChattingProps) {
         message,
         productId: data.product.productId,
         buyerId: data.product.buyer.id,
-        userId,
+        userId: user.id,
         privateChatRoomId: data.chatRoomId,
         sellerId: data.product.seller.id,
       });
@@ -102,10 +113,10 @@ export default function PrivateChatting({ data }: ChattingProps) {
           createdAt: new Date().toUTCString(),
           message: message,
           user: {
-            id: userId,
-            name: "test",
-            nickname: "test",
-            address: "test",
+            id: user.id,
+            name: user.name,
+            nickname: user.nickname,
+            address: "",
           },
           contentType: "TEXT",
         },
@@ -137,18 +148,16 @@ export default function PrivateChatting({ data }: ChattingProps) {
   };
 
   const getMessage = (data: any) => {
-    console.log("received", data);
-
     setChatData([
       ...chatData,
       {
         chatId: data.chat,
         message: data.message,
         user: {
-          id: userId,
-          name: "test",
-          nickname: "test",
-          address: "test",
+          id: user.id,
+          name: user.name,
+          nickname: user.nickname,
+          address: "",
         },
         createdAt: data.createdAt,
         contentType: data.contentType,
@@ -166,36 +175,24 @@ export default function PrivateChatting({ data }: ChattingProps) {
     console.log(process.env.NEXT_PUBLIC_CHAT_SOCKET);
 
     const client = new StompJs.Client({
-      brokerURL: `${process.env.NEXT_PUBLIC_CHAT_SOCKET}/chat-server`, // WebSocket 서버 URL
-      debug: function (str) {
-        console.log(str);
-      },
+      brokerURL: "ws://localhost:8081/chat-server", // WebSocket 서버 URL
+
       reconnectDelay: 5000,
     });
     client.onConnect = () => {
-      console.log(
-        "Connected to WebSocket",
-        `/product/${data.product.productId}/${data.product.buyer.id}`
-      );
       if (client.connected) {
         // 연결 상태 확인
         client.subscribe(
           `/private-chats/${data.product.productId}/${data.product.buyer.id}`,
           (message) => {
             const data = JSON.parse(message.body).body;
-            console.log("data", data);
-            getMessage(JSON.parse(message.body).body);
+
+            getMessage(data);
           }
         );
-      } else {
-        console.error("STOMP connection is not established yet.");
       }
     };
 
-    client.onStompError = (frame) => {
-      console.log("Broker reported error: " + frame.headers["message"]);
-      console.log("Additional details: " + frame.body);
-    };
     setStompClient(client);
 
     return () => {
@@ -224,7 +221,7 @@ export default function PrivateChatting({ data }: ChattingProps) {
               return (
                 <Message
                   key={chat.chatId}
-                  direction={chat.user.id === userId ? "right" : "left"}
+                  direction={chat.user.id === user.id ? "right" : "left"}
                   userName={chat.user.nickname}
                   text={chat.message}
                   isImage={chat.contentType === "IMAGE"}

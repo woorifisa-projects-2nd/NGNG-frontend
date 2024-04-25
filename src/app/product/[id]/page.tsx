@@ -1,22 +1,19 @@
-export const dynamic = "force-dynamic";
+"use client";
 import Loading from "@/assets/Loading.svg";
 import { getProductById } from "../_api/api";
 import { redirect } from "next/navigation";
 import Chatting from "./_components/Chatting";
 import ProudctInfo from "./_components/ProductInfo";
-
-export default async function ProductDetail({
-  params,
-}: {
-  params: { id: string };
-}) {
-  const userId = 1; //userID
-
-  const { status, data } = await getProductById(params.id);
-  if (status === 404) {
-    redirect("/not-found");
-  }
-  console.log("get data", data);
+import useSWR from "swr";
+import { Product } from "../_types/type";
+type ProductResponse = {
+  status: number;
+  data: Product | undefined;
+};
+export default function ProductDetail({ params }: { params: { id: number } }) {
+  const { data } = useSWR<ProductResponse>("/api/products/id", () =>
+    getProductById(params.id).then((res) => res as ProductResponse)
+  );
 
   if (!data) {
     return (
@@ -25,12 +22,15 @@ export default async function ProductDetail({
       </div>
     );
   }
+  if (data.status === 404 || data.data === undefined) {
+    redirect("/not-found");
+  }
 
   return (
     <div className="px-8 xl:px-40  w-full h-full block lg:flex box-border justify-center dark:bg-black">
-      <ProudctInfo data={data} userId={userId} />
+      <ProudctInfo data={data.data} />
 
-      <Chatting data={data} userId={userId} />
+      <Chatting data={data.data} />
     </div>
   );
 }
