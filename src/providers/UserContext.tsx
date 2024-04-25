@@ -1,5 +1,5 @@
 "use client";
-import { createContext, useState } from "react";
+import { createContext } from "react";
 export type User = {
   id: number;
   name: string;
@@ -13,11 +13,9 @@ export const UserContext = createContext<{
   setUser: (info: User) => {},
 });
 const UserContextProvider = ({ children }: { children: React.ReactNode }) => {
-  //const [user, setUser] = useState<User | undefined>(undefined);
-
   const getUser = () => {
     const data = localStorage.getItem("user");
-    console.log("data", data);
+
     if (data) {
       return JSON.parse(data) as User;
     } else {

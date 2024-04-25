@@ -72,8 +72,8 @@ export default function Chatting({ data }: ChattingProps) {
           createdAt: new Date().toUTCString(),
           message: URL.createObjectURL(image),
           userId: user.id,
-          userName: "테스트",
-          userNickName: "테스트",
+          userName: user.name,
+          userNickName: user.nickname,
         },
       ]);
     setMessage("");
@@ -105,8 +105,8 @@ export default function Chatting({ data }: ChattingProps) {
           createdAt: new Date().toUTCString(),
           message: message,
           userId: user.id,
-          userName: "테스트",
-          userNickName: "테스트",
+          userName: user.name,
+          userNickName: user.nickname,
         },
       ]);
 
@@ -158,29 +158,17 @@ export default function Chatting({ data }: ChattingProps) {
   useEffect(() => {
     const client = new StompJs.Client({
       brokerURL: "ws://localhost:8081/chat-server", // WebSocket 서버 URL
-      debug: function (str) {
-        console.log(str);
-      },
       reconnectDelay: 5000,
     });
     client.onConnect = () => {
-      console.log("Connected to WebSocket");
       if (client.connected) {
         // 연결 상태 확인
         client.subscribe(`/public-chats/${data.id}`, (message) => {
-          const data = JSON.parse(message.body).body;
-          console.log("data", data);
           getMessage(JSON.parse(message.body).body);
         });
-      } else {
-        console.error("STOMP connection is not established yet.");
       }
     };
 
-    client.onStompError = (frame) => {
-      console.log("Broker reported error: " + frame.headers["message"]);
-      console.log("Additional details: " + frame.body);
-    };
     !isReported && setStompClient(client); // 신고 안 당한 경우에만 채팅 연결
 
     return () => {
@@ -222,7 +210,7 @@ export default function Chatting({ data }: ChattingProps) {
                 <Message
                   key={chat.id}
                   direction={user.id === chat.userId ? "right" : "left"}
-                  userName={data.user.nickname}
+                  userName={chat.userNickName}
                   text={chat.message}
                   isImage={chat.isImage}
                   isFirstOfTheDay={

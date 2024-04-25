@@ -7,7 +7,6 @@ import { UserContext } from "@/providers/UserContext";
 export default function Menu() {
   const { getUser } = useContext(UserContext);
   const user = getUser();
-  console.log("user", user);
 
   const isLogin = user !== undefined;
 

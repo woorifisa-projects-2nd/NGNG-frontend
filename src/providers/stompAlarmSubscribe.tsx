@@ -1,15 +1,15 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useContext, useRef } from "react";
 import * as StompJs from "@stomp/stompjs";
+import { UserContext } from "./UserContext";
 const chatAlarm: number[] = [];
 
 export default function StompAlarmSubscibe() {
+  const { getUser } = useContext(UserContext);
   const notificationRef = useRef<Notification>();
-  const timerRef = useRef(null);
+  const user = getUser();
 
-  //   const isLogin = true;
-  //   if (isLogin) {
   if (!Notification) {
     return;
   }
@@ -28,17 +28,13 @@ export default function StompAlarmSubscibe() {
       }
     }
   }
-  const userId = 1;
   const client = new StompJs.Client({
     brokerURL: "ws://localhost:8081/chat-server",
     reconnectDelay: 5000,
   });
   client.onConnect = () => {
-    console.log("웹소켓연결", `/alarm/${userId}`);
-
-    client.subscribe(`/alarms/${userId}`, (message) => {
+    client.subscribe(`/alarms/${user?.id}`, (message) => {
       const datas = JSON.parse(message.body);
-      console.log("message", datas.body);
 
       if (chatAlarm.find((id) => id === datas.body.chatId) === undefined) {
         chatAlarm.push(datas.body.chatId);
@@ -58,21 +54,8 @@ export default function StompAlarmSubscibe() {
       }
     });
   };
-  //   }
+
   client.activate();
-
-  // useEffect(() => {
-  //   if (
-  //     Notification.permission === "denied" ||
-  //     Notification.permission === "default"
-  //   ) {
-  //     Notification.requestPermission();
-  //   }
-
-  //   return () => {
-  //     client.deactivate();
-  //   };
-  // }, []);
 
   return (
     <div

@@ -5,20 +5,20 @@ import utc from "dayjs/plugin/utc";
 import { getAccessToken } from "@/app/my_page/_utils/auth-header";
 
 export const getProductById = async (id: number) => {
-  // SSR을 하기 위해서 풀 URL 써줘야 함
-  const res = await fetch(`http://localhost:8080/products/${id}`, {
+  return await fetch(`http://localhost:8080/products/${id}`, {
     headers: {
       Authorization: getAccessToken(),
     },
+  }).then(async (res) => {
+    if (res.status === 404) {
+      return { status: res.status, data: undefined };
+    } else {
+      return {
+        status: res.status,
+        data: (await res.json()) as unknown as Product,
+      };
+    }
   });
-
-  if (res.status === 404) {
-    return { status: res.status, data: undefined };
-  } else {
-    return res.json().then((data) => {
-      return { status: res.status, data: data as Product };
-    });
-  }
 };
 export const sendPublicChatMessage = ({
   client,

@@ -1,28 +1,19 @@
+"use client";
 import Loading from "@/assets/Loading.svg";
 import { getProductById } from "../_api/api";
 import { redirect } from "next/navigation";
 import Chatting from "./_components/Chatting";
 import ProudctInfo from "./_components/ProductInfo";
-
-export async function generateStaticParams() {
-  const posts = await fetch("http://localhost:8080/products").then((res) =>
-    res.json()
+import useSWR from "swr";
+import { Product } from "../_types/type";
+type ProductResponse = {
+  status: number;
+  data: Product | undefined;
+};
+export default function ProductDetail({ params }: { params: { id: number } }) {
+  const { data } = useSWR<ProductResponse>("/api/products/id", () =>
+    getProductById(params.id)
   );
-
-  return posts.map((post: any) => ({
-    id: post.id.toString(),
-  }));
-}
-export default async function ProductDetail({
-  params,
-}: {
-  params: { id: number };
-}) {
-  const { status, data } = await getProductById(params.id);
-
-  if (status === 404) {
-    redirect("/not-found");
-  }
 
   if (!data) {
     return (
@@ -31,12 +22,15 @@ export default async function ProductDetail({
       </div>
     );
   }
+  if (data.status === 404 || data.data === undefined) {
+    redirect("/not-found");
+  }
 
   return (
     <div className="px-8 xl:px-40  w-full h-full block lg:flex box-border justify-center dark:bg-black">
-      <ProudctInfo data={data} />
+      <ProudctInfo data={data.data} />
 
-      <Chatting data={data} />
+      <Chatting data={data.data} />
     </div>
   );
 }
