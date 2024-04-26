@@ -49,7 +49,7 @@ export default function Item({ item }: Props) {
             <span className="font-semibold ">
               {item.price.toLocaleString()}원
             </span>
-            <span className="text-text-gray text-sm">
+            <span className=" text-sm">
               {calculateTimeDifference(item.createdAt)}
             </span>
           </div>

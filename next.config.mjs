@@ -41,6 +41,7 @@ export default withPWA({
   trailingSlash: true,
   // 랜덤 이미지 가져올떄 허용 사이트로 나중에 삭제예정
   images: {
+    minimumCacheTTL: 60,
     formats: ["image/avif", "image/webp"],
     remotePatterns: [
       {
