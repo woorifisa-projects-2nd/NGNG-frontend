@@ -55,6 +55,7 @@ export default function ProudctInfo({ data }: ProductInfoProps) {
         <div className="w-full xl:w-1/2 justify-center mr-10 flex items-center">
           <div className="w-full">
             <Image
+              priority
               className="object-contain w-full rounded h-auto"
               alt="상품 상세 이미지"
               src={data.images[0].imageURL}
@@ -79,7 +80,7 @@ export default function ProudctInfo({ data }: ProductInfoProps) {
                   "이미 신고한 상품입니다"
                 ) : (
                   <div
-                    className="cursor-pointer"
+                    className="flex items-center cursor-pointer"
                     onClick={() => setShowReportModal(true)}
                   >
                     <SirenIcon /> 신고하기
@@ -134,9 +135,9 @@ export default function ProudctInfo({ data }: ProductInfoProps) {
                   >
                     <path
                       stroke="currentColor"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
                       d="m1 9 4-4-4-4"
                     />
                   </svg>
