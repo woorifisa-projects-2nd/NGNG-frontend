@@ -344,7 +344,6 @@ export default function ReportDetail({ params }: { params: { reportId: number } 
                                     적용
                                 </div>
                             )}
-
                         </div>
                     </div>
                 </div>

@@ -2,9 +2,10 @@ import * as StompJs from "@stomp/stompjs";
 import { Product, RequestReport } from "../_types/type";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
+import { getAccessToken } from "../_utils/auth-header";
 
 export const getProductById = async (id: string) => {
-  const res = await fetch(`http://127.0.0.1:3000/products/${id}`, {
+  const res = await fetch(`http://localhost:3000/products/${id}`, {
     cache: "no-store",
   });
 
@@ -86,10 +87,11 @@ export const createPrivateChatRoom = async ({
 export const createReport = async (requestReport: RequestReport): Promise<boolean> => {
   // console.log(mapProductToAPISepc(product));
 
-  const res = await fetch(`http://localhost:8080/admin/reports`, {
+  const res = await fetch(`http://localhost:8080/reports`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
+      Authorization: getAccessToken(),
     },
     body: JSON.stringify(requestReport),
   });
@@ -129,6 +131,9 @@ const createImages = async (
   // return await fetch("/api/upload", {
   return await fetch(`http://localhost:8080/reportImages/upload`, {
     method: "POST",
+    headers: {
+      Authorization: getAccessToken(),
+    },
     body: fomData,
   });
 };

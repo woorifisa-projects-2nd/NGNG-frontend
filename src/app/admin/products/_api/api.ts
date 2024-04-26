@@ -70,6 +70,20 @@ export const deleteImageById = async (productId: number, imageURL: string) => {
     return response.ok;
 };
 
+export const deleteImages = async (productId: number) => {
+    const response = await fetch(`/api/deleteImage/${productId}`, {
+        method: "DELETE",
+        headers: {
+            "Content-Type": "application/json",
+            Authorization: getAccessToken(),
+        },
+    });
+    return response.ok;
+};
+
+
+
+
 const createImages = async (
     productId: string,
     images: {

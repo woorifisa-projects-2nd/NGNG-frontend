@@ -48,7 +48,7 @@ export default function ReportManagement() {
     // 페이지를 변경할 때 해당 페이지의 데이터를 가져오는 함수
     async function fetchReportsByPage(pageNumber: number, unprocessedOnly: boolean) {
 
-        const url = `${process.env.NEXT_PUBLIC_API_URL}admin/reports?page=${pageNumber}&unprocessedOnly=${unprocessedOnly}`;
+        const url = `http://localhost:8080/admin/reports?page=${pageNumber}&unprocessedOnly=${unprocessedOnly}`;
 
         await fetch(url, {
             headers: {
@@ -145,20 +145,20 @@ export default function ReportManagement() {
             </div>
 
             <div>
-                <div className="flex text-center h-10 bg-slate-100 p-8">
-                    <div className="w-1/6 font-bold">번호</div>
-                    <div className="w-1/6 font-bold">날짜</div>
-                    <div className="w-1/6 font-bold">신고 유저</div>
-                    <div className="w-1/6 font-bold">신고 대상</div>
-                    <div className="w-1/6 font-bold">신고 유형</div>
-                    <div className="w-1/6 font-bold">처리 여부</div>
+                <div className="flex text-center items-center h-16 text-xs text-gray-700 uppercase bg-gray-100 dark:bg-gray-700 dark:text-gray-400">
+                    <div className="w-1/12 font-bold text-base">No.</div>
+                    <div className="w-1/6 font-bold text-base">날짜</div>
+                    <div className="w-1/6 font-bold text-base">신고 유저</div>
+                    <div className="w-1/6 font-bold text-base">신고 대상</div>
+                    <div className="w-1/6 font-bold text-base">신고 유형</div>
+                    <div className="w-1/6 font-bold text-base">처리 여부</div>
                     <div className="w-1/6"></div>
                 </div>
 
                 <div className="text-center">
                     {reports.map((report, index) => (
                         <div key={report.reportId} className="border-b border-gray-300 rounded p-3 flex items-center">
-                            <div className="w-1/6">{index + 1 + currentPage * itemsPerPage}</div>
+                            <div className="w-1/12">{index + 1 + currentPage * itemsPerPage}</div>
                             <div className="w-1/6">{report.createdAt.substring(0, 10)}</div>
                             <div className="w-1/6">
                                 <p>{report.reporter.name}</p>

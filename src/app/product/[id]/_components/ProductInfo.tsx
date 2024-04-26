@@ -25,16 +25,15 @@ type ProductInfoProps = {
 export default function ProudctInfo({ data, userId }: ProductInfoProps) {
   const [open, setOpen] = useState<boolean>(false);
   const [showReportModal, setShowReportModal] = useState<boolean>(false);
-  // const [isReported, setIsReported] = useState<boolean>(false);
-  // const [isReportedByMe, setIsReportedByMe] = useState<boolean>(false);
+  const [productData, setProductData] = useState<Product | undefined>(data);
   const router = useRouter();
 
   // 이미지 보기
   const [showModal, setShowModal] = useState<boolean>(false);
   const [currentImageIndex, setCurrentImageIndex] = useState<number>(0);
 
-  const handleReportSuccess = (newData: Product): void => {
-
+  const handleReportSuccess = (newData: Product | undefined): void => {
+    setProductData(newData);
   };
 
   // 이미지를 클릭했을 때 모달을 열고 해당 이미지를 표시하는 함수
@@ -68,13 +67,13 @@ export default function ProudctInfo({ data, userId }: ProductInfoProps) {
   const isUserAccountOk = true;
 
   const isReported =
-    data.reports === null
+    productData?.reports === null
       ? false
-      : data.reports.filter((report) => report.isReport).length > 0;
+      : productData?.reports?.filter((report) => report.isReport)?.length ?? 0 > 0;
 
   const isReportedByMe =
-    data.reports &&
-    data.reports.filter((report) => report.reporter.id === userId).length > 0;
+    productData?.reports &&
+    productData?.reports.filter((report) => report.reporter.id === userId).length > 0;
 
   return (
     <div className="px-3 py-5 ">

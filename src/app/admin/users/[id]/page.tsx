@@ -6,8 +6,10 @@ import Input from "@/components/common/inputs/Input";
 import { User } from "../_types/type";
 import Button from "@/components/common/Button";
 import { getAccessToken } from "../_utils/auth-header";
+import { useRouter } from "next/navigation";
 
 export default function userDetail({ params }: { params: { id: number } }) {
+    const router = useRouter();
     const [user, setUser] = useState<User | null>(null);
     const [password, setPassword] = useState<string | number>("");
 
@@ -25,17 +27,22 @@ export default function userDetail({ params }: { params: { id: number } }) {
 
     const updateUser = async () => {
 
+        if (!isFormValid()) {
+            alert("모든 필수 필드를 입력해주세요.");
+            return;
+        }
+
         const request = {
             userId: user?.userId,
+            name: user?.name,
             nickName: user?.nickName,
             phoneNumber: user?.phoneNumber,
             email: user?.email,
+            password: password,
             accountBank: user?.accountBank,
             accountNumber: user?.accountNumber,
             address: user?.address,
         };
-
-        console.log(request);
 
         try {
             const response = await fetch(`http://localhost:8080/admin/users/${params.id}`, {
@@ -46,8 +53,15 @@ export default function userDetail({ params }: { params: { id: number } }) {
                 },
                 body: JSON.stringify(request),
             });
-            const data = await response.json();
-            console.log(data); // Handle response data as needed
+
+            if (response.ok) {
+                const data = await response.json();
+                console.log(data);
+                alert('사용자 정보가 성공적으로 업데이트되었습니다.');
+                window.location.reload();
+            } else {
+                throw new Error('서버 처리 실패');
+            }
         } catch (error) {
             console.error('Error updating user:', error);
         }
@@ -56,6 +70,10 @@ export default function userDetail({ params }: { params: { id: number } }) {
     useEffect(() => {
         fetchUser();
     }, []);
+
+    const isFormValid = () => {
+        return user?.name && user?.nickName && user?.email && password && user?.address && user?.phoneNumber;
+    };
 
 
     const changeName = (newName: string) =>
@@ -107,6 +125,10 @@ export default function userDetail({ params }: { params: { id: number } }) {
             ...user,
             accountNumber: newAccountNumber,
         } as User);
+    };
+
+    const goToListPage = () => {
+        router.back();
     };
 
 
@@ -225,10 +247,14 @@ export default function userDetail({ params }: { params: { id: number } }) {
                 />
             </div>
 
-            <div className="flex justify-end items-center pb-20">
+            <div className="flex justify-start items-center pb-20 mt-20">
+                <div className="rounded-lg text-purple-500 bg-white border border-purple-500 w-32 h-12 flex items-center justify-center cursor-pointer mr-2"
+                    onClick={goToListPage}>
+                    뒤로가기
+                </div>
                 <Button
                     text="수정하기"
-                    // disabled={!newProduct?.isFullfillSaveCondition}
+                    disabled={!isFormValid()}
                     onClick={updateUser}
                 />
             </div>

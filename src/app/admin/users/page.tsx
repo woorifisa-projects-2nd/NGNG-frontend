@@ -132,28 +132,28 @@ export default function UserManagement() {
             </div>
 
             <div>
-                <div className="flex text-center h-10 bg-slate-100 p-8">
-                    <div className="w-1/6 font-bold">No.</div>
-                    <div className="w-1/6 font-bold">사용자 ID</div>
-                    <div className="w-1/6 font-bold">이름/닉네임</div>
-                    <div className="w-1/6 font-bold">전화번호</div>
-                    <div className="w-1/6 font-bold">이메일</div>
-                    <div className="w-1/6 font-bold">주소</div>
+                <div className="flex text-center items-center h-16 text-xs text-gray-700 uppercase bg-gray-100 dark:bg-gray-700 dark:text-gray-400">
+                    <div className="w-1/12 font-bold text-base">No.</div>
+                    <div className="w-1/12 font-bold text-base">사용자 ID</div>
+                    <div className="w-1/6 font-bold text-base">이름/닉네임</div>
+                    <div className="w-1/6 font-bold text-base">전화번호</div>
+                    <div className="w-1/6 font-bold text-base">이메일</div>
+                    <div className="w-1/4 font-bold text-base">주소</div>
                     <div className="w-1/6"></div>
                 </div>
 
                 <div className="text-center">
                     {users.map((user, index) => (
                         <div key={user.userId} className="border-b border-gray-300 rounded p-3 flex items-center">
-                            <div className="w-1/6">{index + 1 + currentPage * itemsPerPage}</div>
-                            <div className="w-1/6">{user.userId}</div>
+                            <div className="w-1/12">{index + 1 + currentPage * itemsPerPage}</div>
+                            <div className="w-1/12">{user.userId}</div>
                             <div className="w-1/6">
                                 <p>{user.name}</p>
                                 <p className="text-gray-400">@{user.nickName}</p>
                             </div>
                             <div className="w-1/6">{user.phoneNumber}</div>
                             <div className="w-1/6">{user.email}</div>
-                            <div className="w-1/6">{user.address}</div>
+                            <div className="w-1/4">{user.address}</div>
                             <div className="w-1/6">
                                 <div className="p-5 flex items-center">
                                     <Link href={`/admin/users/${user.userId}`}><CheckReport /></Link>

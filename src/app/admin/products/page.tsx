@@ -83,8 +83,8 @@ export default function ProductManagement() {
 
     // 페이지를 변경할 때 해당 페이지의 데이터를 가져오는 함수
     async function fetchReportsByPage(pageNumber: number) {
-        const url = `${process.env.NEXT_PUBLIC_API_URL}products?page=${pageNumber}`;
-        // const url = `${process.env.NEXT_PUBLIC_API_URL}products/page=${pageNumber}`;
+        const url = `http://localhost:8080/products?page=${pageNumber}`;
+        // const url = `http://localhost:8080/products/page=${pageNumber}`;
 
         await fetch(url, {
             headers: {
@@ -162,14 +162,24 @@ export default function ProductManagement() {
         const shouldDelete = window.confirm('정말로 삭제하시겠습니까?');
 
         if (shouldDelete) {
-            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}products/${productId}`, {
+            const res = await fetch(`http://localhost:8080/products/${productId}`, {
                 method: "DELETE",
                 headers: {
                     "Content-Type": "application/json",
                 }
             });
+
+            // 삭제 후에 페이지의 상품 목록을 가져오기 전에 마지막 페이지인지 확인
+            const isLastItemOnPage = products.length === 1;
+
+            // 페이지가 마지막 페이지이고, 마지막 상품을 삭제한 경우에만 페이지를 감소시킴
+            if (isLastItemOnPage && currentPage > 0) {
+
+                fetchReportsByPage(currentPage - 1);
+
+            }
         }
-        fetchReportsByPage(currentPage);
+
     };
 
     const handleCreateProduct = () => {
@@ -203,22 +213,22 @@ export default function ProductManagement() {
             </div>
 
             <div>
-                <div className="flex text-center h-10 bg-slate-100 p-8">
-                    <div className="w-1/6 font-bold">No.</div>
-                    <div className="w-1/6 font-bold">상품 ID</div>
-                    <div className="w-1/6 font-bold">제목</div>
-                    <div className="w-1/6 font-bold">가격</div>
-                    <div className="w-1/6 font-bold">판매자</div>
-                    <div className="w-1/6 font-bold">카테고리</div>
+                <div className="flex text-center items-center h-16 text-xs text-gray-700 uppercase bg-gray-100 dark:bg-gray-700 dark:text-gray-400">
+                    <div className="w-1/12 font-bold text-base">No.</div>
+                    <div className="w-1/12 font-bold text-base">상품 ID</div>
+                    <div className="w-1/4 font-bold text-base">제목</div>
+                    <div className="w-1/6 font-bold text-base">가격</div>
+                    <div className="w-1/6 font-bold text-base">판매자</div>
+                    <div className="w-1/6 font-bold text-base">카테고리</div>
                     <div className="w-1/6"></div>
                 </div>
 
                 <div className="text-center">
                     {products.map((product, index) => (
                         <div key={product.id} className="border-b border-gray-300 rounded p-3 flex items-center">
-                            <div className="w-1/6">{index + 1 + currentPage * itemsPerPage}</div>
-                            <div className="w-1/6">{product.id}</div>
-                            <div className="w-1/6">{product.title}</div>
+                            <div className="w-1/12">{index + 1 + currentPage * itemsPerPage}</div>
+                            <div className="w-1/12">{product.id}</div>
+                            <div className="w-1/4">{product.title}</div>
                             <div className="w-1/6">{product.price.toLocaleString()}</div>
                             <div className="w-1/6">{product.user.name}</div>
                             <div className="w-1/6">{product.category.name}</div>

@@ -9,7 +9,7 @@ type ReportModalProps = {
     onClose: () => void;
     data: Product;
     userId: number;
-    onSuccessReport: (newData: Product) => void;
+    onSuccessReport: (newData: Product | undefined) => void;
 };
 
 export default function ReportModal({ onClose, data, userId, onSuccessReport }: ReportModalProps) {
@@ -46,19 +46,15 @@ export default function ReportModal({ onClose, data, userId, onSuccessReport }: 
 
             console.log(imagesFormatted);
 
-            createReport(requestData);
+            await createReport(requestData);
 
+
+            const updatedProductData = await getProductById(data.id.toString());
+            onSuccessReport(updatedProductData.data);
 
             console.log('신고가 성공적으로 제출되었습니다.');
             alert('신고가 성공적으로 제출되었습니다.');
             onClose();
-
-            // const response = await getProductById(data.id.toString());
-            // if (response.status === 200 && response.data) {
-            //     onSuccessReport(response.data);
-            // } else {
-            //     console.error('상품 정보를 불러오는 데 실패했습니다.');
-            // }
 
         } catch (error) {
             console.error('에러 발생:', (error as Error).message);
@@ -83,7 +79,7 @@ export default function ReportModal({ onClose, data, userId, onSuccessReport }: 
     }, []);
 
     return (
-        <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-black bg-opacity-50">
+        <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-black bg-opacity-50 z-50">
             <div ref={modalRef} className="bg-white p-8 rounded-lg modal-container absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 mt-14 md:w-[80vw] lg:w-[60vw] max-h-[80vh] overflow-auto">
                 <CloseIcon width={16} height={16} className="fill-black absolute top-3 right-3 cursor-pointer" onClick={onClose} />
 
