@@ -23,7 +23,7 @@ export default function Header() {
     <div className="dark:bg-bg-header-dark sticky top-0 z-10 bg-white">
       <div className="hidden md:flex justify-center items-center w-full p-5">
         <div className="flex justify-between items-center w-[90%]">
-          <Link href="/" className="w-28 h-5">
+          <Link href="/" className="w-28 h-5" aria-label="Main">
             <Logo />
           </Link>
           <SearchInput />
@@ -33,7 +33,7 @@ export default function Header() {
 
       <div className="block md:hidden">
         <div className="flex justify-between items-center p-5 w-full">
-          <Link href="/" className="w-24 h-5">
+          <Link href="/" className="w-24 h-5" aria-label="Main">
             <Logo />
           </Link>
           <Menu />

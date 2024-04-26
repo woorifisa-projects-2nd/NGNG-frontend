@@ -73,10 +73,10 @@ export type ReportType = {
 };
 
 export type RequestReport = {
-  reportContents: string,
-  reportTypeId: number,
-  reporterId: number,
-  userId: number,
-  productId: number,
-  images: { id: number; imageURL: File; }[],
-}
+  reportContents: string;
+  reportTypeId: number;
+  reporterId: number;
+  userId: number;
+  productId: number;
+  images: { id: number; imageURL: File }[];
+};
