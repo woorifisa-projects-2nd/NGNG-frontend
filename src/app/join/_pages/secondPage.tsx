@@ -3,10 +3,10 @@ import { ChangeEvent, useState } from "react";
 import UserImage from "../_image/user.svg";
 import PhoneImage from "../_image/phone.svg";
 import AuthCheck from "../_image/authCheck.svg";
-import Link from "next/link";
 import LogoImage from "../../../components/layouts/header/design/SVG/logo.svg";
 import { userInfo } from "../joinPage";
 import { useRouter } from "next/navigation";
+import Caution from "../caution";
 
 type SecondPageProps = {
   user: userInfo;
@@ -172,6 +172,9 @@ export default function SecondPage({
                 다음
               </button>
             </div>
+          </div>
+          <div className="flex justify-end">
+            <Caution />
           </div>
         </div>
       </div>
