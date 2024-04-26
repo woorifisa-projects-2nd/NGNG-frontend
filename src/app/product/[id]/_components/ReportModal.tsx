@@ -1,21 +1,29 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useContext } from 'react';
 import { Product } from "../../_types/type";
 import ImageUploadBox from "./ImageUploadBox";
 import CloseIcon from "@/assets/SVG/Close.svg";
 import { createReport } from "../../_api/api";
 import { getProductById } from "../../_api/api";
+import { redirect } from "next/navigation";
+import { UserContext } from "@/providers/UserContext";
 
 type ReportModalProps = {
     onClose: () => void;
     data: Product;
     userId: number;
-    onSuccessReport: (newData: Product) => void;
+    onSuccessReport: (newData: Product | undefined) => void;
 };
 
 export default function ReportModal({ onClose, data, userId, onSuccessReport }: ReportModalProps) {
+    const { getUser } = useContext(UserContext);
+    const user = getUser();
     const modalRef = useRef<HTMLDivElement>(null);
     const [reportContent, setReportContent] = useState('');
     const [uploadedImages, setUploadedImages] = useState<File[]>([]);
+
+    if (user === undefined) {
+        redirect("/login");
+    }
 
     const handleReportContentChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
         setReportContent(e.target.value);
@@ -38,7 +46,7 @@ export default function ReportModal({ onClose, data, userId, onSuccessReport }: 
             const requestData = {
                 reportContents: reportContent,
                 reportTypeId: 1, // 상품 신고
-                reporterId: userId,
+                reporterId: user.id,
                 userId: data.user.id,
                 productId: data.id,
                 images: imagesFormatted
@@ -46,19 +54,15 @@ export default function ReportModal({ onClose, data, userId, onSuccessReport }: 
 
             console.log(imagesFormatted);
 
-            createReport(requestData);
+            await createReport(requestData);
 
+
+            const updatedProductData = await getProductById(data.id);
+            onSuccessReport(updatedProductData.data);
 
             console.log('신고가 성공적으로 제출되었습니다.');
             alert('신고가 성공적으로 제출되었습니다.');
             onClose();
-
-            // const response = await getProductById(data.id.toString());
-            // if (response.status === 200 && response.data) {
-            //     onSuccessReport(response.data);
-            // } else {
-            //     console.error('상품 정보를 불러오는 데 실패했습니다.');
-            // }
 
         } catch (error) {
             console.error('에러 발생:', (error as Error).message);
@@ -83,7 +87,7 @@ export default function ReportModal({ onClose, data, userId, onSuccessReport }: 
     }, []);
 
     return (
-        <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-black bg-opacity-50">
+        <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-black bg-opacity-50 z-50">
             <div ref={modalRef} className="bg-white p-8 rounded-lg modal-container absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 mt-14 md:w-[80vw] lg:w-[60vw] max-h-[80vh] overflow-auto">
                 <CloseIcon width={16} height={16} className="fill-black absolute top-3 right-3 cursor-pointer" onClick={onClose} />
 

@@ -1,10 +1,10 @@
-import withPWAInit from "@ducanh2912/next-pwa";
+// import withPWAInit from "@ducanh2912/next-pwa";
 
-const withPWA = withPWAInit({
-  dest: "public",
-});
+// const withPWA = withPWAInit({
+//   dest: "public",
+// });
 
-export default withPWA({
+export default ({
   // Your Next.js config
   reactStrictMode: false,
   webpack: (config) => {

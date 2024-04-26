@@ -59,7 +59,7 @@ export default function ImageUploadBox({
                     <CloseIcon
                         width={20}
                         height={20}
-                        className="absolute right-2 top-2 cursor-pointer fill-white dark:fill-black"
+                        className="absolute right-2 top-2 cursor-pointer fill-white dark:fill-black z-50"
                         color={iconColor}
                         onClick={resetImage}
                     />

@@ -138,9 +138,9 @@ const createImages = async (
   // return await fetch("/api/upload", {
   return await fetch(`/api/reportImages/upload`, {
     method: "POST",
-    body: fomData,
     headers: {
       Authorization: getAccessToken(),
     },
+    body: fomData,
   });
 };
