@@ -6,6 +6,7 @@ const withPWA = withPWAInit({
 
 export default withPWA({
   // Your Next.js config
+  reactStrictMode: false,
   webpack: (config) => {
     config.module.rules.push({
       test: /\.svg$/,
