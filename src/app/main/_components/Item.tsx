@@ -15,7 +15,7 @@ export default function Item({ item }: Props) {
       <Link href={`/product/${item.productId}`}>
         <div className=" ">
           <div
-            className="relative overflow-hidden border-[1px] rounded-lg border-light-gray 
+            className="relative overflow-hidden  rounded-lg 
                       md:w-[170px]
                     lg:w-[190px] h-[190px]"
           >
@@ -49,7 +49,7 @@ export default function Item({ item }: Props) {
             <span className="font-semibold ">
               {item.price.toLocaleString()}원
             </span>
-            <span className="text-text-gray text-sm">
+            <span className=" text-sm">
               {calculateTimeDifference(item.createdAt)}
             </span>
           </div>
