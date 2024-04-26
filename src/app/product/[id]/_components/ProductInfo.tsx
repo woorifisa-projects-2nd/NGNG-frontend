@@ -12,7 +12,13 @@ import {
   findPrivateChatRoomByProductIdAndBuyerId,
 } from "../../_api/api";
 import ReportModal from "./ReportModal";
+import "react-responsive-carousel/lib/styles/carousel.min.css";
+import { Carousel } from 'react-responsive-carousel';
+import ReactPlayer from 'react-player';
+import ImageModal from "./ImageModal";
 import { UserContext } from "@/providers/UserContext";
+import Link from "next/link";
+import { categories } from "@/components/layouts/header/Header";
 
 type ProductInfoProps = {
   data: Product;
@@ -23,26 +29,60 @@ export default function ProudctInfo({ data }: ProductInfoProps) {
   const user = getUser();
   const [open, setOpen] = useState<boolean>(false);
   const [showReportModal, setShowReportModal] = useState<boolean>(false);
-  // const [isReported, setIsReported] = useState<boolean>(false);
-  // const [isReportedByMe, setIsReportedByMe] = useState<boolean>(false);
+  const [productData, setProductData] = useState<Product | undefined>(data);
   const router = useRouter();
 
-  const handleReportSuccess = (newData: Product): void => {};
+  // 이미지 보기
+  const [showModal, setShowModal] = useState<boolean>(false);
+  const [currentImageIndex, setCurrentImageIndex] = useState<number>(0);
+
   if (user === undefined) {
     redirect("/login");
   }
+
+  const handleReportSuccess = (newData: Product | undefined): void => {
+    setProductData(newData);
+  };
+
+  // 이미지를 클릭했을 때 모달을 열고 해당 이미지를 표시하는 함수
+  const handleImageClick = (imageUrl: string, index: number) => {
+    setCurrentImageIndex(index);
+    setShowModal(true);
+  };
+
+  // 다음 이미지로 이동하는 함수
+  const goToNextImage = () => {
+    if (data?.images) {
+      const nextIndex = (currentImageIndex + 1) % data?.images.length;
+      setCurrentImageIndex(nextIndex);
+    }
+  };
+
+  // 이전 이미지로 이동하는 함수
+  const goToPreviousImage = () => {
+    if (data?.images) {
+      const previousIndex = (currentImageIndex - 1 + data?.images.length) % data?.images.length;
+      setCurrentImageIndex(previousIndex);
+    }
+  };
+
+  // 모달을 닫는 함수
+  const closeModal = () => {
+    setShowModal(false);
+  };
 
   // TODO : 사용자 계좌인증여부
   const isUserAccountOk = true;
 
   const isReported =
-    data.reports === null
+    productData?.reports === null
       ? false
-      : data.reports.filter((report) => report.isReport).length > 0;
+      : productData?.reports?.filter((report) => report.isReport)?.length ?? 0 > 0;
 
   const isReportedByMe =
-    data.reports &&
-    data.reports.filter((report) => report.reporter.id === user.id).length > 0;
+    productData?.reports &&
+    productData?.reports.filter((report) => report.reporter.id === user.id).length > 0;
+
   const fetchTime = async () => {
     const res = (await 3) + 4;
     return res;
@@ -51,14 +91,60 @@ export default function ProudctInfo({ data }: ProductInfoProps) {
     <div className="px-3 py-5 ">
       <div className="block xl:flex">
         <div className="w-full xl:w-1/2 justify-center mr-10 flex items-center">
-          <div className="w-full">
-            <Image
-              className="object-contain w-full rounded h-auto"
-              alt="상품 상세 이미지"
-              src={data.images[0].imageURL}
-              width={600}
-              height={600}
-            />
+          <div className="w-80">
+            <Carousel
+              className=""
+              showArrows={true}
+              showThumbs={false}
+              showStatus={false} // 우측상단 상태값
+              infiniteLoop={true}
+            >
+              {data?.images.map((media, index) => (
+                media.contentType === 'IMAGE' ? ( // 이미지인 경우
+                  <div
+                    key={index}
+                    onClick={() => handleImageClick(media.imageURL, index)}
+                  >
+                    <Image
+                      key={media.id}
+                      className="object-contain object-center h-96 w-h-96"
+                      src={media.imageURL}
+                      width={600}
+                      height={600}
+                      alt={`productImage_${media.id}`}
+                    />
+                  </div>
+                ) : ( // 동영상인 경우
+                  <div
+                    key={index}
+                    className="flex justify-center"
+                    onClick={() => handleImageClick(media.imageURL, index)}
+                  >
+                    <ReactPlayer
+                      key={media.id}
+                      className="object-cover object-center h-80 max-w-max"
+                      url={media.imageURL}
+                      alt={`productVideo_${media.id}`}
+                      controls={true}
+                    />
+                  </div>
+                )
+              ))}
+            </Carousel>
+
+            {showModal &&
+              createPortal(
+                <ImageModal
+                  showModal={showModal}
+                  closeModal={closeModal}
+                  data={data}
+                  currentImageIndex={currentImageIndex}
+                  goToPreviousImage={goToPreviousImage}
+                  goToNextImage={goToNextImage}
+                />,
+                document.body
+              )}
+
             <div className="flex justify-between items-center mt-4">
               <div className="flex items-center gap-4  text-xl">
                 <Image
@@ -76,11 +162,9 @@ export default function ProudctInfo({ data }: ProductInfoProps) {
                 ) : isReportedByMe ? (
                   "이미 신고한 상품입니다"
                 ) : (
-                  <div
-                    className="cursor-pointer"
-                    onClick={() => setShowReportModal(true)}
-                  >
-                    <SirenIcon /> 신고하기
+                  <div className="cursor-pointer flex items-center gap-1" onClick={() => setShowReportModal(true)}>
+                    <SirenIcon />
+                    <div>신고하기</div>
                   </div>
                 )}
               </div>
@@ -103,15 +187,51 @@ export default function ProudctInfo({ data }: ProductInfoProps) {
         <div className="mt-10 xl:mt-0 w-full xl:w-2/5 flex flex-col justify-between">
           <div className="flex w-full justify-between mb-10">
             <div>
-              <p className="text-text-gray mb-2">홈 - {data.category.name}</p>
+              <p className="flex items-center text-text-gray mb-2">
+                <Link href={"/"} className="flex items-baseline">
+                  <svg
+                    className="w-3 h-3 me-2.5"
+                    aria-hidden="true"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                  >
+                    <path d="m19.707 9.293-2-2-7-7a1 1 0 0 0-1.414 0l-7 7-2 2a1 1 0 0 0 1.414 1.414L2 10.414V18a2 2 0 0 0 2 2h3a1 1 0 0 0 1-1v-4a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v4a1 1 0 0 0 1 1h3a2 2 0 0 0 2-2v-7.586l.293.293a1 1 0 0 0 1.414-1.414Z" />
+                  </svg>
+                  홈
+                </Link>
+                <Link
+                  className="flex items-baseline"
+                  href={
+                    categories.find((c) => c.name === data.category.name)
+                      ?.link ?? "/"
+                  }
+                >
+                  <svg
+                    className="rtl:rotate-180 w-2 h-2 text-gray-400 mx-1"
+                    aria-hidden="true"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 6 10"
+                  >
+                    <path
+                      stroke="currentColor"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="m1 9 4-4-4-4"
+                    />
+                  </svg>
+                  {data.category.name}
+                </Link>
+              </p>
               <p className="text-2xl mb-2">{data.title}</p>
               <span className="text-2xl mr-2 mb-2">
                 {data.price.toLocaleString()}원
               </span>
               <span
-                className={`inline font-medium text-sm  ${
-                  data.discountable ? "text-point-color" : "text-red-500"
-                } `}
+                className={`inline font-medium text-sm  ${data.discountable ? "text-point-color" : "text-red-500"
+                  } `}
               >
                 {data.discountable ? "할인가능" : "할인불가능"}
               </span>
@@ -178,16 +298,15 @@ export default function ProudctInfo({ data }: ProductInfoProps) {
                 }}
               >
                 <Button
-                  text={`${
-                    data.forSale
-                      ? data.user.id === user.id
-                        ? "채팅방 보기"
-                        : "1:1 채팅하기"
-                      : "거래완료"
-                  }`}
+                  text={`${data.forSale
+                    ? data.user.id === user.id
+                      ? "채팅방 보기"
+                      : "1:1 채팅하기"
+                    : "거래완료"
+                    }`}
                   width={"100%"}
                   disabled={!data.forSale}
-                  onClick={() => {}}
+                  onClick={() => { }}
                 />
               </a>
             </div>

@@ -36,7 +36,7 @@ export const createProduct = async ({
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      "Authorization": getAccessToken()
+      Authorization: getAccessToken(),
     },
     body: JSON.stringify(mapProductToAPISepc({ product, userId })),
   });
@@ -67,7 +67,7 @@ const createImages = async (
   return await fetch("/products/upload", {
     method: "POST",
     headers: {
-      "Authorization": getAccessToken()
+      Authorization: getAccessToken(),
     },
     body: fomData,
   });

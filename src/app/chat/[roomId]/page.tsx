@@ -4,14 +4,13 @@ import Image from "next/image";
 import PrivateChatting from "./_components/PrivateChatting";
 import { redirect, useParams } from "next/navigation";
 import { useContext, useEffect, useState } from "react";
-import TransactionRequestButton from "./_components/TransactionRequestButton";
 import { createPortal } from "react-dom";
 import TransferRequest from "./_components/TransferRequest";
-import RequestProcess from "./_components/RequestProcess";
 import RequestProcessModal from "./_components/RequestProcessModal";
 import usePrivateChatMessage from "../_hooks/usePrivateChatMessgae";
 import { mutate } from "swr";
 import { UserContext } from "@/providers/UserContext";
+import TransactionStatusToActiveButton from "./_components/TransactionStatusToActiveButton";
 
 export default function PrivateChat() {
   const params = useParams<{
@@ -34,72 +33,7 @@ export default function PrivateChat() {
   const transactionStatus =
     data?.product?.transactionDetails?.status.status ?? null;
   const isSeller = data && data.product?.seller.id === user.id;
-  console.log(isSeller, data);
-
   const [price, setPrice] = useState<number>(data?.product?.price ?? 0);
-
-  const mapTransactionStatusToActiveButton = () => {
-    if (!data) return;
-
-    const alreadyRequetesd = !!data.request;
-    const isPending = data.product.transactionDetails === null;
-    const isAccepted =
-      data.request &&
-      data.request.isAccepted &&
-      data.request.isAccepted === true;
-
-    if (transactionStatus === null && !isSeller) {
-      return alreadyRequetesd ? (
-        isPending ? (
-          <span
-            className="min-w-[72px]  text-black
-      font-semibold text-sm"
-          >
-            수락 대기중
-          </span>
-        ) : isAccepted ? (
-          <span
-            className="min-w-[72px]  text-green-600 
-      font-semibold text-sm"
-          >
-            거래진행중
-          </span>
-        ) : (
-          <span
-            className="min-w-[72px]  text-text-gray 
-      font-semibold text-sm"
-          >
-            거래거절
-          </span>
-        )
-      ) : (
-        <TransactionRequestButton
-          onClick={() => {
-            setOpen(true);
-          }}
-        />
-      );
-    } else if (isSeller && isPending) {
-      return (
-        <RequestProcess
-          onClick={() => {
-            setRequestProcessModalOpen(true);
-          }}
-        />
-      );
-    } else if (isSeller && !isAccepted) {
-      return (
-        <span
-          className="min-w-[72px]  text-text-gray 
-      font-semibold text-sm"
-        >
-          요청 거절
-        </span>
-      );
-    } else {
-      return "";
-    }
-  };
 
   useEffect(() => {
     if (data) setPrice(data.product.price);
@@ -127,7 +61,6 @@ export default function PrivateChat() {
 
   const onAccept = () => {
     const request = data?.request;
-    console.log("accept", request);
 
     request &&
       updateTransactionRequest({
@@ -196,7 +129,13 @@ export default function PrivateChat() {
             </div>
           </div>
 
-          {mapTransactionStatusToActiveButton()}
+          <TransactionStatusToActiveButton
+            clickRequestButton={() => setOpen(true)}
+            clickRequestProcessButton={() => setRequestProcessModalOpen(true)}
+            data={data}
+            isSeller={isSeller ?? false}
+            transactionStatus={transactionStatus}
+          />
         </div>
       </div>
       <div className="relative h-full w-full">

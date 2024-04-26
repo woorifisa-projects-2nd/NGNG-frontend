@@ -12,7 +12,7 @@ type ProductResponse = {
 };
 export default function ProductDetail({ params }: { params: { id: number } }) {
   const { data } = useSWR<ProductResponse>("/api/products/id", () =>
-    getProductById(params.id)
+    getProductById(params.id).then((res) => res as ProductResponse)
   );
 
   if (!data) {

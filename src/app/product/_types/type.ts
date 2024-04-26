@@ -16,6 +16,7 @@ export type Tag = {
 type Image = {
   id: number;
   imageURL: string;
+  contentType: string;
 };
 
 export type Chat = {
@@ -72,10 +73,10 @@ export type ReportType = {
 };
 
 export type RequestReport = {
-  reportContents: string,
-  reportTypeId: number,
-  reporterId: number,
-  userId: number,
-  productId: number,
-  images: { id: number; imageURL: File; }[],
-}
+  reportContents: string;
+  reportTypeId: number;
+  reporterId: number;
+  userId: number;
+  productId: number;
+  images: { id: number; imageURL: File }[];
+};

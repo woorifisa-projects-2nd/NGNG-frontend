@@ -1,11 +1,12 @@
-import withPWAInit from "@ducanh2912/next-pwa";
+// import withPWAInit from "@ducanh2912/next-pwa";
 
-const withPWA = withPWAInit({
-  dest: "public",
-});
+// const withPWA = withPWAInit({
+//   dest: "public",
+// });
 
-export default withPWA({
+export default ({
   // Your Next.js config
+  reactStrictMode: false,
   webpack: (config) => {
     config.module.rules.push({
       test: /\.svg$/,
@@ -40,6 +41,7 @@ export default withPWA({
   trailingSlash: true,
   // 랜덤 이미지 가져올떄 허용 사이트로 나중에 삭제예정
   images: {
+    minimumCacheTTL: 60,
     formats: ["image/avif", "image/webp"],
     remotePatterns: [
       {

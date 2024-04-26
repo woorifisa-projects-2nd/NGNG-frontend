@@ -1,4 +1,5 @@
 import { Product } from "../[id]/page";
+import { getAccessToken } from "../_utils/auth-header";
 
 export const getProductById = async (id: number) => {
     const res = await fetch(`/products/${id}`);
@@ -33,6 +34,7 @@ export const createProduct = async (product: Product): Promise<boolean> => {
         method: "PUT",
         headers: {
             "Content-Type": "application/json",
+            Authorization: getAccessToken(),
         },
         body: JSON.stringify(mapProductToAPISepc(product)),
     });
@@ -61,11 +63,26 @@ export const deleteImageById = async (productId: number, imageURL: string) => {
         method: "DELETE",
         headers: {
             "Content-Type": "application/json",
+            Authorization: getAccessToken(),
         },
         body: JSON.stringify(deleteData),
     });
     return response.ok;
 };
+
+export const deleteImages = async (productId: number) => {
+    const response = await fetch(`/api/deleteImage/${productId}`, {
+        method: "DELETE",
+        headers: {
+            "Content-Type": "application/json",
+            Authorization: getAccessToken(),
+        },
+    });
+    return response.ok;
+};
+
+
+
 
 const createImages = async (
     productId: string,
@@ -81,11 +98,14 @@ const createImages = async (
     });
     fomData.append("productId", productId);
 
-    console.log(images);
+    console.log(fomData);
 
     // return await fetch("/api/upload", {
     return await fetch(`/api/upload`, {
         method: "POST",
+        headers: {
+            Authorization: getAccessToken(),
+        },
         body: fomData,
     });
 };

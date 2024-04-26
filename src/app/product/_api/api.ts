@@ -3,10 +3,22 @@ import { Product, RequestReport } from "../_types/type";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
 import { getAccessToken } from "@/app/my_page/_utils/auth-header";
+import { ProductRespons } from "../[id]/_hooks/useProduct";
 
-export const getProductById = async (id: string) => {
-  const res = await fetch(`http://${process.env.BACKEND_URL}/products/${id}`, {
-    cache: "no-store",
+export const getProductById = async (id: number): Promise<ProductRespons> => {
+  return await fetch(`/products/${id}`, {
+    headers: {
+      Authorization: getAccessToken(),
+    },
+  }).then(async (res) => {
+    if (res.status === 404) {
+      return { status: res.status, data: undefined };
+    } else {
+      return {
+        status: res.status,
+        data: (await res.json()) as unknown as Product,
+      };
+    }
   });
 };
 export const sendPublicChatMessage = ({
@@ -126,9 +138,9 @@ const createImages = async (
   // return await fetch("/api/upload", {
   return await fetch(`/api/reportImages/upload`, {
     method: "POST",
-    body: fomData,
     headers: {
       Authorization: getAccessToken(),
     },
+    body: fomData,
   });
 };
