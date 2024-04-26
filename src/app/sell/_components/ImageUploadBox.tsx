@@ -71,6 +71,7 @@ export default function ImageUploadBox({
         type="file"
         className="hidden"
         onChange={changeFile}
+        accept=".jfif, .jpg, .jpeg, .png"
       />
     </>
   );
