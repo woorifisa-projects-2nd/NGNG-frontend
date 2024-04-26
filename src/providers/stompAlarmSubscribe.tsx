@@ -1,32 +1,61 @@
 "use client";
-import { useEffect } from "react";
-import client from "./stomp";
+
+import { useContext, useRef } from "react";
+import * as StompJs from "@stomp/stompjs";
+import { UserContext } from "./UserContext";
+const chatAlarm: number[] = [];
 
 export default function StompAlarmSubscibe() {
-  const isLogin = true;
-  if (isLogin) {
-    const userId = 2;
-    client.onConnect = () => {
-      client.subscribe(`alarm/${userId}`, (message) => {
-        const datas = JSON.parse(message.body);
-        console.log("message", datas);
-        new Notification("text", {
-          body: "테스트 알림",
-          icon: "/car.jpg",
-        });
-      });
-      client.activate();
-    };
+  const { getUser } = useContext(UserContext);
+  const notificationRef = useRef<Notification>();
+  const user = getUser();
+
+  if (!Notification) {
+    return;
   }
 
-  useEffect(() => {
-    if (
-      Notification.permission === "denied" ||
-      Notification.permission === "default"
-    ) {
-      Notification.requestPermission();
+  if (Notification.permission !== "granted") {
+    try {
+      Notification.requestPermission().then((permission) => {
+        if (permission !== "granted") return;
+      });
+    } catch (error) {
+      // 사파리의 경우
+      if (error instanceof TypeError) {
+        Notification.requestPermission().then((permission) => {
+          if (permission !== "granted") return;
+        });
+      }
     }
-  }, []);
+  }
+  const client = new StompJs.Client({
+    brokerURL: `${process.env.NEXT_PUBLIC_CHAT_SOCKET}/chat-server`,
+    reconnectDelay: 5000,
+  });
+  client.onConnect = () => {
+    client.subscribe(`/alarms/${user?.id}`, (message) => {
+      const datas = JSON.parse(message.body);
+
+      if (chatAlarm.find((id) => id === datas.body.chatId) === undefined) {
+        chatAlarm.push(datas.body.chatId);
+        notificationRef.current = new Notification(datas.body.user.nickname, {
+          body: datas.body.message,
+          icon: datas.body.productThumbnail,
+          tag: datas.body.chatId,
+          dir: "ltr",
+          lang: "ko",
+          requireInteraction: false,
+        });
+        notificationRef.current.onclick = (e) => {
+          e.preventDefault();
+          window.focus();
+          notificationRef.current?.close();
+        };
+      }
+    });
+  };
+
+  client.activate();
 
   return (
     <div

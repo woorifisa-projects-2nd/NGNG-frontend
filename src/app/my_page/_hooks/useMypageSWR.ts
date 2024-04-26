@@ -21,13 +21,13 @@ const useMypageSWR = () => {
           sellList: data.sellList.filter((p) => p.visible),
           buyList: data.buyList.filter((p) => p.product.visible),
         } as MypageReponse;
-      }),
+      })
     // 자동 갱신 비활성화
-    {
-      revalidateIfStale: false,
-      revalidateOnFocus: false,
-      revalidateOnReconnect: false,
-    }
+    // {
+    //   revalidateIfStale: false,
+    //   revalidateOnFocus: false,
+    //   revalidateOnReconnect: false,
+    // }
   );
 
   const updateProfile = async (

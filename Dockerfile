@@ -1,4 +1,4 @@
-FROM node:18-alpine AS base
+FROM node:20-alpine AS base
 
 # Install dependencies only when needed
 FROM base AS deps
@@ -8,13 +8,15 @@ WORKDIR /app
 
 # Install dependencies based on the preferred package manager
 COPY package.json yarn.lock* package-lock.json* pnpm-lock.yaml* ./
-RUN \
-  if [ -f yarn.lock ]; then yarn --frozen-lockfile; \
-  elif [ -f package-lock.json ]; then npm ci; \
-  elif [ -f pnpm-lock.yaml ]; then corepack enable pnpm && pnpm i --frozen-lockfile; \
-  else echo "Lockfile not found." && exit 1; \
-  fi
-
+RUN npm install
+# CI 로 패키지 설치시 에러가 많이나서 install로 대체
+# 추후 성능위할떄 다시 사용할 가능성 있음
+# RUN \
+  # if [ -f yarn.lock ]; then yarn --frozen-lockfile; \
+  # elif [ -f package-lock.json ]; then npm ci; \
+  # elif [ -f pnpm-lock.yaml ]; then corepack enable pnpm && pnpm i --frozen-lockfile; \
+  # else echo "Lockfile not found." && exit 1; \
+  # fi
 
 # Rebuild the source code only when needed
 FROM base AS builder

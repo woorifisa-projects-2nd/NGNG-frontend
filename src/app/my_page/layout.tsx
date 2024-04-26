@@ -2,6 +2,7 @@ import DefaultLayout from "@/components/layouts/DefaultLayout";
 import { Metadata, ResolvingMetadata } from "next";
 
 import React, { Suspense } from "react";
+import ModalProovider from "./_provider/ModalProovider";
 
 // export async function generateMetadata(): Promise<Metadata> {
 //   return {
@@ -16,7 +17,9 @@ export default function layout({ children }: { children: React.ReactNode }) {
   return (
     <>
       <DefaultLayout>
-        <Suspense fallback={<div>서스펜스 로딩..</div>}>{children}</Suspense>
+        <ModalProovider>
+          <Suspense fallback={<div>서스펜스 로딩..</div>}>{children}</Suspense>
+        </ModalProovider>
       </DefaultLayout>
     </>
   );

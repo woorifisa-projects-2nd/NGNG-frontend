@@ -6,6 +6,7 @@
 
 export default ({
   // Your Next.js config
+  reactStrictMode: false,
   webpack: (config) => {
     config.module.rules.push({
       test: /\.svg$/,
@@ -40,6 +41,7 @@ export default ({
   trailingSlash: true,
   // 랜덤 이미지 가져올떄 허용 사이트로 나중에 삭제예정
   images: {
+    formats: ["image/avif", "image/webp"],
     remotePatterns: [
       {
         protocol: "https",

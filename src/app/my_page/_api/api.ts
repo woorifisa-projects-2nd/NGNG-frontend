@@ -1,6 +1,8 @@
 import { getAccessToken } from "../_utils/auth-header";
 
 export const getFetchMyPage = async () => {
+  console.log("acces", getAccessToken());
+
   const res = await fetch(`/api/users/mypage`, {
     headers: {
       Authorization: getAccessToken(),
@@ -55,7 +57,7 @@ export const updateTransaction = async ({
     },
     redirect: "follow",
     body: JSON.stringify({
-      status,
+      statusId: status,
     }),
   }).then((res) => {
     if (res.status === 200) {
@@ -90,4 +92,14 @@ export const addFetchPoint = async (cost: number, Done: () => void) => {
     if (res.ok) Done && Done();
     return res.json();
   });
+};
+
+export const updateProductPurchaseById = async (productId: number) => {
+  return await fetch(`/products/refresh/${productId}`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: getAccessToken(),
+    },
+  }).then((res) => res.text());
 };

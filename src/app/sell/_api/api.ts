@@ -1,8 +1,13 @@
+import { getAccessToken } from "@/app/my_page/_utils/auth-header";
 import { Product } from "../page";
-const mapProductToAPISepc = (product: Product) => {
-  // TODO userId로그인한 사람거로 수정하기
-  const userId = 2;
 
+const mapProductToAPISepc = ({
+  product,
+  userId,
+}: {
+  product: Product;
+  userId: number;
+}) => {
   return {
     userId,
     title: product.title,
@@ -20,13 +25,20 @@ const mapProductToAPISepc = (product: Product) => {
   };
 };
 
-export const createProduct = async (product: Product): Promise<string> => {
+export const createProduct = async ({
+  product,
+  userId,
+}: {
+  product: Product;
+  userId: number;
+}): Promise<string> => {
   const res = await fetch(`/products`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
+      Authorization: getAccessToken(),
     },
-    body: JSON.stringify(mapProductToAPISepc(product)),
+    body: JSON.stringify(mapProductToAPISepc({ product, userId })),
   });
 
   if (res.ok === true) {
@@ -54,6 +66,9 @@ const createImages = async (
 
   return await fetch("/products/upload", {
     method: "POST",
+    headers: {
+      Authorization: getAccessToken(),
+    },
     body: fomData,
   });
 };

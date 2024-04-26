@@ -1,9 +1,11 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useContext } from 'react';
 import { Product } from "../../_types/type";
 import ImageUploadBox from "./ImageUploadBox";
 import CloseIcon from "@/assets/SVG/Close.svg";
 import { createReport } from "../../_api/api";
 import { getProductById } from "../../_api/api";
+import { redirect } from "next/navigation";
+import { UserContext } from "@/providers/UserContext";
 
 type ReportModalProps = {
     onClose: () => void;
@@ -13,9 +15,15 @@ type ReportModalProps = {
 };
 
 export default function ReportModal({ onClose, data, userId, onSuccessReport }: ReportModalProps) {
+    const { getUser } = useContext(UserContext);
+    const user = getUser();
     const modalRef = useRef<HTMLDivElement>(null);
     const [reportContent, setReportContent] = useState('');
     const [uploadedImages, setUploadedImages] = useState<File[]>([]);
+
+    if (user === undefined) {
+        redirect("/login");
+    }
 
     const handleReportContentChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
         setReportContent(e.target.value);
@@ -38,7 +46,7 @@ export default function ReportModal({ onClose, data, userId, onSuccessReport }: 
             const requestData = {
                 reportContents: reportContent,
                 reportTypeId: 1, // 상품 신고
-                reporterId: userId,
+                reporterId: user.id,
                 userId: data.user.id,
                 productId: data.id,
                 images: imagesFormatted
@@ -49,7 +57,7 @@ export default function ReportModal({ onClose, data, userId, onSuccessReport }: 
             await createReport(requestData);
 
 
-            const updatedProductData = await getProductById(data.id.toString());
+            const updatedProductData = await getProductById(data.id);
             onSuccessReport(updatedProductData.data);
 
             console.log('신고가 성공적으로 제출되었습니다.');

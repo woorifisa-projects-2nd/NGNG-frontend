@@ -1,12 +1,13 @@
 import React, { useRef } from "react";
 import useMypageSWR from "../../_hooks/useMypageSWR";
+import {
+  ModalStatus,
+  useModalController,
+} from "../../_provider/ModalProovider";
 
-type Props = {
-  onCloseModal: () => void;
-};
-
-export default function UpdateAddress({ onCloseModal }: Props) {
+export default function UpdateAddress() {
   const { updateProfile } = useMypageSWR();
+  const [_, setModal] = useModalController();
 
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -16,7 +17,7 @@ export default function UpdateAddress({ onCloseModal }: Props) {
         {
           address: inputRef.current.value,
         },
-        () => onCloseModal()
+        () => setModal({ type: ModalStatus.Adress, isOpen: false })
       );
   };
 

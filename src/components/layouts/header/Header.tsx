@@ -4,27 +4,26 @@ import SearchInput from "./components/SearchInput";
 import Menu from "./components/Menu";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-
+export const categories = [
+  { name: "의류", link: "/product/clothes" },
+  { name: "잡화", link: "/product/accessories" },
+  { name: "뷰티", link: "/product/beauty" },
+  { name: "디지털", link: "/product/digital" },
+  { name: "취미", link: "/product/hobby" },
+  { name: "티켓/교환권", link: "/product/ticket" },
+  { name: "생활", link: "/product/life" },
+  { name: "가구", link: "/product/furniture" },
+  { name: "가공식품", link: "/product/food" },
+  { name: "기타", link: "/product/etc" },
+];
 export default function Header() {
   const pathname = usePathname();
-  const categories = [
-    { name: "의류", link: "/product/clothes" },
-    { name: "잡화", link: "/product/accessories" },
-    { name: "뷰티", link: "/product/beauty" },
-    { name: "디지털", link: "/product/digital" },
-    { name: "취미", link: "/product/hobby" },
-    { name: "티켓/교환권", link: "/product/ticket" },
-    { name: "생활", link: "/product/life" },
-    { name: "가구", link: "/product/furniture" },
-    { name: "가공식품", link: "/product/food" },
-    { name: "기타", link: "/product/etc" },
-  ];
 
   return (
     <div className="dark:bg-bg-header-dark sticky top-0 z-10 bg-white">
       <div className="hidden md:flex justify-center items-center w-full p-5">
         <div className="flex justify-between items-center w-[90%]">
-          <Link href="/">
+          <Link href="/" className="w-28 h-5">
             <Logo />
           </Link>
           <SearchInput />
@@ -34,7 +33,7 @@ export default function Header() {
 
       <div className="block md:hidden">
         <div className="flex justify-between items-center p-5 w-full">
-          <Link href="/">
+          <Link href="/" className="w-24 h-5">
             <Logo />
           </Link>
           <Menu />
@@ -44,18 +43,13 @@ export default function Header() {
       <div className="hidden md:flex justify-center items-center shadow-md w-full h-12">
         <div className="hidden md:flex justify-around items-center w-[90%]">
           {categories.map((category) => {
-            console.log(
-              "path",
-              pathname.split("/")[2] === category.link.split("/")[2]
-            );
-
             return (
               <Link
                 key={category.name}
                 href={category.link}
-                className={`${
+                className={`hover:bg-light-gray/50 p-2 ${
                   pathname.split("/")[2] === category.link.split("/")[2] &&
-                  "text-point-color font-bold"
+                  "text-point-color font-bold "
                 }`}
               >
                 {category.name}

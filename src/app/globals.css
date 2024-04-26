@@ -15,3 +15,38 @@ body {
   color: rgb(39 39 39 / var(--tw-text-opacity));
   @apply dark:text-white;
 }
+
+.skeleton {
+  /* border-radius : 1rem; */
+  --tw-bg-opacity: 1;
+  --b1: 100% 0 0;
+  --b3: 92.4169% 0.00108 197.137559;
+  background-color: oklch(var(--b3) / var(--tw-bg-opacity));
+  will-change: background-position;
+  animation: skeleton 1s ease-in-out infinite;
+  background-image: linear-gradient(
+    105deg,
+    transparent 0%,
+    transparent 40%,
+    oklch(var(--b1) / 1) 50%,
+    transparent 60%,
+    transparent 100%
+  );
+  background-size: 200% auto;
+  background-repeat: no-repeat;
+  background-position-x: -50%;
+}
+
+.skeleton-text {
+  @apply skeleton;
+  @apply text-transparent h-[1.5rem] my-2;
+}
+
+@keyframes skeleton {
+  0% {
+    background-position: 150%;
+  }
+  100% {
+    background-position: -50%;
+  }
+}

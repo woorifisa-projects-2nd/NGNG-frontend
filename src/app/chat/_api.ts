@@ -1,4 +1,5 @@
 import * as StompJs from "@stomp/stompjs";
+import { getAccessToken } from "../my_page/_utils/auth-header";
 
 export const statusList = [
   { id: 1, name: "거래요청" },
@@ -17,12 +18,14 @@ export const sendPrivateChatMessage = ({
   message,
   isImage,
   buyerId,
+  sellerId,
   userId,
   privateChatRoomId,
 }: {
   client: StompJs.Client;
   productId: number;
   buyerId: number;
+  sellerId: number;
   message: string;
   userId: number;
   privateChatRoomId: number;
@@ -30,7 +33,9 @@ export const sendPrivateChatMessage = ({
 }) => {
   if (isImage !== undefined) {
     client.publish({
-      destination: `/chats/${productId}/${buyerId}`,
+      destination: `/chats/${productId}/${buyerId}/${
+        userId === buyerId ? sellerId : buyerId
+      }`,
       body: JSON.stringify({
         message: message,
         userId,
@@ -40,7 +45,9 @@ export const sendPrivateChatMessage = ({
     });
   } else {
     client.publish({
-      destination: `/chats/${productId}/${buyerId}`,
+      destination: `/chats/${productId}/${buyerId}/${
+        userId === buyerId ? sellerId : buyerId
+      }`,
       body: JSON.stringify({
         message: message,
         userId,
@@ -57,12 +64,14 @@ export const getAllChatMessages = async ({
   chatRoomId: number;
   userId: number;
 }) => {
-  return await fetch(`/private-chats/${chatRoomId}/${userId}`).then((res) =>
-    res.json()
-  );
+  return await fetch(`/private-chats/${chatRoomId}/${userId}`, {
+    headers: {
+      Authorization: getAccessToken(),
+    },
+  }).then((res) => res.json());
 };
 
-export const createTransactionRequest = async ({
+export const createTransactionRequestAPI = async ({
   buyerId,
   productId,
   price,
@@ -77,6 +86,7 @@ export const createTransactionRequest = async ({
     method: "POST",
     headers: {
       "Content-Type": "application/json",
+      Authorization: getAccessToken(),
     },
     body: JSON.stringify({
       productId,
@@ -98,6 +108,7 @@ export const updateTransactionStatus = async ({
     method: "PUT",
     headers: {
       "Content-Type": "application/json",
+      Authorization: getAccessToken(),
     },
     body: JSON.stringify({
       statusId,
@@ -106,5 +117,29 @@ export const updateTransactionStatus = async ({
 };
 
 export const getAllChatRoomData = async (userId: number) => {
-  return await fetch(`/private-chats/${userId}`).then((res) => res.json());
+  return await fetch(`/private-chats/${userId}`, {
+    headers: {
+      Authorization: getAccessToken(),
+    },
+  }).then((res) => res.json());
+};
+
+export const updateTransactionRequestAPI = async ({
+  isAccepted,
+  transactionRequestId,
+}: {
+  transactionRequestId: number;
+  isAccepted: boolean;
+}) => {
+  return await fetch(`/transaction/request`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: getAccessToken(),
+    },
+    body: JSON.stringify({
+      transactionRequestId,
+      isAccepted,
+    }),
+  });
 };

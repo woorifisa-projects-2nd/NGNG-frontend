@@ -18,7 +18,7 @@ export default function Button({
 }: ButtonProps) {
   const colorClassName =
     color === undefined
-      ? ""
+      ? "bg-point-color"
       : color === "black"
       ? "bg-[#2e2e2e] "
       : "bg-white ";
@@ -27,7 +27,7 @@ export default function Button({
     <button
       disabled={disabled}
       style={{ width, height }}
-      className={` rounded-lg text-white bg-point-color  w-32 h-12 ${colorClassName}  ${
+      className={` rounded-lg text-white  w-32 h-12 ${colorClassName}  ${
         disabled && `bg-text-gray`
       } ${className}`}
       onClick={onClick}
