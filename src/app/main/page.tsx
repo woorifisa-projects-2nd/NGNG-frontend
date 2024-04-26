@@ -1,56 +1,49 @@
 "use client";
-import Image from "next/image";
-import Loading from "@/assets/Loading.svg";
-import { useEffect, useState } from "react";
-import useMainPageProductSWR from "./_hooks/useMainPageProduct";
-import Item from "./_components/item";
+import useMainPageProductSWR, {
+  MainPageProduct,
+} from "./_hooks/useMainPageProduct";
+import Up from "./_design/SVG/ArrowCircleUp.svg";
+import Skelleton from "./_components/Skelleton";
+import { useCallback } from "react";
+import BannerAndItems from "./_components/BannerAndItems";
 
 export default function Main() {
   const { data, isLoading } = useMainPageProductSWR();
 
-  const [count, setCount] = useState(1);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCount((prevCount) => ((prevCount + 1) % 7) + 1);
-    }, 5000);
-
-    return () => clearInterval(interval);
-  }, []);
+  const scrollToTop = useCallback(() => {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+  }, []); // 의존성 배열이 비어있으므로 이 함수는 컴포넌트가 처음 마운트될 때만 생성됩니다.
 
   if (isLoading || data === undefined) {
-    return (
-      <div className="flex justify-center h-[calc(100vh-128px)]">
-        <Loading />
-      </div>
-    );
+    return <Skelleton />;
   }
+
+  // 데이터를 8개씩 잘라서 배열에 넣고 각각을 렌더링
+  const renderData = () => {
+    const chunks: MainPageProduct[][] = [];
+    const chunkSize = 8;
+    const length = data.length;
+    for (let i = 0; i < length; i += chunkSize) {
+      chunks.push(data.slice(i, i + chunkSize));
+    }
+    return chunks.map((chunk, index) =>
+      BannerAndItems({ dataChunk: chunk, index })
+    );
+  };
 
   return (
     <div className="w-full px-5 md:px-32 flex justify-center">
       <div className="pb-20">
-        <div className="relative w-full overflow-hidden rounded-lg md:pt-20 flex justify-center">
-          <Image
-            alt="배너"
-            src={`/banners/${count}.jpg`}
-            width={1024}
-            height={320}
-            className="w-full lg:min-h-40 lg:max-w-5xl bg-transparent rounded-lg"
-          />
-        </div>
         <div className="max-w-[1024px] w-full">
-          <h2 className="w-full text-xl font-medium my-5">최신 상품</h2>
-          <div
-            className="w-full grid grid-cols-2 gap-y-10  
-          md:grid-cols-3 md:gap-7
-          
-          lg:grid-cols-4 lg:gap-4 lg:gap-y-20"
-          >
-            {data.map((item) => {
-              return <Item item={item} key={item.productId} />;
-            })}
-          </div>
+          <>{renderData()}</>
         </div>
+        <Up
+          className="fixed bottom-10 right-10 cursor-pointer fill-black dark:fill-white z-10"
+          onClick={scrollToTop}
+        />
       </div>
     </div>
   );
