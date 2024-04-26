@@ -8,7 +8,7 @@ import Button from "@/components/common/Button";
 import { getAccessToken } from "../_utils/auth-header";
 import { useRouter } from "next/navigation";
 
-export default function userDetail({ params }: { params: { id: number } }) {
+export default function UserDetail({ params }: { params: { id: number } }) {
     const router = useRouter();
     const [user, setUser] = useState<User | null>(null);
     const [password, setPassword] = useState<string | number>("");
