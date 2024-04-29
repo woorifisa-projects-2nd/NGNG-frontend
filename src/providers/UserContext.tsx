@@ -8,9 +8,11 @@ export type User = {
 export const UserContext = createContext<{
   getUser: () => User | undefined;
   setUser: (info: User) => void;
+  logout: () => void;
 }>({
   getUser: () => undefined,
   setUser: (info: User) => {},
+  logout: () => {},
 });
 const UserContextProvider = ({ children }: { children: React.ReactNode }) => {
   const getUser = () => {
@@ -25,8 +27,13 @@ const UserContextProvider = ({ children }: { children: React.ReactNode }) => {
   const setUser = (info: User) => {
     localStorage.setItem("user", JSON.stringify(info));
   };
+
+  const logout = () => {
+    localStorage.removeItem("user");
+    localStorage.removeItem("accessToken");
+  };
   return (
-    <UserContext.Provider value={{ getUser, setUser }}>
+    <UserContext.Provider value={{ getUser, setUser, logout }}>
       {children}
     </UserContext.Provider>
   );

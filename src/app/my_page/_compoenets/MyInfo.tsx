@@ -1,5 +1,5 @@
 import Image from "next/image";
-import React from "react";
+import React, { useContext } from "react";
 import { formatKRW } from "../_utils/format";
 import PointSVG from "../_design/SVG/PointSVG";
 import AccountSVG from "../_design/SVG/AccountSVG";
@@ -7,6 +7,8 @@ import EmailSVG from "../_design/SVG/EmailSVG";
 import AddressSVG from "../_design/SVG/AddressSVG";
 import ProductSVG from "../_design/SVG/ProductSVG";
 import BuySVG from "../_design/SVG/BuySVG";
+import { UserContext } from "@/providers/UserContext";
+import { redirect, useRouter } from "next/navigation";
 
 type Props = {
   userInfo: MypageReponse;
@@ -25,6 +27,14 @@ export default function MyInfo({
   openModalPoint,
   openModalNickName,
 }: Props) {
+  const router = useRouter();
+  const { logout } = useContext(UserContext);
+
+  const clickLogout = () => {
+    logout();
+    router.push("/");
+  };
+
   //   추후 Suspense 로바꾸면 좋을거 같음
   if (!userInfo) return <div>로딩중</div>;
 
@@ -53,7 +63,10 @@ export default function MyInfo({
             >
               닉네임 변경하기
             </p>
-            <button className="block absolute right-0 bottom-0 border p-2 border-black md:bottom-[25%] ">
+            <button
+              className="block absolute right-0 bottom-0 border p-2 border-black md:bottom-[25%] "
+              onClick={clickLogout}
+            >
               로그아웃
             </button>
           </div>
