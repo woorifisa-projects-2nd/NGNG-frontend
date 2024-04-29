@@ -6,14 +6,13 @@ import Item from "./Item";
 type Props = {
   dataChunk: MainPageProduct[];
   index: number;
-  key?: string;
 };
-export default function BannerAndItems({ dataChunk, index, key }: Props) {
+export default function BannerAndItems({ dataChunk, index }: Props) {
   return (
     <>
       <div
         className=" w-full rounded-lg md:py-20 flex justify-center"
-        key={key ?? index}
+        key={index}
       >
         <Image
           alt="배너"
