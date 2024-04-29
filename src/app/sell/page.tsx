@@ -101,8 +101,8 @@ export default function Sell() {
         <button
           data-cy={"product-upload-button"}
           disabled={!allfullfilledSaveCondition}
-          className={` rounded-lg text-white  w-32 h-12 ${
-            !allfullfilledSaveCondition && `bg-text-gray`
+          className={`rounded-lg text-white  w-32 h-12 ${
+            !allfullfilledSaveCondition ? `bg-text-gray` : "bg-point-color"
           } `}
           onClick={onClickButton}
         >
