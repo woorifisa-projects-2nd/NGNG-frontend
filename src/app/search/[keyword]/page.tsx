@@ -41,7 +41,7 @@ export default function SearchKeyword() {
 
     const search = async () => {
 
-      const url = `http://localhost:8080${path}${page}`; // path : /search/{keyword}/
+      const url = `/api/${path}${page}`; // path : /search/{keyword}/
       const options = {
         method: "GET",
         headers: {
