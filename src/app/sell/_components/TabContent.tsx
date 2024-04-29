@@ -96,7 +96,7 @@ export default function TabContent({ data, onChangeData }: TabContentProps) {
 
   const chanagePrice = (newPrice: string) => {
     const input = newPrice.replaceAll(",", "");
-    console.log("new price", input, !isNaN(Number(input)));
+
     if (!isNaN(Number(input))) {
       onChangeData?.({
         order: data.order,
@@ -201,13 +201,13 @@ export default function TabContent({ data, onChangeData }: TabContentProps) {
         <div className="flex text-lg font-medium min-w-24">
           상품명<p className="text-red-600">*</p>
         </div>
-
-        <Input
+        <input
+          data-cy={"product-name"}
+          className={`rounded-md border-[1px] border-black/15  w-full focus:outline-none focus:border-point-color p-2`}
+          style={{ width: 684, height: 45 }}
           value={data.title}
-          onChange={changeTitle}
-          placeholder="한글, 숫자, 영어, 특수문자만 입력하세요."
-          width={684}
-          height={45}
+          onChange={(e) => changeTitle(e.currentTarget.value)}
+          placeholder={"한글, 숫자, 영어, 특수문자만 입력하세요."}
         />
       </div>
       <div className="flex items-center justify-start">
@@ -293,12 +293,24 @@ export default function TabContent({ data, onChangeData }: TabContentProps) {
         <div className="flex text-lg font-medium  min-w-24">
           가격<p className="text-red-600">*</p>
         </div>
-        <Input
-          onChange={chanagePrice}
+        <input
+          data-cy={"product-price"}
+          className={`rounded-md border-[1px] border-black/15  w-full focus:outline-none focus:border-point-color p-2`}
+          style={{ width: 276 }}
           value={data.price?.toLocaleString()}
-          placeholder="가격을 입력해 주세요."
-          width={276}
+          onKeyDown={(e) => {
+            if (e.key >= "0" && e.key <= "9") {
+              chanagePrice(e.currentTarget.value);
+            } else {
+              e.preventDefault();
+            }
+          }}
+          onChange={(e) => {
+            chanagePrice(e.currentTarget.value);
+          }}
+          placeholder={"가격을 입력해 주세요."}
         />
+
         <span className="text-text-gray relative right-7">원</span>
         <CheckBox
           onChange={changeDiscountable}
@@ -318,6 +330,7 @@ export default function TabContent({ data, onChangeData }: TabContentProps) {
           설명<span className="text-red-600">*</span>
         </div>
         <textarea
+          data-cy={"product-description"}
           className="rounded-md border-[1px] border-black/15  w-full focus:outline-none focus:border-point-color p-4 h-[530px] resize-none"
           value={data.content}
           onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>

@@ -83,19 +83,6 @@ export default function Chatting({ data }: ChattingProps) {
         productId: data.id,
         userId: user.id,
       });
-
-    setChatData([
-      ...chatData,
-      {
-        id: chatData?.slice(-1)[0]?.id + 1,
-        createdAt: new Date().toUTCString(),
-        message: message,
-        userId: user.id,
-        userName: user.name,
-        userNickName: user.nickname,
-      },
-    ]);
-
     setMessage("");
     scrollToBottom();
   };
@@ -118,8 +105,10 @@ export default function Chatting({ data }: ChattingProps) {
       sendMessage(message);
     }
   };
-
+  console.log("data", chatData);
   const getMessage = (data: any) => {
+    console.log("메시지 수신", data);
+
     setChatData([
       ...chatData,
       {
