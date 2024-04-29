@@ -2,10 +2,12 @@
 import Refresh from "@/components/layouts/admin_menu/design/SVG/refresh.svg";
 import CheckReport from "@/components/layouts/admin_menu/design/SVG/check_report.svg";
 import Trash from "@/components/layouts/admin_menu/design/SVG/trash-2.svg";
+import Plus from "@/components/layouts/admin_menu/design/SVG/Plus.svg";
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { User } from "./_types/type";
+import { getAccessToken } from "./_utils/auth-header";
 
 export default function UserManagement() {
   const router = useRouter();
@@ -32,15 +34,19 @@ export default function UserManagement() {
   async function fetchReportsByPage(pageNumber: number) {
     const url = `/api/admin/users`;
 
-    await fetch(url)
+    await fetch(url, {
+      headers: {
+        Authorization: getAccessToken(),
+      },
+    })
       .then((resp) => resp.json())
       .then((result) => {
-        setUsers(result);
+        setUsers(result.content);
         // console.log(result.content);
 
-        // setCurrentPage(result.pageable.pageNumber);
-        // setTotalPages(result.totalPages);
-        // setItemsPerPage(result.pageable.pageSize)
+        setCurrentPage(result.pageable.pageNumber);
+        setTotalPages(result.totalPages);
+        setItemsPerPage(result.pageable.pageSize);
       });
   }
 
@@ -110,23 +116,21 @@ export default function UserManagement() {
     return pageNumbers;
   };
 
-  const handleCreateProduct = () => {
+  const handleCreateuser = () => {
     router.push("/admin/users"); // '/sell' 경로로 이동합니다.
   };
 
-  const handleDelete = async (productId: number) => {
+  const handleDelete = async (userId: number) => {
     const shouldDelete = window.confirm("정말로 삭제하시겠습니까?");
 
     if (shouldDelete) {
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}users/${productId}`,
-        {
-          method: "DELETE",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      const res = await fetch(`/api//admin/users/${userId}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: getAccessToken(),
+        },
+      });
     }
     fetchReportsByPage(currentPage);
   };
@@ -136,20 +140,20 @@ export default function UserManagement() {
       <div className="text-3xl font-bold mb-16">사용자 관리</div>
 
       <div className="flex justify-between mb-5">
-        <div className="flex cursor-pointer" onClick={handleCreateProduct}>
-          <Refresh className="mr-2" />
-          <div>사용자 등록</div>
-        </div>
+        {/* <div className="flex cursor-pointer items-center" onClick={handleCreateuser}>
+                    <Plus />
+                    <div>사용자 등록</div>
+                </div> */}
       </div>
 
       <div>
-        <div className="flex text-center h-10 bg-slate-100 p-8">
-          <div className="w-1/6 font-bold">No.</div>
-          <div className="w-1/6 font-bold">사용자 ID</div>
-          <div className="w-1/6 font-bold">이름/닉네임</div>
-          <div className="w-1/6 font-bold">전화번호</div>
-          <div className="w-1/6 font-bold">이메일</div>
-          <div className="w-1/6 font-bold">주소</div>
+        <div className="flex text-center items-center h-16 text-xs text-gray-700 uppercase bg-gray-100 dark:bg-gray-700 dark:text-gray-400">
+          <div className="w-1/12 font-bold text-base">No.</div>
+          <div className="w-1/12 font-bold text-base">사용자 ID</div>
+          <div className="w-1/6 font-bold text-base">이름/닉네임</div>
+          <div className="w-1/6 font-bold text-base">전화번호</div>
+          <div className="w-1/6 font-bold text-base">이메일</div>
+          <div className="w-1/4 font-bold text-base">주소</div>
           <div className="w-1/6"></div>
         </div>
 
@@ -159,16 +163,19 @@ export default function UserManagement() {
               key={user.userId}
               className="border-b border-gray-300 rounded p-3 flex items-center"
             >
-              <div className="w-1/6">
+              <div className="w-1/12">
                 {index + 1 + currentPage * itemsPerPage}
               </div>
-              <div className="w-1/6">{user.userId}</div>
-              <div className="w-1/6">{user.name + "\n@" + user.nickName}</div>
+              <div className="w-1/12">{user.userId}</div>
+              <div className="w-1/6">
+                <p>{user.name}</p>
+                <p className="text-gray-400">@{user.nickName}</p>
+              </div>
               <div className="w-1/6">{user.phoneNumber}</div>
               <div className="w-1/6">{user.email}</div>
-              <div className="w-1/6">{user.address}</div>
+              <div className="w-1/4">{user.address}</div>
               <div className="w-1/6">
-                <div className="p-5 flex">
+                <div className="p-5 flex items-center">
                   <Link href={`/admin/users/${user.userId}`}>
                     <CheckReport />
                   </Link>
@@ -189,7 +196,7 @@ export default function UserManagement() {
         <Link
           href={
             !disablePrevious
-              ? `/admin/products?page=${
+              ? `/admin/users?page=${
                   Math.floor(currentPage / maxPageButtons) * maxPageButtons -
                   maxPageButtons +
                   1
@@ -213,7 +220,7 @@ export default function UserManagement() {
         <Link
           href={
             !disableNext
-              ? `/admin/products?page=${
+              ? `/admin/users?page=${
                   Math.floor(currentPage / maxPageButtons) * maxPageButtons +
                   maxPageButtons +
                   1

@@ -1,3 +1,4 @@
+"use client";
 import Image from "next/image";
 import React, { useContext } from "react";
 import { formatKRW } from "../_utils/format";
@@ -9,31 +10,21 @@ import ProductSVG from "../_design/SVG/ProductSVG";
 import BuySVG from "../_design/SVG/BuySVG";
 import { UserContext } from "@/providers/UserContext";
 import { redirect, useRouter } from "next/navigation";
+import { ModalStatus, useModalController } from "../_provider/ModalProovider";
 
 type Props = {
   userInfo: MypageReponse;
-  openModalPoint?: () => void;
-  openModalAccount?: () => void;
-  openModalEmail?: () => void;
-  openModalAdress?: () => void;
-  openModalNickName?: () => void;
 };
 
-export default function MyInfo({
-  userInfo,
-  openModalAccount,
-  openModalAdress,
-  openModalEmail,
-  openModalPoint,
-  openModalNickName,
-}: Props) {
-  const router = useRouter();
+export default function MyInfo({ userInfo }: Props) {
+   const router = useRouter();
   const { logout } = useContext(UserContext);
 
   const clickLogout = () => {
     logout();
     router.push("/");
   };
+  const [_, setModal] = useModalController();
 
   //   추후 Suspense 로바꾸면 좋을거 같음
   if (!userInfo) return <div>로딩중</div>;
@@ -59,7 +50,9 @@ export default function MyInfo({
             <p className="font-bold text-[2rem]">{userInfo.nickName}</p>
             <p
               className="text-black text-opacity-45 cursor-pointer "
-              onClick={() => openModalNickName && openModalNickName()}
+              onClick={() =>
+                setModal({ type: ModalStatus.NickName, isOpen: true })
+              }
             >
               닉네임 변경하기
             </p>
@@ -78,7 +71,9 @@ export default function MyInfo({
                 <PointSVG />
                 <p
                   className="w-[5rem] cursor-pointer md:pointer-events-none"
-                  onClick={() => openModalPoint && openModalPoint()}
+                  onClick={() =>
+                    setModal({ type: ModalStatus.Point, isOpen: true })
+                  }
                 >
                   포인트
                 </p>
@@ -113,25 +108,33 @@ export default function MyInfo({
             {/* 기타 */}
             <div className="hidden w-[80vw] max-w-[480px] gap-4 text-black dark:text-white text-opacity-45 md:block md:w-auto md:flex md:flex-col md:justify-start">
               <button
-                onClick={() => openModalPoint && openModalPoint()}
+                onClick={() =>
+                  setModal({ type: ModalStatus.Point, isOpen: true })
+                }
                 className="text-start"
               >
                 포인트 충전하기
               </button>
               <button
-                onClick={() => openModalAccount && openModalAccount()}
+                onClick={() =>
+                  setModal({ type: ModalStatus.Account, isOpen: true })
+                }
                 className="text-start"
               >
                 계좌번호 변경하기
               </button>
               <button
-                onClick={() => openModalEmail && openModalEmail()}
+                onClick={() =>
+                  setModal({ type: ModalStatus.Email, isOpen: true })
+                }
                 className="text-start"
               >
                 이메일 변경하기
               </button>
               <button
-                onClick={() => openModalAdress && openModalAdress()}
+                onClick={() =>
+                  setModal({ type: ModalStatus.Adress, isOpen: true })
+                }
                 className="text-start"
               >
                 배송지 입력하기/변경하기

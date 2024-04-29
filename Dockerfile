@@ -8,13 +8,11 @@ WORKDIR /app
 
 # Install dependencies based on the preferred package manager
 COPY package.json yarn.lock* package-lock.json* pnpm-lock.yaml* ./
+RUN npm install --only=dev
+# CI 로 패키지 설치시 에러가 많이나서 install로 대체
+# 에러가 발생하는 이유가 각자 git pull 하여 패키지 설치 시점이 달라서
+# lock 파일의 실행 환경이 제각각 인거 같다.
 
-RUN \
-  if [ -f yarn.lock ]; then yarn --frozen-lockfile; \
-  elif [ -f package-lock.json ]; then npm ci; \
-  elif [ -f pnpm-lock.yaml ]; then corepack enable pnpm && pnpm i --frozen-lockfile; \
-  else echo "Lockfile not found." && exit 1; \
-  fi
 
 # Rebuild the source code only when needed
 FROM base AS builder
@@ -27,12 +25,9 @@ COPY . .
 # Uncomment the following line in case you want to disable telemetry during the build.
 # ENV NEXT_TELEMETRY_DISABLED 1
 RUN npm cache clean --force
-RUN \
-  if [ -f yarn.lock ]; then yarn run build; \
-  elif [ -f package-lock.json ]; then npm run build; \
-  elif [ -f pnpm-lock.yaml ]; then corepack enable pnpm && pnpm run build; \
-  else echo "Lockfile not found." && exit 1; \
-  fi
+
+# npm 패키지 사용하니깐 굳이 조건문으로 검사를 안하게함
+RUN npm run build;
 
 # Production image, copy all the files and run next
 FROM base AS runner

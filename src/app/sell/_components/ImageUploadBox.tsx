@@ -22,6 +22,21 @@ export default function ImageUploadBox({
     e.target.files && uploadImage(e.target.files[0], image?.id);
   };
 
+
+  console.log("image", image);
+
+  const imageUrlExtractExtension = (url: string) => {
+    // 1. 마지막 `.`의 위치를 찾습니다.
+    const lastDotIndex = url.lastIndexOf(".");
+    // 2. 마지막 `.`이 없는 경우, 확장자가 없는 것으로 처리합니다.
+    if (lastDotIndex === -1) {
+      return "";
+    }
+    // 3. 확장자를 추출합니다.
+    return url.slice(lastDotIndex + 1);
+  };
+
+
   return (
     <>
       {image === undefined ? (
@@ -35,6 +50,25 @@ export default function ImageUploadBox({
             </div>
             이미지 또는 동영상 등록하기
           </div>
+        </div>
+      ) : imageUrlExtractExtension((image.image as File).name) === "mp4" ? (
+        <div className="flex relative">
+          <CloseIcon
+            width={20}
+            height={20}
+            className="absolute right-2 top-2 cursor-pointer fill-white dark:fill-black z-50"
+            color={iconColor}
+            onClick={resetImage}
+          />
+          <video
+            className="w-full h-auto hidden md:block cursor-pointer object-contain"
+            width={0}
+            height={0}
+            onClick={clickBox}
+            controls
+          >
+            <source src={URL.createObjectURL(image.image)}></source>
+          </video>
         </div>
       ) : (
         <div className="flex relative">

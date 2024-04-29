@@ -16,6 +16,7 @@ import useMypageSWR from "./_hooks/useMypageSWR";
 import SkeletonMyinfo from "./_compoenets/skeleton/SkeletonMyinfo";
 import { UserContext } from "@/providers/UserContext";
 import { useRouter } from "next/navigation";
+import { ModalStatus, useModalController } from "./_provider/ModalProovider";
 
 export default function Page() {
   const router = useRouter();
@@ -29,11 +30,7 @@ export default function Page() {
 
   const [activeMenuNumber, setMewnuNumber] = useState<number>(0);
 
-  const [isOpenPointModal, setPointModal] = useState(false);
-  const [isOpenNickNameModal, setNickNameModal] = useState(false);
-  const [isOpenAddressModal, setAddressModal] = useState(false);
-  const [isOpenEmailModal, setEmailModal] = useState(false);
-  const [isOpenAccountModal, setAccountModal] = useState(false);
+  const [status, setStatus] = useModalController();
 
   const handlerDelteProduct = (productId: number) => {
     deleteProduct(productId);
@@ -45,14 +42,7 @@ export default function Page() {
   return (
     <div className="max-w-[1240px] flex-col justify-center mx-auto p-4">
       {/* 사용자 정보 부분 */}
-      <MyInfo
-        userInfo={userInfo}
-        openModalPoint={() => setPointModal(true)}
-        openModalNickName={() => setNickNameModal(true)}
-        openModalAdress={() => setAddressModal(true)}
-        openModalAccount={() => setAccountModal(true)}
-        openModalEmail={() => setEmailModal(true)}
-      />
+      <MyInfo userInfo={userInfo} />
 
       {/* 콘텐츠 버튼 ( 판매 , 구매 , 포인트 내역 )  */}
       <div className="hidden md:block">
@@ -86,50 +76,63 @@ export default function Page() {
         )}
       </div>
       {/* 모달 부분 */}
-      {isOpenPointModal &&
+      {status.isPoint &&
         createPortal(
-          <ModalSmall title="Point 충전" onClose={() => setPointModal(false)}>
+          <ModalSmall
+            title="Point 충전"
+            onClose={() =>
+              setStatus({ type: ModalStatus.Point, isOpen: false })
+            }
+          >
             <PointModalContent point={userInfo.point} />
           </ModalSmall>,
           document.body
         )}
-      {isOpenNickNameModal &&
+      {status.isNickName &&
         createPortal(
           <ModalSmall
             title="닉네임 변경"
-            onClose={() => setNickNameModal(false)}
+            onClose={() =>
+              setStatus({ type: ModalStatus.NickName, isOpen: false })
+            }
           >
-            <UpdateField
-              filedName="닉네임 변경"
-              onCloseModal={() => setNickNameModal(false)}
-            />
+            <UpdateField filedName="닉네임 변경" type={ModalStatus.NickName} />
           </ModalSmall>,
           document.body
         )}
-      {isOpenAddressModal &&
+      {status.isAdress &&
         createPortal(
           <ModalSmall
             title="배송지 변경"
-            onClose={() => setAddressModal(false)}
+            onClose={() =>
+              setStatus({ type: ModalStatus.Adress, isOpen: false })
+            }
           >
             {/* <UpdateField filedName="배송지 변경" update={handleUpdateAdreess} /> */}
-            <UpdateAddress onCloseModal={() => setAddressModal(false)} />
+            <UpdateAddress />
           </ModalSmall>,
           document.body
         )}
-      {isOpenEmailModal &&
+      {status.isEmail &&
         createPortal(
-          <ModalSmall title="이메일 변경" onClose={() => setEmailModal(false)}>
+          <ModalSmall
+            title="이메일 변경"
+            onClose={() =>
+              setStatus({ type: ModalStatus.Email, isOpen: false })
+            }
+          >
             {/* <UpdateField filedName="배송지 변경" update={handleUpdateAdreess} /> */}
             <ConfirmEmail />
           </ModalSmall>,
           document.body
         )}
-      {isOpenAccountModal &&
+      {status.isAccount &&
         createPortal(
           <ModalSmall
             title="계좌번호 변경"
-            onClose={() => setAccountModal(false)}
+            onClose={() =>
+              setStatus({ type: ModalStatus.Account, isOpen: false })
+            }
           >
             {/* <UpdateField filedName="배송지 변경" update={handleUpdateAdreess} /> */}
             <ConfirmAccount />

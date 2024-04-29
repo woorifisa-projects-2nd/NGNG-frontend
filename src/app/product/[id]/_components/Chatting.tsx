@@ -131,7 +131,6 @@ export default function Chatting({ data }: ChattingProps) {
   useEffect(() => {
     const client = new StompJs.Client({
       brokerURL: `${process.env.NEXT_PUBLIC_CHAT_SOCKET}/chat-server`, // WebSocket 서버 URL
-
       reconnectDelay: 5000,
     });
     client.onConnect = () => {

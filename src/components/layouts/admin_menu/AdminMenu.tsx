@@ -6,9 +6,9 @@ import { ReactNode } from "react";
 export default function AdminMenu({ children }: { children: ReactNode }) {
     const pathname = usePathname();
     const menu = [
-        { name: "신고 관리", link: "/admin/reports" },
-        { name: "상품 관리", link: "/admin/products" },
-        { name: "사용자 관리", link: "/admin/users" },
+        { name: "신고 관리", link: "/admin/reports/" },
+        { name: "상품 관리", link: "/admin/products/" },
+        { name: "사용자 관리", link: "/admin/users/" },
         {
             name: "로그 관리", link: "/admin/logs", subMenu: [
                 { name: "사용자", link: "/admin/logs/users" },
@@ -37,7 +37,7 @@ export default function AdminMenu({ children }: { children: ReactNode }) {
                     <div key={index} className="mt-5 text-left ml-28">
                         <Link
                             href={item.link}
-                            className={`${pathname === item.link && "text-point-color font-bold"
+                            className={`${pathname.includes(item.link) && "text-point-color font-bold"
                                 }`}
                         >
                             <div className="cursor-pointer inline-block">{item.name}</div>

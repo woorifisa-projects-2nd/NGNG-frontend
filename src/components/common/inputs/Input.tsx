@@ -7,6 +7,7 @@ type InputProps = {
   className?: string;
   disabled?: boolean;
   cy?: string;
+  type?: string;
 };
 export default function Input({
   value,
@@ -17,6 +18,7 @@ export default function Input({
   width,
   height,
   disabled = false,
+  type
 }: InputProps) {
   const changeValue = (e: React.ChangeEvent<HTMLInputElement>) => {
     onChange(e.currentTarget.value);
@@ -30,6 +32,7 @@ export default function Input({
       onChange={changeValue}
       placeholder={placeholder}
       disabled={disabled}
+      type={type}
     />
   );
 }
