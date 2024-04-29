@@ -19,7 +19,8 @@
     ],
     "paths": {
       "@/*": ["./src/*"]
-    }
+    },
+    "types": ["cypress", "cypress-file-upload"]
   },
   "include": [
     "next-env.d.ts",

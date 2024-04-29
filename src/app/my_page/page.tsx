@@ -15,7 +15,7 @@ import ConfirmAccount from "./_compoenets/modal/ConfirmAccount";
 import useMypageSWR from "./_hooks/useMypageSWR";
 import SkeletonMyinfo from "./_compoenets/skeleton/SkeletonMyinfo";
 import { UserContext } from "@/providers/UserContext";
-import { redirect, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 export default function Page() {
   const router = useRouter();

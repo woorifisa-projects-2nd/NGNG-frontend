@@ -14,6 +14,7 @@ export default function Select({
     <div
       className="flex justify-start items-center rounded-md border-[1px] border-black/15 p-2 gap-2"
       onClick={onClick}
+      data-cy={"category-dropdown"}
     >
       {selectedItem?.name ?? placeholder}
       <ArrowDown className="cursor-pointer" />

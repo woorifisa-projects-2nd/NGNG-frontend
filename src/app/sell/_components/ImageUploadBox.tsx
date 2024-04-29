@@ -22,8 +22,6 @@ export default function ImageUploadBox({
     e.target.files && uploadImage(e.target.files[0], image?.id);
   };
 
-  console.log("image", image);
-
   return (
     <>
       {image === undefined ? (
@@ -67,6 +65,7 @@ export default function ImageUploadBox({
         </div>
       )}
       <input
+        data-cy={"image-upload-input"}
         ref={inputRef}
         type="file"
         className="hidden"

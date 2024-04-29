@@ -13,6 +13,7 @@ export default function Menu({ items, onClick }: MenuProps) {
       {items.map((item, key) => {
         return (
           <div
+            data-cy={`category-${item.id}`}
             key={item.id}
             className="p-2 hover:bg-light-gray/50"
             onClick={() => onClick(item)}
