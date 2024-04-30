@@ -143,7 +143,7 @@ export default function PrivateChatting({ data }: ChattingProps) {
     console.log(process.env.NEXT_PUBLIC_CHAT_SOCKET);
 
     const client = new StompJs.Client({
-      brokerURL: "ws://localhost:8081/chat-server", // WebSocket 서버 URL
+      brokerURL: `${process.env.NEXT_PUBLIC_CHAT_SOCKET}/chat-server`, // WebSocket 서버 URL
 
       reconnectDelay: 5000,
     });
