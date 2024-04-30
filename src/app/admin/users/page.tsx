@@ -32,7 +32,7 @@ export default function UserManagement() {
 
   // 페이지를 변경할 때 해당 페이지의 데이터를 가져오는 함수
   async function fetchReportsByPage(pageNumber: number) {
-    const url = `/api/admin/users`;
+    const url = `/api/admin/users?page=${pageNumber}`;
 
     await fetch(url, {
       headers: {
@@ -103,11 +103,10 @@ export default function UserManagement() {
               handlePageClick(i);
             }
           }}
-          className={`${
-            currentPage === i
-              ? "text-violet-900 pointer-events-none"
-              : "text-slate-300 pointer-events-auto"
-          }`}
+          className={`${currentPage === i
+            ? "text-violet-900 pointer-events-none"
+            : "text-slate-300 pointer-events-auto"
+            }`}
         >
           {i + 1}
         </Link>
@@ -124,7 +123,7 @@ export default function UserManagement() {
     const shouldDelete = window.confirm("정말로 삭제하시겠습니까?");
 
     if (shouldDelete) {
-      const res = await fetch(`/api//admin/users/${userId}`, {
+      const res = await fetch(`/api/admin/users/${userId}`, {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",

@@ -66,97 +66,115 @@ type Product = {
 };
 
 export default function ProductManagement() {
-  const router = useRouter();
-  const [products, setProducts] = useState<Product[]>([]);
-  const [view, setView] = useState<string>("list"); // 'list' 또는 'create'
+    const router = useRouter();
+    const [products, setProducts] = useState<Product[]>([]);
+    const [view, setView] = useState<string>('list');  // 'list' 또는 'create'
 
-  // 페이지 관련
-  const [currentPage, setCurrentPage] = useState<number>(0);
-  const [totalPages, setTotalPages] = useState<number>(0);
-  const [itemsPerPage, setItemsPerPage] = useState<number>(0);
-  const [maxPageButtons, setMaxPageButtons] = useState<number>(5); // 최대 페이지 버튼 수
-  const [startPage, setStartPage] = useState<number>(0); // 페이징 번호 시작 페이지
-  const [endPage, setEndPage] = useState<number>(1); // 페이징 번호 끝 페이지
-  const disablePrevious =
-    Math.floor(currentPage / maxPageButtons) * maxPageButtons - maxPageButtons <
-    0;
-  const disableNext =
-    Math.floor(currentPage / maxPageButtons) * maxPageButtons +
-      maxPageButtons >=
-    totalPages;
+    // 페이지 관련
+    const [currentPage, setCurrentPage] = useState<number>(0);
+    const [totalPages, setTotalPages] = useState<number>(0);
+    const [itemsPerPage, setItemsPerPage] = useState<number>(0);
+    const [maxPageButtons, setMaxPageButtons] = useState<number>(5); // 최대 페이지 버튼 수
+    const [startPage, setStartPage] = useState<number>(0); // 페이징 번호 시작 페이지
+    const [endPage, setEndPage] = useState<number>(1); // 페이징 번호 끝 페이지
+    const disablePrevious = Math.floor(currentPage / maxPageButtons) * maxPageButtons - maxPageButtons < 0;
+    const disableNext = Math.floor(currentPage / maxPageButtons) * maxPageButtons + maxPageButtons >= totalPages;
 
-  // 페이지를 변경할 때 해당 페이지의 데이터를 가져오는 함수
-  async function fetchReportsByPage(pageNumber: number) {
-    const url = `/api//products?page=${pageNumber}`;
-    // const url = `/api//products/page=${pageNumber}`;
+    // 페이지를 변경할 때 해당 페이지의 데이터를 가져오는 함수
+    async function fetchReportsByPage(pageNumber: number) {
+        const url = `/api/products?page=${pageNumber}`;
 
-    await fetch(url, {
-      headers: {
-        Authorization: getAccessToken(),
-      },
-    })
-      .then((resp) => resp.json())
-      .then((result) => {
-        setProducts(result.content);
-        console.log(result.content);
+        await fetch(url, {
+            headers: {
+                Authorization: getAccessToken(),
+            },
+        })
+            .then(resp => resp.json())
+            .then(result => {
+                setProducts(result.content);
+                console.log(result.content);
 
-        setCurrentPage(result.pageable.pageNumber);
-        setTotalPages(result.totalPages);
-        setItemsPerPage(result.pageable.pageSize);
-      });
-  }
-
-  useEffect(() => {
-    fetchReportsByPage(currentPage);
-  }, [currentPage]);
-
-  useEffect(() => {
-    if (totalPages <= maxPageButtons) {
-      setStartPage(0);
-      setEndPage(Math.min(startPage + maxPageButtons, totalPages));
-    } else {
-      setStartPage(Math.floor(currentPage / maxPageButtons) * maxPageButtons);
-      setEndPage(Math.min(startPage + maxPageButtons, totalPages));
+                setCurrentPage(result.pageable.pageNumber);
+                setTotalPages(result.totalPages);
+                setItemsPerPage(result.pageable.pageSize)
+            });
     }
-  }, [currentPage, totalPages]);
 
-  const handlePageClick = (pageNumber: number) => {
-    setCurrentPage(pageNumber);
-    fetchReportsByPage(pageNumber);
-  };
+    useEffect(() => {
+        fetchReportsByPage(currentPage);
+    }, [currentPage]);
 
-  const handlePreviousPageClick = () => {
-    const previousPage =
-      Math.floor(currentPage / maxPageButtons) * maxPageButtons -
-      maxPageButtons;
-    setCurrentPage(previousPage);
-    fetchReportsByPage(previousPage);
-    setStartPage(previousPage);
-    setEndPage(previousPage + maxPageButtons);
-  };
+    useEffect(() => {
+        if (totalPages <= maxPageButtons) {
+            setStartPage(0);
+            setEndPage(Math.min(startPage + maxPageButtons, totalPages));
+        } else {
+            setStartPage(Math.floor(currentPage / maxPageButtons) * maxPageButtons);
+            setEndPage(Math.min(startPage + maxPageButtons, totalPages));
+        }
+    }, [currentPage, totalPages]);
 
-  const handleNextPageClick = () => {
-    const nextPage =
-      Math.floor(currentPage / maxPageButtons) * maxPageButtons +
-      maxPageButtons;
-    setCurrentPage(nextPage);
-    fetchReportsByPage(nextPage);
-    setStartPage(nextPage);
-    setEndPage(nextPage + maxPageButtons);
-  };
+    const handlePageClick = (pageNumber: number) => {
+        setCurrentPage(pageNumber);
+        fetchReportsByPage(pageNumber);
+    };
 
-  const renderPageNumbers = () => {
-    const pageNumbers = [];
-    for (let i = startPage; i < endPage; i++) {
-      pageNumbers.push(
-        <Link
-          key={i}
-          href={`/admin/products?page=${i + 1}`}
-          onClick={(e) => {
-            if (currentPage === i) {
-              e.preventDefault();
-            } else {
-              handlePageClick(i);
+    const handlePreviousPageClick = () => {
+        const previousPage = Math.floor(currentPage / maxPageButtons) * maxPageButtons - maxPageButtons;
+        setCurrentPage(previousPage);
+        fetchReportsByPage(previousPage);
+        setStartPage(previousPage);
+        setEndPage(previousPage + maxPageButtons);
+    };
+
+    const handleNextPageClick = () => {
+        const nextPage = Math.floor(currentPage / maxPageButtons) * maxPageButtons + maxPageButtons;
+        setCurrentPage(nextPage);
+        fetchReportsByPage(nextPage);
+        setStartPage(nextPage);
+        setEndPage(nextPage + maxPageButtons);
+    };
+
+    const renderPageNumbers = () => {
+        const pageNumbers = [];
+        for (let i = startPage; i < endPage; i++) {
+            pageNumbers.push(
+                <Link key={i} href={`/admin/products?page=${i + 1}`}
+                    onClick={(e) => {
+                        if (currentPage === i) {
+                            e.preventDefault();
+                        } else {
+                            handlePageClick(i);
+                        }
+                    }}
+                    className={`${currentPage === i ? 'text-violet-900 pointer-events-none' : 'text-slate-300 pointer-events-auto'}`}
+                >
+                    {i + 1}
+                </Link>
+            );
+        }
+        return pageNumbers;
+    };
+
+    const handleDelete = async (productId: number) => {
+        const shouldDelete = window.confirm('정말로 삭제하시겠습니까?');
+
+        if (shouldDelete) {
+            const res = await fetch(`/api/products/${productId}`, {
+                method: "DELETE",
+                headers: {
+                    "Content-Type": "application/json",
+                }
+            });
+
+            // 삭제 후에 페이지의 상품 목록을 가져오기 전에 마지막 페이지인지 확인
+            const isLastItemOnPage = products.length === 1;
+
+            // 페이지가 마지막 페이지이고, 마지막 상품을 삭제한 경우에만 페이지를 감소시킴
+            if (isLastItemOnPage && currentPage > 0) {
+
+                fetchReportsByPage(currentPage - 1);
+
             }
           }}
           className={`${

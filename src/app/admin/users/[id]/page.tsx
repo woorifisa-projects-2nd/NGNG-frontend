@@ -13,23 +13,46 @@ export default function UserDetail({ params }: { params: { id: number } }) {
   const [user, setUser] = useState<User | null>(null);
   const [password, setPassword] = useState<string | number>("");
 
-  async function fetchUser() {
-    fetch(`/api//admin/users/${params.id}`, {
-      headers: {
-        Authorization: getAccessToken(),
-      },
-    })
-      .then((resp) => resp.json())
-      .then((result) => {
-        setUser(result);
-      });
-  }
-
-  const updateUser = async () => {
-    if (!isFormValid()) {
-      alert("모든 필수 필드를 입력해주세요.");
-      return;
+    async function fetchUser() {
+        fetch(`/api/admin/users/${params.id}`, {
+            headers: {
+                Authorization: getAccessToken(),
+            },
+        })
+            .then(resp => resp.json())
+            .then(result => {
+                setUser(result);
+            });
     }
+
+    const updateUser = async () => {
+
+        if (!isFormValid()) {
+            alert("모든 필수 필드를 입력해주세요.");
+            return;
+        }
+
+        const request = {
+            userId: user?.userId,
+            name: user?.name,
+            nickName: user?.nickName,
+            phoneNumber: user?.phoneNumber,
+            email: user?.email,
+            password: password,
+            accountBank: user?.accountBank,
+            accountNumber: user?.accountNumber,
+            address: user?.address,
+        };
+
+        try {
+            const response = await fetch(`/api/admin/users/${params.id}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: getAccessToken(),
+                },
+                body: JSON.stringify(request),
+            });
 
     const request = {
       userId: user?.userId,

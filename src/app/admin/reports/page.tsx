@@ -31,56 +31,36 @@ type Report = {
 };
 
 export default function ReportManagement() {
-  const [showUnprocessedOnly, setShowUnprocessedOnly] = useState(false);
-  const [reports, setReports] = useState<Report[]>([]);
-  const [currentPage, setCurrentPage] = useState<number>(0);
+    const [showUnprocessedOnly, setShowUnprocessedOnly] = useState(false);
+    const [reports, setReports] = useState<Report[]>([]);
+    const [currentPage, setCurrentPage] = useState<number>(0);
 
-  // 페이지 관련
-  const [totalPages, setTotalPages] = useState<number>(0);
-  const [itemsPerPage, setItemsPerPage] = useState<number>(0);
-  const [maxPageButtons, setMaxPageButtons] = useState<number>(5); // 최대 페이지 버튼 수
-  const [startPage, setStartPage] = useState<number>(0); // 페이징 번호 시작 페이지
-  const [endPage, setEndPage] = useState<number>(1); // 페이징 번호 끝 페이지
-  const disablePrevious =
-    Math.floor(currentPage / maxPageButtons) * maxPageButtons - maxPageButtons <
-    0;
-  const disableNext =
-    Math.floor(currentPage / maxPageButtons) * maxPageButtons +
-      maxPageButtons >=
-    totalPages;
+    // 페이지 관련
+    const [totalPages, setTotalPages] = useState<number>(0);
+    const [itemsPerPage, setItemsPerPage] = useState<number>(0);
+    const [maxPageButtons, setMaxPageButtons] = useState<number>(5); // 최대 페이지 버튼 수
+    const [startPage, setStartPage] = useState<number>(0); // 페이징 번호 시작 페이지
+    const [endPage, setEndPage] = useState<number>(1); // 페이징 번호 끝 페이지
+    const disablePrevious = Math.floor(currentPage / maxPageButtons) * maxPageButtons - maxPageButtons < 0;
+    const disableNext = Math.floor(currentPage / maxPageButtons) * maxPageButtons + maxPageButtons >= totalPages;
 
-  // 페이지를 변경할 때 해당 페이지의 데이터를 가져오는 함수
-  async function fetchReportsByPage(
-    pageNumber: number,
-    unprocessedOnly: boolean
-  ) {
-    const url = `/api//admin/reports?page=${pageNumber}&unprocessedOnly=${unprocessedOnly}`;
+    // 페이지를 변경할 때 해당 페이지의 데이터를 가져오는 함수
+    async function fetchReportsByPage(pageNumber: number, unprocessedOnly: boolean) {
 
-    await fetch(url, {
-      headers: {
-        Authorization: getAccessToken(),
-      },
-    })
-      .then((resp) => resp.json())
-      .then((result) => {
-        setReports(result.content);
-        setCurrentPage(result.pageable.pageNumber);
-        setTotalPages(result.totalPages);
-        setItemsPerPage(result.pageable.pageSize);
-      });
-  }
+        const url = `/api/admin/reports?page=${pageNumber}&unprocessedOnly=${unprocessedOnly}`;
 
-  useEffect(() => {
-    fetchReportsByPage(currentPage, showUnprocessedOnly);
-  }, [currentPage, showUnprocessedOnly]);
-
-  useEffect(() => {
-    if (totalPages <= maxPageButtons) {
-      setStartPage(0);
-      setEndPage(Math.min(startPage + maxPageButtons, totalPages));
-    } else {
-      setStartPage(Math.floor(currentPage / maxPageButtons) * maxPageButtons);
-      setEndPage(Math.min(startPage + maxPageButtons, totalPages));
+        await fetch(url, {
+            headers: {
+                Authorization: getAccessToken(),
+            },
+        })
+            .then(resp => resp.json())
+            .then(result => {
+                setReports(result.content);
+                setCurrentPage(result.pageable.pageNumber);
+                setTotalPages(result.totalPages);
+                setItemsPerPage(result.pageable.pageSize)
+            });
     }
   }, [currentPage, totalPages]);
 

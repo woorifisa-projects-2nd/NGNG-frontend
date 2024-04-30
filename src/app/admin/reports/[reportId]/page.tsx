@@ -67,93 +67,92 @@ export type PenaltyLevelType = {
   link?: string;
 };
 
-export default function ReportDetail({
-  params,
-}: {
-  params: { reportId: number };
-}) {
-  const router = useRouter();
-  const [report, setReport] = useState<Report | null>(null);
-  const [penaltyReason, setPenaltyReason] = useState<string>("");
-  // 선택된 penaltyLevel을 상태로 관리
-  const [selectedPenaltyLevel, setSelectedPenaltyLevel] = useState<
-    PenaltyLevelType | undefined
-  >(undefined);
-  const [penalty, setPenalty] = useState<Penalty | null>(null);
+export default function ReportDetail({ params }: { params: { reportId: number } }) {
+    const router = useRouter();
+    const [report, setReport] = useState<Report | null>(null);
+    const [penaltyReason, setPenaltyReason] = useState<string>("");
+    // 선택된 penaltyLevel을 상태로 관리
+    const [selectedPenaltyLevel, setSelectedPenaltyLevel] = useState<PenaltyLevelType | undefined>(undefined);
+    const [penalty, setPenalty] = useState<Penalty | null>(null);
 
-  // 이미지 보기
-  const [showModal, setShowModal] = useState<boolean>(false);
-  const [modalImage, setModalImage] = useState<string>("");
-  const [currentImageIndex, setCurrentImageIndex] = useState<number>(0);
+    // 이미지 보기
+    const [showModal, setShowModal] = useState<boolean>(false);
+    const [modalImage, setModalImage] = useState<string>("");
+    const [currentImageIndex, setCurrentImageIndex] = useState<number>(0);
 
-  // API로부터 신고 데이터를 가져오는 함수
-  async function fetchReport() {
-    fetch(`/api//admin/reports/${params.reportId}`, {
-      headers: {
-        Authorization: getAccessToken(),
-      },
-    })
-      .then((resp) => resp.json())
-      .then((result) => {
-        setReport(result);
-        if (result?.isReport === true) {
-          fetchPenalty(result);
-        }
-      });
-  }
+    // API로부터 신고 데이터를 가져오는 함수
+    async function fetchReport() {
+        fetch(`/api/admin/reports/${params.reportId}`, {
+            headers: {
+                Authorization: getAccessToken(),
+            },
+        })
+            .then(resp => resp.json())
+            .then(result => {
 
-  // API로부터 패널티 데이터를 가져오는 함수
-  async function fetchPenalty(results: any) {
-    fetch(
-      process.env.NEXT_PUBLIC_API_URL + `admin/penalties/${params.reportId}`,
-      {
-        headers: {
-          Authorization: getAccessToken(),
-        },
-      }
-    )
-      .then((resp) => resp.json())
-      .then((result) => {
-        const findPenaltyLevel = penaltyLevels.find(
-          (level) => level.id === result.penaltyLevel.penaltyLevelId
-        );
-        setSelectedPenaltyLevel(findPenaltyLevel);
-        setPenalty(result);
-      });
-  }
+                setReport(result);
+                if (result?.isReport === true) {
+                    fetchPenalty(result);
+                }
+            });
+    }
 
-  useEffect(() => {
-    fetchReport();
-  }, []);
+    // API로부터 패널티 데이터를 가져오는 함수
+    async function fetchPenalty(results: any) {
+        fetch(`/api/admin/penalties/${params.reportId}`, {
 
-  // 적용 버튼을 눌렀을 때 실행되는 함수
-  const handleApply = async () => {
-    if (report && selectedPenaltyLevel && penaltyReason) {
-      const postData = {
-        userId: report.user.userId,
-        reporterId: report.reporter.userId,
-        reason: penaltyReason,
-        penaltyLevelId: selectedPenaltyLevel.id,
-        reportId: report.reportId,
-      };
-
-      try {
-        const response = await fetch(
-          process.env.NEXT_PUBLIC_API_URL + "admin/penalties",
-          {
-            method: "POST",
             headers: {
               "Content-Type": "application/json",
               Authorization: getAccessToken(),
             },
-            body: JSON.stringify(postData),
-          }
-        );
+        })
+            .then(resp => resp.json())
+            .then(result => {
+                const findPenaltyLevel = penaltyLevels.find(level => level.id === result.penaltyLevel.penaltyLevelId);
+                setSelectedPenaltyLevel(findPenaltyLevel);
+                setPenalty(result);
+            });
+    }
 
-        if (response.ok) {
-          // POST 요청이 성공한 경우에 대한 처리를 추가하십시오.
-          alert("제재가 성공적으로 적용되었습니다.");
-          // goToListPage;
+    useEffect(() => {
+        fetchReport();
+    }, []);
+
+
+
+    // 적용 버튼을 눌렀을 때 실행되는 함수
+    const handleApply = async () => {
+        if (report && selectedPenaltyLevel && penaltyReason) {
+            const postData = {
+                userId: report.user.userId,
+                reporterId: report.reporter.userId,
+                reason: penaltyReason,
+                penaltyLevelId: selectedPenaltyLevel.id,
+                reportId: report.reportId
+            };
+
+            try {
+                const response = await fetch("/api/admin/penalties", {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Authorization: getAccessToken(),
+                    },
+                    body: JSON.stringify(postData)
+                });
+
+                if (response.ok) {
+                    // POST 요청이 성공한 경우에 대한 처리를 추가하십시오.
+                    alert('제재가 성공적으로 적용되었습니다.');
+                    window.location.reload();
+                    // goToListPage;
+                } else {
+                    // 요청이 실패한 경우에 대한 처리를 추가하십시오.
+                    alert('제재 적용에 실패했습니다.');
+                }
+            } catch (error) {
+                console.error('제재 적용 중 오류가 발생했습니다.', error);
+            }
         } else {
           // 요청이 실패한 경우에 대한 처리를 추가하십시오.
           alert("제재 적용에 실패했습니다.");
