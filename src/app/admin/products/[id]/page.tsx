@@ -77,15 +77,22 @@ export default function ProductDetail() {
             // 음수인 id값은 createProduct 호출
 
             if (newProduct && product) {
-                // 기존 이미지 모두 삭제
-                // const deletionResponses = await Promise.all(
-                //     product.images.map(img => deleteImageById(product.id, img.imageURL.toString()))
-                // );
+                const newImageIds: number[] = newProduct.images.map(img => img.id);
+                const deletedImages: Image[] = product.images.filter(img => !newImageIds.includes(img.id));
+                const deletionResponses = await Promise.all(
+                    deletedImages.map(img => deleteImageById(product.id, img.imageURL.toString()))
+                );
+                const addedImages: Image[] = newProduct.images.filter(img => img.id < 0);
+                console.log(addedImages);
+                // 기존의 newProduct 객체를 복사하고, images 배열을 addedImages로 대체
+                const updatedProduct = {
+                    ...newProduct,
+                    images: addedImages
+                };
 
-                await deleteImages(product.id);
+                const success: boolean = await createProduct(updatedProduct);
 
-
-                const success: boolean = await createProduct(newProduct);
+                // const success: boolean = await createProduct(newProduct);
                 if (success) {
                     alert('수정 완료되었습니다.');
                     window.location.reload();

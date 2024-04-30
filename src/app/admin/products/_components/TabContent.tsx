@@ -13,7 +13,7 @@ type TabContentProps = {
     onChangeData: (product: Product) => void;
 };
 export default function TabContent({ data, onChangeData }: TabContentProps) {
-    const [imageId, setImageId] = useState<number>(1);
+    const [imageId, setImageId] = useState<number>(-1);
 
     const fullfillSaveCondition: boolean =
         data.images.length > 0 &&
@@ -33,7 +33,7 @@ export default function TabContent({ data, onChangeData }: TabContentProps) {
 
     const changeImages = (image: File) => {
         if (data.images.length < 10) {
-            setImageId(imageId + 1); // 이미지 아이디 업데이트
+            setImageId(imageId - 1); // 이미지 아이디 업데이트
             onChangeData({
                 ...data,
                 images: [...data.images, { id: imageId, imageURL: image, visible: true }],
