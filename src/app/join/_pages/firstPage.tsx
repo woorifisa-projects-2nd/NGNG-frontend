@@ -3,6 +3,7 @@ import Link from "next/link";
 import { useState } from "react";
 import LogoImage from '../../../components/layouts/header/design/SVG/logo.svg'
 import { useRouter } from "next/navigation";
+import Caution from "../caution";
 
 type FirstPageProps = {
   currentPage: number,
@@ -89,6 +90,9 @@ export default function FirstPage({ currentPage, setCurrentPage }: FirstPageProp
             <div>
               <button onClick={getNextPage} className="border-solid rounded-md text-white bg-point-color w-full h-16 text-3xl mt-12">다음</button>
             </div>
+          </div>
+          <div className="flex justify-end">
+            <Caution />
           </div>
         </div>
       </div>

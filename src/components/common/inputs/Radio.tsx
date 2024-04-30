@@ -13,6 +13,7 @@ export default function Radio({
   return (
     <label className="inline-flex items-center">
       <input
+        data-cy={`radio-${value}`}
         type="radio"
         style={{}}
         name={name}

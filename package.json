@@ -38,6 +38,7 @@
     "autoprefixer": "^10.0.1",
     "cssnano": "^7.0.0",
     "cypress": "^13.8.1",
+    "cypress-file-upload": "^5.0.8",
     "eslint": "^8",
     "eslint-config-next": "14.1.4",
     "postcss": "^8.4.38",

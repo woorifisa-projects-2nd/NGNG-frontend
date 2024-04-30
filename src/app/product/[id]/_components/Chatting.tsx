@@ -83,19 +83,6 @@ export default function Chatting({ data }: ChattingProps) {
         productId: data.id,
         userId: user.id,
       });
-
-    setChatData([
-      ...chatData,
-      {
-        id: chatData?.slice(-1)[0]?.id + 1,
-        createdAt: new Date().toUTCString(),
-        message: message,
-        userId: user.id,
-        userName: user.name,
-        userNickName: user.nickname,
-      },
-    ]);
-
     setMessage("");
     scrollToBottom();
   };
@@ -118,8 +105,10 @@ export default function Chatting({ data }: ChattingProps) {
       sendMessage(message);
     }
   };
-
+  console.log("data", chatData);
   const getMessage = (data: any) => {
+    console.log("메시지 수신", data);
+
     setChatData([
       ...chatData,
       {
@@ -142,7 +131,6 @@ export default function Chatting({ data }: ChattingProps) {
   useEffect(() => {
     const client = new StompJs.Client({
       brokerURL: `${process.env.NEXT_PUBLIC_CHAT_SOCKET}/chat-server`, // WebSocket 서버 URL
-
       reconnectDelay: 5000,
     });
     client.onConnect = () => {

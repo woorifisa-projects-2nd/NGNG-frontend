@@ -3,7 +3,7 @@ import Refresh from "@/components/layouts/admin_menu/design/SVG/refresh.svg";
 import CheckReport from "@/components/layouts/admin_menu/design/SVG/check_report.svg";
 import Trash from "@/components/layouts/admin_menu/design/SVG/trash-2.svg";
 import Plus from "@/components/layouts/admin_menu/design/SVG/Plus.svg";
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { User } from "./_types/type";
@@ -27,7 +27,7 @@ export default function UserManagement() {
     0;
   const disableNext =
     Math.floor(currentPage / maxPageButtons) * maxPageButtons +
-    maxPageButtons >=
+      maxPageButtons >=
     totalPages;
 
   // 페이지를 변경할 때 해당 페이지의 데이터를 가져오는 함수
@@ -39,14 +39,14 @@ export default function UserManagement() {
         Authorization: getAccessToken(),
       },
     })
-      .then(resp => resp.json())
-      .then(result => {
+      .then((resp) => resp.json())
+      .then((result) => {
         setUsers(result.content);
         // console.log(result.content);
 
         setCurrentPage(result.pageable.pageNumber);
         setTotalPages(result.totalPages);
-        setItemsPerPage(result.pageable.pageSize)
+        setItemsPerPage(result.pageable.pageSize);
       });
   }
 
@@ -116,11 +116,11 @@ export default function UserManagement() {
   };
 
   const handleCreateuser = () => {
-    router.push('/admin/users'); // '/sell' 경로로 이동합니다.
+    router.push("/admin/users"); // '/sell' 경로로 이동합니다.
   };
 
   const handleDelete = async (userId: number) => {
-    const shouldDelete = window.confirm('정말로 삭제하시겠습니까?');
+    const shouldDelete = window.confirm("정말로 삭제하시겠습니까?");
 
     if (shouldDelete) {
       const res = await fetch(`/api/admin/users/${userId}`, {
@@ -128,7 +128,7 @@ export default function UserManagement() {
         headers: {
           "Content-Type": "application/json",
           Authorization: getAccessToken(),
-        }
+        },
       });
     }
     fetchReportsByPage(currentPage);
@@ -139,7 +139,6 @@ export default function UserManagement() {
       <div className="text-3xl font-bold mb-16">사용자 관리</div>
 
       <div className="flex justify-between mb-5">
-
         {/* <div className="flex cursor-pointer items-center" onClick={handleCreateuser}>
                     <Plus />
                     <div>사용자 등록</div>
@@ -159,8 +158,13 @@ export default function UserManagement() {
 
         <div className="text-center">
           {users.map((user, index) => (
-            <div key={user.userId} className="border-b border-gray-300 rounded p-3 flex items-center">
-              <div className="w-1/12">{index + 1 + currentPage * itemsPerPage}</div>
+            <div
+              key={user.userId}
+              className="border-b border-gray-300 rounded p-3 flex items-center"
+            >
+              <div className="w-1/12">
+                {index + 1 + currentPage * itemsPerPage}
+              </div>
               <div className="w-1/12">{user.userId}</div>
               <div className="w-1/6">
                 <p>{user.name}</p>
@@ -171,8 +175,13 @@ export default function UserManagement() {
               <div className="w-1/4">{user.address}</div>
               <div className="w-1/6">
                 <div className="p-5 flex items-center">
-                  <Link href={`/admin/users/${user.userId}`}><CheckReport /></Link>
-                  <div className="cursor-pointer" onClick={() => handleDelete(user.userId)} >
+                  <Link href={`/admin/users/${user.userId}`}>
+                    <CheckReport />
+                  </Link>
+                  <div
+                    className="cursor-pointer"
+                    onClick={() => handleDelete(user.userId)}
+                  >
                     <Trash />
                   </div>
                 </div>
@@ -184,31 +193,51 @@ export default function UserManagement() {
 
       <div className="flex justify-center space-x-4">
         <Link
-          href={!disablePrevious ? `/admin/users?page=${Math.floor(currentPage / maxPageButtons) * maxPageButtons - maxPageButtons + 1}` : "#"}
-          onClick={e => {
+          href={
+            !disablePrevious
+              ? `/admin/users?page=${
+                  Math.floor(currentPage / maxPageButtons) * maxPageButtons -
+                  maxPageButtons +
+                  1
+                }`
+              : "#"
+          }
+          onClick={(e) => {
             if (disablePrevious) {
               e.preventDefault();
             } else {
               handlePreviousPageClick();
             }
           }}
-          className={`text-black ${disablePrevious ? 'cursor-not-allowed text-gray-500' : ''}`}
+          className={`text-black ${
+            disablePrevious ? "cursor-not-allowed text-gray-500" : ""
+          }`}
         >
-          {'<'}
+          {"<"}
         </Link>
         {renderPageNumbers()}
         <Link
-          href={!disableNext ? `/admin/users?page=${Math.floor(currentPage / maxPageButtons) * maxPageButtons + maxPageButtons + 1}` : "#"}
-          onClick={e => {
+          href={
+            !disableNext
+              ? `/admin/users?page=${
+                  Math.floor(currentPage / maxPageButtons) * maxPageButtons +
+                  maxPageButtons +
+                  1
+                }`
+              : "#"
+          }
+          onClick={(e) => {
             if (disableNext) {
               e.preventDefault();
             } else {
               handleNextPageClick();
             }
           }}
-          className={`text-black ${disableNext ? 'cursor-not-allowed text-gray-500' : ''}`}
+          className={`text-black ${
+            disableNext ? "cursor-not-allowed text-gray-500" : ""
+          }`}
         >
-          {'>'}
+          {">"}
         </Link>
       </div>
     </div>

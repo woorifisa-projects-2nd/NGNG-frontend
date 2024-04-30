@@ -11,12 +11,15 @@ export default function StompAlarmSubscibe() {
   const user = getUser();
 
   if (!Notification) {
+    alert("데스크톱 알림을 지원하지 않는 브라우저입니다.");
     return;
   }
 
   if (Notification.permission !== "granted") {
     try {
       Notification.requestPermission().then((permission) => {
+        console.log("요청은 함", Notification.permission);
+
         if (permission !== "granted") return;
       });
     } catch (error) {
@@ -34,14 +37,15 @@ export default function StompAlarmSubscibe() {
   });
   client.onConnect = () => {
     client.subscribe(`/alarms/${user?.id}`, (message) => {
-      const datas = JSON.parse(message.body);
+      const datas = JSON.parse(message.body).body;
+      console.log("chat data", datas);
 
-      if (chatAlarm.find((id) => id === datas.body.chatId) === undefined) {
-        chatAlarm.push(datas.body.chatId);
-        notificationRef.current = new Notification(datas.body.user.nickname, {
-          body: datas.body.message,
-          icon: datas.body.productThumbnail,
-          tag: datas.body.chatId,
+      if (chatAlarm.find((id) => id === datas.chatId) === undefined) {
+        chatAlarm.push(datas.chatId);
+        notificationRef.current = new Notification(datas.user.nickname, {
+          body: datas.message,
+          icon: datas.productThumbnail,
+          tag: datas.chatId,
           dir: "ltr",
           lang: "ko",
           requireInteraction: false,

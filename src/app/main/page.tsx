@@ -30,7 +30,7 @@ export default function Main() {
       chunks.push(data.slice(i, i + chunkSize));
     }
     return chunks.map((chunk, index) =>
-      BannerAndItems({ dataChunk: chunk, index })
+      BannerAndItems({ dataChunk: chunk, index, key: `${index}` })
     );
   };
 

@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import { UserContext } from "@/providers/UserContext";
 
 export default function LoginPage() {
+
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
