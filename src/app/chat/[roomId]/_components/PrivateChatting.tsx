@@ -122,9 +122,9 @@ export default function PrivateChatting({ data }: ChattingProps) {
         chatId: data.chatId,
         message: data.message,
         user: {
-          id: user.id,
-          name: user.name,
-          nickname: user.nickname,
+          id: data.user.id,
+          name: data.user.name,
+          nickname: data.user.nickname,
           address: "",
         },
         createdAt: data.createdAt,
