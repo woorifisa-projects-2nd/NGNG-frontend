@@ -1,6 +1,5 @@
 import { useState } from "react";
 import SearchIcon from "../design/SVG/search.svg";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 
 
@@ -15,7 +14,7 @@ export default function SearchInput() {
 
   const searchKeyDown = async (e: React.KeyboardEvent<HTMLInputElement>) => {
 
-    if (e.key === 'Enter') {
+    if (e.key === 'Enter' && keyword !== "") {
 
       router.push(`/search/${keyword}`);
     }
