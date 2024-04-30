@@ -82,7 +82,7 @@ export default function ReportDetail({ params }: { params: { reportId: number } 
 
     // API로부터 신고 데이터를 가져오는 함수
     async function fetchReport() {
-        fetch(`http://localhost:8080/admin/reports/${params.reportId}`, {
+        fetch(`/api/admin/reports/${params.reportId}`, {
             headers: {
                 Authorization: getAccessToken(),
             },
@@ -99,7 +99,7 @@ export default function ReportDetail({ params }: { params: { reportId: number } 
 
     // API로부터 패널티 데이터를 가져오는 함수
     async function fetchPenalty(results: any) {
-        fetch(process.env.NEXT_PUBLIC_API_URL + `admin/penalties/${params.reportId}`, {
+        fetch(`/api/admin/penalties/${params.reportId}`, {
             headers: {
                 Authorization: getAccessToken(),
             },
@@ -130,7 +130,7 @@ export default function ReportDetail({ params }: { params: { reportId: number } 
             };
 
             try {
-                const response = await fetch(process.env.NEXT_PUBLIC_API_URL + "admin/penalties", {
+                const response = await fetch("/api/admin/penalties", {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -142,6 +142,7 @@ export default function ReportDetail({ params }: { params: { reportId: number } 
                 if (response.ok) {
                     // POST 요청이 성공한 경우에 대한 처리를 추가하십시오.
                     alert('제재가 성공적으로 적용되었습니다.');
+                    window.location.reload();
                     // goToListPage;
                 } else {
                     // 요청이 실패한 경우에 대한 처리를 추가하십시오.

@@ -83,8 +83,7 @@ export default function ProductManagement() {
 
     // 페이지를 변경할 때 해당 페이지의 데이터를 가져오는 함수
     async function fetchReportsByPage(pageNumber: number) {
-        const url = `http://localhost:8080/products?page=${pageNumber}`;
-        // const url = `http://localhost:8080/products/page=${pageNumber}`;
+        const url = `/api/products?page=${pageNumber}`;
 
         await fetch(url, {
             headers: {
@@ -162,7 +161,7 @@ export default function ProductManagement() {
         const shouldDelete = window.confirm('정말로 삭제하시겠습니까?');
 
         if (shouldDelete) {
-            const res = await fetch(`http://localhost:8080/products/${productId}`, {
+            const res = await fetch(`/api/products/${productId}`, {
                 method: "DELETE",
                 headers: {
                     "Content-Type": "application/json",

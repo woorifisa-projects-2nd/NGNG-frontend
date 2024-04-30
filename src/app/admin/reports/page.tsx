@@ -48,7 +48,7 @@ export default function ReportManagement() {
     // 페이지를 변경할 때 해당 페이지의 데이터를 가져오는 함수
     async function fetchReportsByPage(pageNumber: number, unprocessedOnly: boolean) {
 
-        const url = `http://localhost:8080/admin/reports?page=${pageNumber}&unprocessedOnly=${unprocessedOnly}`;
+        const url = `/api/admin/reports?page=${pageNumber}&unprocessedOnly=${unprocessedOnly}`;
 
         await fetch(url, {
             headers: {

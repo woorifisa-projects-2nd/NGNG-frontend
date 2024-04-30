@@ -134,9 +134,8 @@ export default function SecondPage({
               </button>
             </div>
             <div
-              className={`flex justify-between items-center w-full h-14 mt-2 ${
-                isSendMessage ? "hidden" : ""
-              }`}
+              className={`flex justify-between items-center w-full h-14 mt-2 ${isSendMessage ? "hidden" : ""
+                }`}
             >
               <div className="flex justify-center items-center w-[75%] p-2 rounded-md border-[1px] dark:bg-[#3B3B3B] border-black/45 h-14">
                 <AuthCheck className="w-9 mr-4 ml-2 fill-black/50 dark:fill-[#9CA3AF]" />
