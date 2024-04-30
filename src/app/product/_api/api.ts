@@ -95,7 +95,7 @@ export const createReport = async (
 ): Promise<boolean> => {
   // console.log(mapProductToAPISepc(product));
 
-  const res = await fetch(`/api/admin/reports`, {
+  const res = await fetch(`/api/reports`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",

@@ -22,6 +22,7 @@ export default function ImageUploadBox({
     e.target.files && uploadImage(e.target.files[0], image?.id);
   };
 
+
   console.log("image", image);
 
   const imageUrlExtractExtension = (url: string) => {
@@ -34,6 +35,7 @@ export default function ImageUploadBox({
     // 3. 확장자를 추출합니다.
     return url.slice(lastDotIndex + 1);
   };
+
 
   return (
     <>
@@ -97,6 +99,7 @@ export default function ImageUploadBox({
         </div>
       )}
       <input
+        data-cy={"image-upload-input"}
         ref={inputRef}
         type="file"
         className="hidden"

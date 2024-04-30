@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import { useEffect, useState } from "react";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
@@ -14,7 +14,7 @@ export default function UserDetail({ params }: { params: { id: number } }) {
     const [password, setPassword] = useState<string | number>("");
 
     async function fetchUser() {
-        fetch(`http://localhost:8080/admin/users/${params.id}`, {
+        fetch(`/api/admin/users/${params.id}`, {
             headers: {
                 Authorization: getAccessToken(),
             },
@@ -45,7 +45,7 @@ export default function UserDetail({ params }: { params: { id: number } }) {
         };
 
         try {
-            const response = await fetch(`http://localhost:8080/admin/users/${params.id}`, {
+            const response = await fetch(`/api/admin/users/${params.id}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -57,13 +57,13 @@ export default function UserDetail({ params }: { params: { id: number } }) {
             if (response.ok) {
                 const data = await response.json();
                 console.log(data);
-                alert('사용자 정보가 성공적으로 업데이트되었습니다.');
+                alert("사용자 정보가 성공적으로 업데이트되었습니다.");
                 window.location.reload();
             } else {
-                throw new Error('서버 처리 실패');
+                throw new Error("서버 처리 실패");
             }
         } catch (error) {
-            console.error('Error updating user:', error);
+            console.error("Error updating user:", error);
         }
     };
 
@@ -72,9 +72,15 @@ export default function UserDetail({ params }: { params: { id: number } }) {
     }, []);
 
     const isFormValid = () => {
-        return user?.name && user?.nickName && user?.email && password && user?.address && user?.phoneNumber;
+        return (
+            user?.name &&
+            user?.nickName &&
+            user?.email &&
+            password &&
+            user?.address &&
+            user?.phoneNumber
+        );
     };
-
 
     const changeName = (newName: string) =>
         setUser({
@@ -130,7 +136,6 @@ export default function UserDetail({ params }: { params: { id: number } }) {
     const goToListPage = () => {
         router.back();
     };
-
 
     return (
         <div>
@@ -221,9 +226,7 @@ export default function UserDetail({ params }: { params: { id: number } }) {
 
             {/* 은행 */}
             <div className="flex items-center justify-start mb-4">
-                <div className="flex text-lg font-medium min-w-24">
-                    은행
-                </div>
+                <div className="flex text-lg font-medium min-w-24">은행</div>
                 <Input
                     value={user?.accountBank}
                     onChange={changeBankName}
@@ -235,9 +238,7 @@ export default function UserDetail({ params }: { params: { id: number } }) {
 
             {/* 계좌 정보 */}
             <div className="flex items-center justify-start mb-4">
-                <div className="flex text-lg font-medium min-w-24">
-                    계좌 정보
-                </div>
+                <div className="flex text-lg font-medium min-w-24">계좌 정보</div>
                 <Input
                     value={user?.accountNumber}
                     onChange={changeAccountNumber}
@@ -248,8 +249,10 @@ export default function UserDetail({ params }: { params: { id: number } }) {
             </div>
 
             <div className="flex justify-start items-center pb-20 mt-20">
-                <div className="rounded-lg text-purple-500 bg-white border border-purple-500 w-32 h-12 flex items-center justify-center cursor-pointer mr-2"
-                    onClick={goToListPage}>
+                <div
+                    className="rounded-lg text-purple-500 bg-white border border-purple-500 w-32 h-12 flex items-center justify-center cursor-pointer mr-2"
+                    onClick={goToListPage}
+                >
                     뒤로가기
                 </div>
                 <Button
@@ -259,6 +262,5 @@ export default function UserDetail({ params }: { params: { id: number } }) {
                 />
             </div>
         </div>
-
     );
 }

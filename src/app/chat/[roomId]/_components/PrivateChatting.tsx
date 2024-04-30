@@ -65,22 +65,6 @@ export default function PrivateChatting({ data }: ChattingProps) {
         sellerId: data.product.seller.id,
       });
 
-    chatData !== undefined &&
-      setChatData([
-        ...chatData,
-        {
-          chatId: chatData?.slice(-1)[0].chatId + 1,
-          createdAt: new Date().toUTCString(),
-          message: URL.createObjectURL(image),
-          user: {
-            id: user.id,
-            name: user.name,
-            nickname: user.nickname,
-            address: "",
-          },
-          contentType: "IMAGE",
-        },
-      ]);
     setMessage("");
     setImage(undefined);
     scrollToBottom();
@@ -104,24 +88,6 @@ export default function PrivateChatting({ data }: ChattingProps) {
         privateChatRoomId: data.chatRoomId,
         sellerId: data.product.seller.id,
       });
-
-    chatData !== undefined &&
-      setChatData([
-        ...chatData,
-        {
-          chatId: chatData?.slice(-1)[0]?.chatId + 1,
-          createdAt: new Date().toUTCString(),
-          message: message,
-          user: {
-            id: user.id,
-            name: user.name,
-            nickname: user.nickname,
-            address: "",
-          },
-          contentType: "TEXT",
-        },
-      ]);
-
     setMessage("");
     scrollToBottom();
   };
@@ -148,15 +114,17 @@ export default function PrivateChatting({ data }: ChattingProps) {
   };
 
   const getMessage = (data: any) => {
+    console.log("get message", data);
+
     setChatData([
       ...chatData,
       {
-        chatId: data.chat,
+        chatId: data.chatId,
         message: data.message,
         user: {
-          id: user.id,
-          name: user.name,
-          nickname: user.nickname,
+          id: data.user.id,
+          name: data.user.name,
+          nickname: data.user.nickname,
           address: "",
         },
         createdAt: data.createdAt,
@@ -206,34 +174,37 @@ export default function PrivateChatting({ data }: ChattingProps) {
     }, 200);
   }, [chatData]);
 
+  const messages =
+    chatData &&
+    chatData.sort((a: any, b: any) => {
+      return a.createdAt - b.createdAt;
+    });
+
+  console.log(messages);
+
   return (
     <div className="relative w-full p-3 overflow-y-hidden ">
       <div
         className="h-[calc(100vh-18rem)]  flex flex-col items-start overflow-y-scroll scrollbar-hide"
         ref={recentChatRef}
       >
-        {chatData &&
-          chatData
-            .sort((a: any, b: any) => {
-              return a.createdAt - b.createdAt;
-            })
-            .map((chat, index) => {
-              return (
-                <Message
-                  key={chat.chatId}
-                  direction={chat.user.id === user.id ? "right" : "left"}
-                  userName={chat.user.nickname}
-                  text={chat.message}
-                  isImage={chat.contentType === "IMAGE"}
-                  isFirstOfTheDay={
-                    index === 0 ||
-                    chatData[index - 1].createdAt?.split("T")[0] !==
-                      chat.createdAt?.split("T")[0]
-                  }
-                  createdAt={chat.createdAt}
-                />
-              );
-            })}
+        {messages.map((chat, index) => {
+          return (
+            <Message
+              key={chat.chatId}
+              direction={chat.user.id === user.id ? "right" : "left"}
+              userName={chat.user.nickname}
+              text={chat.message}
+              isImage={chat.contentType === "IMAGE"}
+              isFirstOfTheDay={
+                index === 0 ||
+                chatData[index - 1].createdAt?.split("T")[0] !==
+                  chat.createdAt?.split("T")[0]
+              }
+              createdAt={chat.createdAt}
+            />
+          );
+        })}
       </div>
 
       <div className="fixed bottom-0 w-[calc(100%-20px)] mb-4 flex flex-col justify-between bg-light-gray h-32 border-2 border-light-gray p-5 pb-4 rounded-xl box-border z-10">

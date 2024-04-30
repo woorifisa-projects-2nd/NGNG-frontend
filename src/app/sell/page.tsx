@@ -98,11 +98,16 @@ export default function Sell() {
       />
 
       <div className="flex justify-end items-center pb-20">
-        <Button
-          text="등록하기"
+        <button
+          data-cy={"product-upload-button"}
           disabled={!allfullfilledSaveCondition}
+          className={`rounded-lg text-white  w-32 h-12 ${
+            !allfullfilledSaveCondition ? `bg-text-gray` : "bg-point-color"
+          } `}
           onClick={onClickButton}
-        />
+        >
+          등록하기
+        </button>
       </div>
     </div>
   );

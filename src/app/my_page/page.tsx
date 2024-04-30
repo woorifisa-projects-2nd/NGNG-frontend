@@ -1,5 +1,5 @@
 "use client";
-import React, { Suspense, useEffect, useState } from "react";
+import React, { Suspense, useContext, useEffect, useState } from "react";
 import MyInfo from "./_compoenets/MyInfo";
 import SellHistory from "./_compoenets/SellHistory";
 import BuyHistory from "./_compoenets/BuyHistory";
@@ -14,9 +14,18 @@ import ConfirmEmail from "./_compoenets/modal/ConfirmEmail";
 import ConfirmAccount from "./_compoenets/modal/ConfirmAccount";
 import useMypageSWR from "./_hooks/useMypageSWR";
 import SkeletonMyinfo from "./_compoenets/skeleton/SkeletonMyinfo";
+import { UserContext } from "@/providers/UserContext";
+import { useRouter } from "next/navigation";
 import { ModalStatus, useModalController } from "./_provider/ModalProovider";
 
 export default function Page() {
+  const router = useRouter();
+  const { getUser } = useContext(UserContext);
+  const user = getUser();
+  if (!user) {
+    // 로그인 안 한 경우
+    router.push("/login");
+  }
   const { user: userInfo, deleteProduct } = useMypageSWR();
 
   const [activeMenuNumber, setMewnuNumber] = useState<number>(0);

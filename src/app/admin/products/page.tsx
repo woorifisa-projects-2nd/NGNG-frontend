@@ -1,11 +1,11 @@
-"use client"
+"use client";
 import Refresh from "@/components/layouts/admin_menu/design/SVG/refresh.svg";
 import CheckReport from "@/components/layouts/admin_menu/design/SVG/check_report.svg";
 import Trash from "@/components/layouts/admin_menu/design/SVG/trash-2.svg";
 import Plus from "@/components/layouts/admin_menu/design/SVG/Plus.svg";
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from "react";
 import Link from "next/link";
-import { useRouter } from 'next/navigation';
+import { useRouter } from "next/navigation";
 import Sell from "@/app/sell/page";
 import { getAccessToken } from "./_utils/auth-header";
 
@@ -65,7 +65,6 @@ type Product = {
     chats: Chat[];
 };
 
-
 export default function ProductManagement() {
     const router = useRouter();
     const [products, setProducts] = useState<Product[]>([]);
@@ -83,8 +82,7 @@ export default function ProductManagement() {
 
     // 페이지를 변경할 때 해당 페이지의 데이터를 가져오는 함수
     async function fetchReportsByPage(pageNumber: number) {
-        const url = `http://localhost:8080/products?page=${pageNumber}`;
-        // const url = `http://localhost:8080/products/page=${pageNumber}`;
+        const url = `/api/products?page=${pageNumber}`;
 
         await fetch(url, {
             headers: {
@@ -159,14 +157,15 @@ export default function ProductManagement() {
     };
 
     const handleDelete = async (productId: number) => {
-        const shouldDelete = window.confirm('정말로 삭제하시겠습니까?');
+        const shouldDelete = window.confirm("정말로 삭제하시겠습니까?");
 
         if (shouldDelete) {
-            const res = await fetch(`http://localhost:8080/products/${productId}`, {
+            const res = await fetch(`/api/products/${productId}`, {
                 method: "DELETE",
                 headers: {
                     "Content-Type": "application/json",
-                }
+                    Authorization: getAccessToken(),
+                },
             });
 
             // 삭제 후에 페이지의 상품 목록을 가져오기 전에 마지막 페이지인지 확인
@@ -174,24 +173,23 @@ export default function ProductManagement() {
 
             // 페이지가 마지막 페이지이고, 마지막 상품을 삭제한 경우에만 페이지를 감소시킴
             if (isLastItemOnPage && currentPage > 0) {
-
                 fetchReportsByPage(currentPage - 1);
-
+            } else {
+                fetchReportsByPage(currentPage);
             }
-        }
 
+        }
     };
 
     const handleCreateProduct = () => {
-        setView('create');  // 뷰 상태를 'create'로 변경
+        setView("create"); // 뷰 상태를 'create'로 변경
     };
 
     const handleReturnToList = () => {
-        setView('list');  // 뷰 상태를 'list'로 변경
+        setView("list"); // 뷰 상태를 'list'로 변경
     };
 
-
-    if (view === 'create') {
+    if (view === "create") {
         return (
             <div>
                 <button onClick={handleReturnToList}>목록으로 돌아가기</button>
@@ -205,8 +203,10 @@ export default function ProductManagement() {
             <div className="text-3xl font-bold mb-16">상품 관리</div>
 
             <div className="flex justify-between mb-5">
-
-                <div className="flex cursor-pointer items-center" onClick={handleCreateProduct}>
+                <div
+                    className="flex cursor-pointer items-center"
+                    onClick={handleCreateProduct}
+                >
                     <Plus />
                     <div>상품 등록</div>
                 </div>
@@ -225,8 +225,13 @@ export default function ProductManagement() {
 
                 <div className="text-center">
                     {products.map((product, index) => (
-                        <div key={product.id} className="border-b border-gray-300 rounded p-3 flex items-center">
-                            <div className="w-1/12">{index + 1 + currentPage * itemsPerPage}</div>
+                        <div
+                            key={product.id}
+                            className="border-b border-gray-300 rounded p-3 flex items-center"
+                        >
+                            <div className="w-1/12">
+                                {index + 1 + currentPage * itemsPerPage}
+                            </div>
                             <div className="w-1/12">{product.id}</div>
                             <div className="w-1/4">{product.title}</div>
                             <div className="w-1/6">{product.price.toLocaleString()}</div>
@@ -234,8 +239,13 @@ export default function ProductManagement() {
                             <div className="w-1/6">{product.category.name}</div>
                             <div className="w-1/6">
                                 <div className="p-5 flex items-center">
-                                    <Link href={`/admin/products/${product.id}`}><CheckReport /></Link>
-                                    <div className="cursor-pointer" onClick={() => handleDelete(product.id)} >
+                                    <Link href={`/admin/products/${product.id}`}>
+                                        <CheckReport />
+                                    </Link>
+                                    <div
+                                        className="cursor-pointer"
+                                        onClick={() => handleDelete(product.id)}
+                                    >
                                         <Trash />
                                     </div>
                                 </div>
@@ -247,31 +257,47 @@ export default function ProductManagement() {
 
             <div className="flex justify-center space-x-4">
                 <Link
-                    href={!disablePrevious ? `/admin/products?page=${Math.floor(currentPage / maxPageButtons) * maxPageButtons - maxPageButtons + 1}` : "#"}
-                    onClick={e => {
+                    href={
+                        !disablePrevious
+                            ? `/admin/products?page=${Math.floor(currentPage / maxPageButtons) * maxPageButtons -
+                            maxPageButtons +
+                            1
+                            }`
+                            : "#"
+                    }
+                    onClick={(e) => {
                         if (disablePrevious) {
                             e.preventDefault();
                         } else {
                             handlePreviousPageClick();
                         }
                     }}
-                    className={`text-black ${disablePrevious ? 'cursor-not-allowed text-gray-500' : ''}`}
+                    className={`text-black ${disablePrevious ? "cursor-not-allowed text-gray-500" : ""
+                        }`}
                 >
-                    {'<'}
+                    {"<"}
                 </Link>
                 {renderPageNumbers()}
                 <Link
-                    href={!disableNext ? `/admin/products?page=${Math.floor(currentPage / maxPageButtons) * maxPageButtons + maxPageButtons + 1}` : "#"}
-                    onClick={e => {
+                    href={
+                        !disableNext
+                            ? `/admin/products?page=${Math.floor(currentPage / maxPageButtons) * maxPageButtons +
+                            maxPageButtons +
+                            1
+                            }`
+                            : "#"
+                    }
+                    onClick={(e) => {
                         if (disableNext) {
                             e.preventDefault();
                         } else {
                             handleNextPageClick();
                         }
                     }}
-                    className={`text-black ${disableNext ? 'cursor-not-allowed text-gray-500' : ''}`}
+                    className={`text-black ${disableNext ? "cursor-not-allowed text-gray-500" : ""
+                        }`}
                 >
-                    {'>'}
+                    {">"}
                 </Link>
             </div>
         </div>

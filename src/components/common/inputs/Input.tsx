@@ -6,10 +6,12 @@ type InputProps = {
   height?: number;
   className?: string;
   disabled?: boolean;
+  cy?: string;
   type?: string;
 };
 export default function Input({
   value,
+  cy,
   className,
   onChange,
   placeholder,
@@ -23,6 +25,7 @@ export default function Input({
   };
   return (
     <input
+      data-cy={cy}
       className={`rounded-md border-[1px] border-black/15  w-full focus:outline-none focus:border-point-color p-2 ${className}`}
       style={{ width, height }}
       value={value}
