@@ -7,6 +7,7 @@ export const getFetchMyPage = async () => {
     headers: {
       Authorization: getAccessToken(),
     },
+    // cache: "no-store",
   });
   // console.log("mypage data", res);
 
@@ -103,4 +104,37 @@ export const updateProductPurchaseById = async (productId: number) => {
       Authorization: getAccessToken(),
     },
   }).then((res) => res.text());
+};
+
+export const isPayment = async (cost: number) => {
+  return await fetch(`/api/points/check`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: getAccessToken(),
+    },
+    body: JSON.stringify({
+      paymentCost: cost,
+    }),
+  }).then((res) => res.json());
+};
+
+export const paymentProduct = async ({
+  cost,
+  productId,
+}: {
+  cost: number;
+  productId: number;
+}) => {
+  return await fetch(`/api/points/payment`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: getAccessToken(),
+    },
+    body: JSON.stringify({
+      paymentCost: cost,
+      payProductId: productId,
+    }),
+  }).then((res) => res.json());
 };
