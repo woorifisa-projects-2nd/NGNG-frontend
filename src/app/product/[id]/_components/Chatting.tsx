@@ -105,12 +105,10 @@ export default function Chatting({ data }: ChattingProps) {
       sendMessage(message);
     }
   };
-  console.log("data", chatData);
-  const getMessage = (data: any) => {
-    console.log("메시지 수신", data);
 
-    setChatData([
-      ...chatData,
+  const getMessage = (data: any) => {
+    setChatData((prev) => [
+      ...prev,
       {
         id: data.id,
         message: data.message,
@@ -137,6 +135,8 @@ export default function Chatting({ data }: ChattingProps) {
       if (client.connected) {
         // 연결 상태 확인
         client.subscribe(`/public-chats/${data.id}`, (message) => {
+          // console.log("use effect 안에서 chatdata", chatData);
+
           getMessage(JSON.parse(message.body).body);
         });
       }
@@ -148,6 +148,10 @@ export default function Chatting({ data }: ChattingProps) {
       if (stompClient) stompClient.deactivate();
     };
   }, []);
+
+  useEffect(() => {
+    setChatData(data.chats);
+  }, [data]);
 
   useEffect(() => {
     setTimeout(() => {

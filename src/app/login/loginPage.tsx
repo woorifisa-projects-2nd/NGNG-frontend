@@ -7,7 +7,6 @@ import { useRouter } from "next/navigation";
 import { UserContext } from "@/providers/UserContext";
 
 export default function LoginPage() {
-
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -35,7 +34,7 @@ export default function LoginPage() {
       body: formData,
     };
 
-    console.log("url", url);
+    // console.log("url", url);
 
     const response = await fetch(url, options);
 
@@ -67,6 +66,7 @@ export default function LoginPage() {
 
       router.push("/");
     }
+
   };
 
   return (

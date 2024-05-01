@@ -53,7 +53,7 @@ const useMypageSWR = () => {
   const UpdateTransactionDetailStatus = async (
     payload: UpdateTransDetiilsFunctionParameter
   ) => {
-    console.log(payload);
+    // console.log(payload);
 
     mutate(
       async (prev: MypageReponse | undefined) => {

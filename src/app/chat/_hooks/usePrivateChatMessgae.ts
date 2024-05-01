@@ -85,7 +85,13 @@ const usePrivateChatMessage = ({
         return { ...data } as PrivateChat;
       }),
     {
-      revalidateIfStale: false,
+      revalidateIfStale: true,
+      revalidateOnMount: true,
+      revalidateOnFocus: true,
+      revalidateOnReconnect: true,
+      dedupingInterval: 100,
+      focusThrottleInterval: 100,
+      errorRetryInterval: 500,
     }
   );
 
