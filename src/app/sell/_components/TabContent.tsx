@@ -239,12 +239,12 @@ export default function TabContent({ data, onChangeData }: TabContentProps) {
         </div>
       </div>
       <div className="flex  items-center justify-start">
-        <div className="flex text-lg font-medium  min-w-24">구매시기</div>
+        <div className="flex text-lg font-medium  min-w-24">구매일자</div>
         <Input
           width={276}
           onChange={changePurchaseAt}
           value={data.purchaseAt ?? ""}
-          placeholder="구매년도를 입력해 주세요."
+          placeholder="구매일자를 입력해 주세요."
         />
       </div>
       <div className="flex  items-start justify-start">
