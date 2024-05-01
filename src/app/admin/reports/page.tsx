@@ -175,7 +175,7 @@ export default function ReportManagement() {
         </div>
 
         <div className="text-center">
-          {reports.map((report, index) => (
+          {reports?.map((report, index) => (
             <div
               key={report.reportId}
               className="border-b border-gray-300 rounded p-3 flex items-center"

@@ -36,9 +36,9 @@ export default function ProudctInfo({ data }: ProductInfoProps) {
   const [showModal, setShowModal] = useState<boolean>(false);
   const [currentImageIndex, setCurrentImageIndex] = useState<number>(0);
 
-  if (user === undefined) {
-    redirect("/login");
-  }
+  // if (user === undefined) {
+
+  // }
 
   const handleReportSuccess = (newData: Product | undefined): void => {
     setProductData(newData);
@@ -82,9 +82,11 @@ export default function ProudctInfo({ data }: ProductInfoProps) {
         0 > 0;
 
   const isReportedByMe =
-    productData?.reports &&
-    productData?.reports.filter((report) => report.reporter.id === user.id)
-      .length > 0;
+    user === undefined
+      ? false
+      : productData?.reports &&
+        productData?.reports.filter((report) => report.reporter.id === user?.id)
+          .length > 0;
 
   const fetchTime = async () => {
     const res = (await 3) + 4;
@@ -178,7 +180,8 @@ export default function ProudctInfo({ data }: ProductInfoProps) {
             </div>
           </div>
         </div>
-        {showReportModal &&
+        {user !== undefined &&
+          showReportModal &&
           createPortal(
             <ReportModal
               onClose={() => {
@@ -268,6 +271,9 @@ export default function ProudctInfo({ data }: ProductInfoProps) {
                 onClick={async (e) => {
                   e.preventDefault();
                   e.stopPropagation();
+                  if (user === undefined) {
+                    redirect("/login");
+                  }
                   if (data.user.id === user.id) {
                     // 판매자인 경우 채팅목록으로 이동
                     router.push("../../chat");
@@ -307,7 +313,9 @@ export default function ProudctInfo({ data }: ProductInfoProps) {
               >
                 <Button
                   text={`${
-                    data.forSale
+                    user === undefined
+                      ? "로그인이 필요합니다"
+                      : data.forSale
                       ? data.user.id === user.id
                         ? "채팅방 보기"
                         : "1:1 채팅하기"
@@ -346,7 +354,8 @@ export default function ProudctInfo({ data }: ProductInfoProps) {
           </div>
         </div>
       </div>
-      {open &&
+      {user !== undefined &&
+        open &&
         createPortal(
           <AccountAuthenticationWanringModal onClose={() => setOpen(false)} />,
           document.body
