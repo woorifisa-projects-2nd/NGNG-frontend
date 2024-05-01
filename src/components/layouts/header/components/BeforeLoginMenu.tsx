@@ -29,7 +29,7 @@ export default function BeforeLoginMenu() {
             <Link href={"/login"}>
               <div className="flex md:hidden justify-center items-center gap-1 p-2 hover:bg-light-gray/50">
                 <LoginIcon color={iconColor} />
-                로그인
+                로그인/회원가입
               </div>
             </Link>
           </div>
@@ -39,7 +39,7 @@ export default function BeforeLoginMenu() {
         <Link href={"/login"}>
           <div className="hidden md:flex justify-center items-center gap-1">
             <LoginIcon color={iconColor} />
-            로그인
+            로그인/회원가입
           </div>
         </Link>
       </div>

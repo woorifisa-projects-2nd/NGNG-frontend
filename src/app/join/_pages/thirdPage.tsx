@@ -1,7 +1,7 @@
 import ColorMode from "@/components/layouts/header/components/ColorMode";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import LogoImage from "../../../components/layouts/header/design/SVG/logo.svg";
 import EmailImage from "../_image/email.svg";
 import PasswordImage from "../_image/password.svg";
@@ -60,6 +60,7 @@ export default function ThirdPage({
       method: "POST",
       body: JSON.stringify(auth),
     };
+    alert("입력하신 이메일로 인증번호를 요청했습니다.");
 
     const response = await fetch(url, options);
     const responseJson = await response.json();
@@ -71,24 +72,19 @@ export default function ThirdPage({
 
   const authCheck = () => {
     if (checkAuthNumber !== authNumber) {
-      // console.log(authNumber);
-
       alert("올바른 인증번호를 입력해주세요.");
 
       return;
     }
+
+    alert("인증되었습니다.");
 
     setIsCheckAuthNumberDisabled(true);
     setIsJoinDisabled(false);
   };
 
   const join = async () => {
-    setUser({
-      ...user,
-      email: insertEmail,
-      nickname: insertNickname,
-      password: insertPassword,
-    });
+    console.log("ㅓㅐㅑㅜ");
 
     const url = "/api/join";
     const options = {
@@ -103,6 +99,15 @@ export default function ThirdPage({
 
     router.push("/login");
   };
+
+  useEffect(() => {
+    setUser({
+      ...user,
+      email: insertEmail,
+      nickname: insertNickname,
+      password: insertPassword,
+    });
+  }, [insertEmail, insertNickname, insertPassword]);
 
   return (
     <div className="dark:bg-[#282828]">
@@ -141,7 +146,7 @@ export default function ThirdPage({
                 />
               </div>
               <button
-                className="flex justify-center items-center rounded-md text-white bg-point-color w-[20%] h-14 text-xl"
+                className="cursor-pointer flex justify-center items-center rounded-md text-white bg-point-color w-[20%] h-14 text-xl"
                 onClick={sendEmail}
               >
                 인증
@@ -164,7 +169,7 @@ export default function ThirdPage({
                 />
               </div>
               <button
-                className="flex justify-center items-center rounded-md text-white bg-point-color w-[20%] h-14 text-xl"
+                className="cursor-pointer flex justify-center items-center rounded-md text-white bg-point-color w-[20%] h-14 text-xl"
                 onClick={authCheck}
                 disabled={isCheckAuthNumberDisabled}
               >
@@ -204,20 +209,20 @@ export default function ThirdPage({
           </div>
           <div className="flex justify-between mt-12">
             <button
-              className="border-solid rounded-md dark:text-white dark:bg-[#3B3B3B] dark:border-black/45 text-black bg-gray-100 border-[2px] w-[calc(50%-1vw)] h-16 text-3xl"
+              className="cursor-pointer border-solid rounded-md dark:text-white dark:bg-[#3B3B3B] dark:border-black/45 text-black bg-gray-100 border-[2px] w-[calc(50%-1vw)] h-16 text-3xl"
               onClick={() => setCurrentPage(currentPage - 1)}
             >
               이전
             </button>
             <button
-              className="border-solid rounded-md text-white bg-point-color w-[calc(50%-1vw)] h-16 text-3xl"
+              className="cursor-pointer border-solid rounded-md text-white bg-point-color w-[calc(50%-1vw)] h-16 text-3xl"
               onClick={join}
               disabled={isJoinDisabled}
             >
               가입
             </button>
           </div>
-          <div className="flex justify-end">
+          <div className="flex justify-center">
             <Caution />
           </div>
         </div>
