@@ -74,7 +74,7 @@ export default function PrivateChat() {
 
   const onDismiss = () => {
     const request = data?.request;
-    console.log("dismiss", request);
+    // console.log("dismiss", request);
     request &&
       updateTransactionRequest({
         requestId: request?.requestId,

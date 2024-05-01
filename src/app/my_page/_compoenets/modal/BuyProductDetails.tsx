@@ -66,7 +66,7 @@ export default function BuyProductDetails({ transactionDetails }: Props) {
     ),
   };
   useEffect(() => {
-    console.log(transactionDetails);
+    // console.log(transactionDetails);
   }, []);
 
   return (

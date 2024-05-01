@@ -7,7 +7,6 @@ import { useRouter } from "next/navigation";
 import { UserContext } from "@/providers/UserContext";
 
 export default function LoginPage() {
-
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -35,7 +34,7 @@ export default function LoginPage() {
       body: formData,
     };
 
-    console.log("url", url);
+    // console.log("url", url);
 
     fetch(url, options)
       .then((res) => res.json())
@@ -46,19 +45,19 @@ export default function LoginPage() {
           name: data.name,
         });
 
-        console.log(
-          "로그인 후 받은 토큰값",
-          data,
-          JSON.stringify(data.accessToken)
-        );
+        // console.log(
+        //   "로그인 후 받은 토큰값",
+        //   data,
+        //   JSON.stringify(data.accessToken)
+        // );
 
         // accessToken은 localStorage에, refreshToken은 securityCookie에 저장(자동)
         localStorage.setItem("accessToken", JSON.stringify(data.accessToken));
 
         setIsLogin(true);
         router.push("/");
-      })
-      .catch((e) => console.error(e));
+      });
+    // .catch((e) => console.error(e));
   };
 
   return (

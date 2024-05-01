@@ -13,8 +13,8 @@ import {
 } from "../../_api/api";
 import ReportModal from "./ReportModal";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
-import { Carousel } from 'react-responsive-carousel';
-import ReactPlayer from 'react-player';
+import { Carousel } from "react-responsive-carousel";
+import ReactPlayer from "react-player";
 import ImageModal from "./ImageModal";
 import { UserContext } from "@/providers/UserContext";
 import Link from "next/link";
@@ -61,7 +61,8 @@ export default function ProudctInfo({ data }: ProductInfoProps) {
   // 이전 이미지로 이동하는 함수
   const goToPreviousImage = () => {
     if (data?.images) {
-      const previousIndex = (currentImageIndex - 1 + data?.images.length) % data?.images.length;
+      const previousIndex =
+        (currentImageIndex - 1 + data?.images.length) % data?.images.length;
       setCurrentImageIndex(previousIndex);
     }
   };
@@ -77,11 +78,13 @@ export default function ProudctInfo({ data }: ProductInfoProps) {
   const isReported =
     productData?.reports === null
       ? false
-      : productData?.reports?.filter((report) => report.isReport)?.length ?? 0 > 0;
+      : productData?.reports?.filter((report) => report.isReport)?.length ??
+        0 > 0;
 
   const isReportedByMe =
     productData?.reports &&
-    productData?.reports.filter((report) => report.reporter.id === user.id).length > 0;
+    productData?.reports.filter((report) => report.reporter.id === user.id)
+      .length > 0;
 
   const fetchTime = async () => {
     const res = (await 3) + 4;
@@ -99,8 +102,8 @@ export default function ProudctInfo({ data }: ProductInfoProps) {
               showStatus={false} // 우측상단 상태값
               infiniteLoop={true}
             >
-              {data?.images.map((media, index) => (
-                media.contentType === 'IMAGE' ? ( // 이미지인 경우
+              {data?.images.map((media, index) =>
+                media.contentType === "IMAGE" ? ( // 이미지인 경우
                   <div
                     key={index}
                     onClick={() => handleImageClick(media.imageURL, index)}
@@ -114,7 +117,8 @@ export default function ProudctInfo({ data }: ProductInfoProps) {
                       alt={`productImage_${media.id}`}
                     />
                   </div>
-                ) : ( // 동영상인 경우
+                ) : (
+                  // 동영상인 경우
                   <div
                     key={index}
                     className="flex justify-center"
@@ -129,7 +133,7 @@ export default function ProudctInfo({ data }: ProductInfoProps) {
                     />
                   </div>
                 )
-              ))}
+              )}
             </Carousel>
 
             {showModal &&
@@ -162,7 +166,10 @@ export default function ProudctInfo({ data }: ProductInfoProps) {
                 ) : isReportedByMe ? (
                   "이미 신고한 상품입니다"
                 ) : (
-                  <div className="cursor-pointer flex items-center gap-1" onClick={() => setShowReportModal(true)}>
+                  <div
+                    className="cursor-pointer flex items-center gap-1"
+                    onClick={() => setShowReportModal(true)}
+                  >
                     <SirenIcon />
                     <div>신고하기</div>
                   </div>
@@ -184,7 +191,7 @@ export default function ProudctInfo({ data }: ProductInfoProps) {
             document.body
           )}
 
-        <div className="mt-10 xl:mt-0 w-full xl:w-2/5 flex flex-col justify-between">
+        <div className="mt-10 xl:mt-0 w-full xl:w-1/2 flex flex-col justify-between">
           <div className="flex w-full justify-between mb-10">
             <div>
               <p className="flex items-center text-text-gray mb-2">
@@ -230,25 +237,26 @@ export default function ProudctInfo({ data }: ProductInfoProps) {
                 {data.price.toLocaleString()}원
               </span>
               <span
-                className={`inline font-medium text-sm  ${data.discountable ? "text-point-color" : "text-red-500"
-                  } `}
+                className={`inline font-medium text-sm  ${
+                  data.discountable ? "text-point-color" : "text-red-500"
+                } `}
               >
                 {data.discountable ? "할인가능" : "할인불가능"}
               </span>
             </div>
           </div>
           <div className="mb-10 w-full flex rounded-lg border-[1px] border-text-gray justify-around p-5 font-medium">
-            <div className="flex flex-col items-center text-center ">
+            <div className="flex flex-col items-center text-center mr-3  min-w-[77px]">
               <p className="text-text-gray mb-5">제품상태</p>
               <p className="">{data.status.name}</p>
             </div>
-            <p className=" border-r-[1px] border-text-gray " />
-            <div className="flex flex-col items-center text-center ">
+            <p className=" border-r-[1px] border-text-gray" />
+            <div className="flex flex-col items-center text-center mx-3  min-w-[77px] ">
               <p className=" text-text-gray  mb-5">거래방식</p>
               <p className="">{data.isEscrow ? "안심거래" : "일반거래"}</p>
             </div>
             <p className=" border-r-[1px] border-text-gray " />
-            <div className="flex flex-col items-center  ">
+            <div className="flex flex-col items-center  ml-3  min-w-[77px]">
               <p className="text-text-gray mb-5">배송비</p>
               <p>{data.freeShipping ? "포함" : "미포함"}</p>
             </div>
@@ -271,7 +279,7 @@ export default function ProudctInfo({ data }: ProductInfoProps) {
                       user.id
                     ).then(async (id) => {
                       let roomId = id;
-                      console.log("roodId", id);
+                      // console.log("roodId", id);
 
                       if (id < 0) {
                         // 없으면 채팅방 만들기
@@ -298,15 +306,16 @@ export default function ProudctInfo({ data }: ProductInfoProps) {
                 }}
               >
                 <Button
-                  text={`${data.forSale
-                    ? data.user.id === user.id
-                      ? "채팅방 보기"
-                      : "1:1 채팅하기"
-                    : "거래완료"
-                    }`}
+                  text={`${
+                    data.forSale
+                      ? data.user.id === user.id
+                        ? "채팅방 보기"
+                        : "1:1 채팅하기"
+                      : "거래완료"
+                  }`}
                   width={"100%"}
                   disabled={!data.forSale}
-                  onClick={() => { }}
+                  onClick={() => {}}
                 />
               </a>
             </div>

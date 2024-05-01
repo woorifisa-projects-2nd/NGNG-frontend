@@ -68,6 +68,7 @@ export const getAllChatMessages = async ({
     headers: {
       Authorization: getAccessToken(),
     },
+    cache: "no-cache",
   }).then((res) => res.json());
 };
 
