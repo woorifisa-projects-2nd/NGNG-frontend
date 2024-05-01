@@ -257,6 +257,7 @@ export default function CategorySearch() {
               <div className="mt-2">
                 <input
                   type="number"
+                  min="0"
                   placeholder="최소가격"
                   value={minPrice}
                   onChange={(e) => setMinPrice(parseInt(e.target.value))}
@@ -265,6 +266,7 @@ export default function CategorySearch() {
                 <span> - </span>
                 <input
                   type="number"
+                  min="0"
                   placeholder="최대가격"
                   value={maxPrice}
                   onChange={(e) => setMaxPrice(parseInt(e.target.value))}
