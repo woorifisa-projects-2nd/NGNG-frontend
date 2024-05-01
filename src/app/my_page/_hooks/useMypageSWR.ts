@@ -4,6 +4,8 @@ import {
   getFetchMyPage,
   updateFetchMyPage,
   updateTransaction,
+  updateUserAccount,
+  updateUserAddress,
 } from "../_api/api";
 
 const useMypageSWR = () => {
@@ -53,6 +55,73 @@ const useMypageSWR = () => {
       },
       revalidate: true,
     });
+  };
+
+  const updateAddress = async (
+    body: {
+      address: string;
+    },
+    Done?: () => void
+  ) => {
+    const user = localStorage.getItem("user");
+    if (!user) return;
+    const id = (JSON.parse(user) as { id: number }).id;
+
+    mutate(
+      () =>
+        updateUserAddress(
+          {
+            address: body.address,
+            id,
+          },
+          Done
+        ),
+      {
+        // 데이터 먼저 변경 후 캐시 업데이트
+        populateCache: (update, prev) => {
+          return {
+            ...prev,
+            ...(body.address && { address: body.address }),
+          } as MypageReponse;
+        },
+        revalidate: true,
+      }
+    );
+  };
+  const updateAccount = async (
+    body: {
+      accountBank: string;
+      accountNumber: string;
+    },
+    Done?: () => void
+  ) => {
+    const user = localStorage.getItem("user");
+    if (!user) return;
+
+    const userId = (JSON.parse(user) as { id: number }).id;
+
+    mutate(
+      () =>
+        updateUserAccount(
+          {
+            accountBank: body.accountBank,
+            accountNumber: body.accountNumber,
+            userId,
+          },
+          Done
+        ),
+      {
+        // 데이터 먼저 변경 후 캐시 업데이트
+        populateCache: (update, prev) => {
+          return {
+            ...prev,
+            ...(body.accountBank && { accountBank: body.accountBank }),
+            ...(body.accountNumber && { accountNumber: body.accountNumber }),
+          } as MypageReponse;
+        },
+        revalidate: true,
+      }
+    );
   };
 
   const UpdateTransactionDetailStatus = async (
@@ -131,6 +200,8 @@ const useMypageSWR = () => {
     UpdateTransactionDetailStatus,
     updateCost,
     deleteProduct,
+    updateAddress,
+    updateAccount,
   };
 };
 

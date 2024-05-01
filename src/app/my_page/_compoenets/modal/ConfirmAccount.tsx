@@ -6,7 +6,7 @@ import {
 } from "../../_provider/ModalProovider";
 
 export default function ConfirmAccount() {
-  const { user, updateProfile } = useMypageSWR();
+  const { user, updateAccount } = useMypageSWR();
   const [_, setModal] = useModalController();
 
   const benkRef = useRef<HTMLInputElement>(null);
@@ -15,7 +15,7 @@ export default function ConfirmAccount() {
   const onUpdate = () => {
     if (!benkRef.current?.value || !numberRef.current?.value) return;
 
-    updateProfile(
+    updateAccount(
       {
         accountBank: benkRef.current?.value,
         accountNumber: numberRef.current?.value,
