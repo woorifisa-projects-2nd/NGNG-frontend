@@ -26,8 +26,6 @@ export const updateFetchMyPage = async (
   body: {
     nickname?: string;
     address?: string;
-    accountBank?: string;
-    accountNumber?: string;
   },
   Done?: () => void
 ) => {
@@ -47,6 +45,48 @@ export const updateFetchMyPage = async (
 
     return res.json();
   })) as Promise<any>;
+};
+
+export const updateUserAccount = async (
+  body: {
+    userId: number;
+    accountBank: string;
+    accountNumber: string;
+  },
+  Done?: () => void
+) => {
+  console.log(body);
+
+  return (await fetch("/api/confirm/account", {
+    method: "PUT",
+    cache: "no-cache",
+    redirect: "follow",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: getAccessToken(),
+    },
+    body: JSON.stringify(body),
+  }).then((res) => {
+    if (res.ok) Done && Done();
+  })) as any;
+};
+
+export const updateUserAddress = async (
+  body: { id: number; address: string },
+  Done?: () => void
+) => {
+  return (await fetch("/api/confirm/address", {
+    method: "PUT",
+    cache: "no-cache",
+    redirect: "follow",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: getAccessToken(),
+    },
+    body: JSON.stringify(body),
+  }).then((res) => {
+    if (res.ok) Done && Done();
+  })) as any;
 };
 
 export const updateTransaction = async ({

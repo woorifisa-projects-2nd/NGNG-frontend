@@ -14,7 +14,7 @@ type AddressData = {
 
 export default function UpdateAddress() {
   const [_, setModal] = useModalController();
-  const { updateProfile } = useMypageSWR();
+  const { updateAddress } = useMypageSWR();
 
   const warpRef = useRef<HTMLDivElement>(null);
   const detailRef = useRef<HTMLInputElement>(null);
@@ -39,7 +39,7 @@ export default function UpdateAddress() {
 
   const onUpdateAddress = () => {
     detailRef.current?.value &&
-      updateProfile(
+      updateAddress(
         {
           address: status.addr + " " + detailRef.current?.value,
         },
