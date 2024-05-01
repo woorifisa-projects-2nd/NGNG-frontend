@@ -11,6 +11,7 @@ import { convertEnumToKeyValuesObject } from "@/app/my_page/_utils/convert";
 import DropDown from "@/components/common/drop_down/DropDown";
 import { imageUrlExtractExtension } from "@/app/my_page/_utils/extract";
 import { updateProdctByUpdateProductRequest } from "../../_api/api";
+import { useRouter } from "next/navigation";
 
 enum ECategory {
   "의류" = 1,
@@ -39,6 +40,8 @@ enum EEscrow {
 }
 
 export default function UpdateProductId({ productId }: { productId: number }) {
+  const router = useRouter();
+
   const [data, setData] = useState<Product>();
 
   const [deleteOriginImages, setDeleteOriginImagees] = useState<any[]>([]);
@@ -108,7 +111,7 @@ export default function UpdateProductId({ productId }: { productId: number }) {
     setProductTags(newTags);
   };
 
-  const handlerChange = () => {
+  const handlerChange = async () => {
     console.log("수정할 데이터");
     console.log(deleteOriginImages);
     console.log(newImages);
@@ -126,7 +129,7 @@ export default function UpdateProductId({ productId }: { productId: number }) {
       freeShipping: productFreeShipping.current?.checked,
     });
 
-    updateProdctByUpdateProductRequest({
+    await updateProdctByUpdateProductRequest({
       deleteOldImages: deleteOriginImages,
       newImages,
       newProduct: {
@@ -141,14 +144,17 @@ export default function UpdateProductId({ productId }: { productId: number }) {
         purchaseAt: productPurchaseAt.current!.value,
         statusId: productStatus!,
         tags: productTags!.split(",").map((tag) => {
-          return { name: tag.trim() };
+          return { tagName: tag.trim() };
         }),
+        // tags: data.tags,
         title: productTitle.current!.value,
         userId: data.user.id,
         visible: data.visible,
       },
       origin: data,
     });
+
+    router.replace("/my_page");
   };
 
   return (
@@ -339,9 +345,9 @@ export default function UpdateProductId({ productId }: { productId: number }) {
           placeholder="상품에 대한 설명을 적어주세요."
         />
       </div>
+      {/* //TODO SELL 에서 쓰인겨 가져오기 */}
       <div className="flex  items-center justify-start">
         <div className="flex text-lg font-medium  min-w-24">태그</div>
-        {/* //TODO SELL 에서 쓰인겨 가져오기 */}
         <input
           className={`rounded-md border-[1px] border-black/15  w-full focus:outline-none focus:border-point-color p-2`}
           type="text"

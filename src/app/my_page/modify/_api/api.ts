@@ -18,7 +18,7 @@ type UpdateProductRequest = {
   categoryId: number;
   //   thumbnailUrl: string;
   tags: {
-    name: string;
+    tagName: string;
   }[];
   //   images: {
   //     imageURL: string;
