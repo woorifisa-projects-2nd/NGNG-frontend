@@ -39,34 +39,33 @@ export default function LoginPage() {
     const response = await fetch(url, options);
 
     if (response.status === 401) {
-
       alert("유효하지 않은 인증 정보입니다.");
 
       return;
     }
 
-    localStorage.setItem("accessToken", JSON.stringify(response.headers.get("Authorization")));
+    localStorage.setItem(
+      "accessToken",
+      JSON.stringify(response.headers.get("Authorization"))
+    );
 
     const data = await response.json();
 
-    console.log(data);
+    // console.log(data);
 
     setUser({
       id: data.id,
       nickname: data.nickname,
-      name: data.name
+      name: data.name,
     });
 
     setIsLogin(true);
 
     if (data.role === "ADMIN") {
-
-      router.push("/admin/reports")
+      router.push("/admin/reports");
     } else {
-
       router.push("/");
     }
-
   };
 
   return (
@@ -113,14 +112,16 @@ export default function LoginPage() {
               <div className="mr-2">
                 <button
                   type="button"
-                  onClick={() => router.push("/find/email")}>
+                  onClick={() => router.push("/find/email")}
+                >
                   <span>이메일 찾기</span>
                 </button>
               </div>
               <div>
                 <button
                   type="button"
-                  onClick={() => router.push("/find/password")}>
+                  onClick={() => router.push("/find/password")}
+                >
                   <span>비밀번호 찾기</span>
                 </button>
               </div>

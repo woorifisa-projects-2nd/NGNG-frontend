@@ -35,7 +35,7 @@ export default function BuyProductDetails({ transactionDetails }: Props) {
         cost,
         productId: transactionDetails.product.id,
       });
-      console.log(ss);
+      // console.log(ss);
 
       chnageStatus(PRODUCT_STATUS["입금 완료"]);
     }

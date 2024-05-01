@@ -162,21 +162,23 @@ export default function ProudctInfo({ data }: ProductInfoProps) {
                 />
                 <span>{data.user.nickname}</span>
               </div>
-              <div className="flex text-red-500 font-medium justify-end items-center">
-                {isReported ? (
-                  "신고받은 상품입니다"
-                ) : isReportedByMe ? (
-                  "이미 신고한 상품입니다"
-                ) : (
-                  <div
-                    className="cursor-pointer flex items-center gap-1"
-                    onClick={() => setShowReportModal(true)}
-                  >
-                    <SirenIcon />
-                    <div>신고하기</div>
-                  </div>
-                )}
-              </div>
+              {data.forSale && (
+                <div className="flex text-red-500 font-medium justify-end items-center">
+                  {isReported ? (
+                    "신고받은 상품입니다"
+                  ) : isReportedByMe ? (
+                    "이미 신고한 상품입니다"
+                  ) : (
+                    <div
+                      className="cursor-pointer flex items-center gap-1"
+                      onClick={() => setShowReportModal(true)}
+                    >
+                      <SirenIcon />
+                      <div>신고하기</div>
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
           </div>
         </div>

@@ -96,7 +96,7 @@ export default function TabContent({ data, onChangeData }: TabContentProps) {
 
   const chanagePrice = (newPrice: string) => {
     const input = newPrice.replaceAll(",", "");
-    console.log("price", input);
+    // console.log("price", input);
 
     if (!isNaN(Number(input)) || input === "") {
       onChangeData?.({

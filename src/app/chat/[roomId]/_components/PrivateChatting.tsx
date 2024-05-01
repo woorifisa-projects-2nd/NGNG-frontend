@@ -232,7 +232,7 @@ export default function PrivateChatting({ data }: ChattingProps) {
             />
           </>
         )}
-        <div className="flex justify-between items-center">
+        {/* <div className="flex justify-between items-center fixed bottom-5 w-[calc(100%-60px)]">
           <ImagePlusIcon
             className={
               message.length === 0 && image === undefined
@@ -254,7 +254,7 @@ export default function PrivateChatting({ data }: ChattingProps) {
             className="cursor-pointer fill-black"
             onClick={enterMessage}
           />
-        </div>
+        </div> */}
       </div>
     </div>
   );
