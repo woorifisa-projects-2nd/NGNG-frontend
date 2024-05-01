@@ -5,16 +5,16 @@ import Menu from "./components/Menu";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 export const categories = [
-  { name: "의류", link: "/product/clothes" },
-  { name: "잡화", link: "/product/accessories" },
-  { name: "뷰티", link: "/product/beauty" },
-  { name: "디지털", link: "/product/digital" },
-  { name: "취미", link: "/product/hobby" },
-  { name: "티켓/교환권", link: "/product/ticket" },
-  { name: "생활", link: "/product/life" },
-  { name: "가구", link: "/product/furniture" },
-  { name: "가공식품", link: "/product/food" },
-  { name: "기타", link: "/product/etc" },
+  { name: "의류", link: "/category/clothes/" },
+  { name: "잡화", link: "/category/accessories/" },
+  { name: "뷰티", link: "/category/beauty/" },
+  { name: "디지털", link: "/category/digital/" },
+  { name: "취미", link: "/category/hobby/" },
+  { name: "티켓/교환권", link: "/category/ticket/" },
+  { name: "생활", link: "/category/life/" },
+  { name: "가구", link: "/category/furniture/" },
+  { name: "가공식품", link: "/category/food/" },
+  { name: "기타", link: "/category/etc/" },
 ];
 export default function Header() {
   const pathname = usePathname();
