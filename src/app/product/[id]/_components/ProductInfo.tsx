@@ -274,9 +274,8 @@ export default function ProudctInfo({ data }: ProductInfoProps) {
                   e.preventDefault();
                   e.stopPropagation();
                   if (user === undefined) {
-                    redirect("/login");
-                  }
-                  if (data.user.id === user.id) {
+                    router.push("../../login");
+                  } else if (data.user.id === user.id) {
                     // 판매자인 경우 채팅목록으로 이동
                     router.push("../../chat");
                   } else if (isUserAccountOk) {
