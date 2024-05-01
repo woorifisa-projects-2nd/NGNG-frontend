@@ -20,6 +20,7 @@ type TabContentProps = {
 };
 export default function TabContent({ data, onChangeData }: TabContentProps) {
   const [imageId, setImageId] = useState<number>(1);
+  const [tags, setTags] = useState<string>("");
   const fullfillSaveCondition =
     data.images.length > 0 &&
     data.title.length > 0 &&
@@ -129,20 +130,6 @@ export default function TabContent({ data, onChangeData }: TabContentProps) {
     });
   };
 
-  const changeTags = (newTag: string) => {
-    const newTags = newTag.split(",").map((tag) => {
-      return { name: tag.trim() };
-    });
-
-    onChangeData?.({
-      order: data.order,
-      product: {
-        ...data,
-        tags: newTags,
-      },
-    });
-  };
-
   const changeFreeshipping = () => {
     onChangeData?.({
       order: data.order,
@@ -152,6 +139,7 @@ export default function TabContent({ data, onChangeData }: TabContentProps) {
       },
     });
   };
+  console.log("tag", data);
 
   useEffect(() => {
     if (
@@ -342,10 +330,30 @@ export default function TabContent({ data, onChangeData }: TabContentProps) {
       </div>
       <div className="flex  items-center justify-start">
         <div className="flex text-lg font-medium  min-w-24">태그</div>
-        <Input
-          onChange={changeTags}
-          placeholder="태그"
-          value={data.tags.map((tag) => tag.name).join(", ")}
+        <input
+          className={`rounded-md border-[1px] border-black/15  w-full focus:outline-none focus:border-point-color p-2 `}
+          value={tags}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+            const newTag = e.currentTarget.value;
+
+            setTags(e.currentTarget.value);
+
+            const newTags = newTag
+              .split(",")
+              .map((tag) => {
+                return { name: tag.trim() };
+              })
+              .filter((tag) => tag.name.length > 0);
+
+            onChangeData?.({
+              order: data.order,
+              product: {
+                ...data,
+                tags: newTags,
+              },
+            });
+          }}
+          placeholder={"태그"}
         />
       </div>
     </div>
