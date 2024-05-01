@@ -153,103 +153,6 @@ export default function UpdateProductId({ productId }: { productId: number }) {
 
   return (
     <div className="grid grid-cols-1 gap-4 pb-20 p-6">
-      <div className="flex  items-start justify-start">
-        <div className="text-lg font-medium min-w-24">
-          <div className="flex">
-            상품이미지<p className="text-red-600">*</p>
-          </div>
-          <div className="flex fill-red-500">
-            (
-            <p className="text-point-color">
-              {data.images.length + newImages.length}
-            </p>
-            /10)
-          </div>
-        </div>
-        {/* 이미지 업로드 */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
-          {data.images.map(({ id, imageURL }, index) => (
-            <div className="flex relative" key={index}>
-              <CloseIcon
-                width={20}
-                height={20}
-                className="bg-white rounded-lg  absolute right-2 top-2 cursor-pointer fill-white dark:fill-black"
-                //  color={iconColor}
-
-                // TODO 기존 이미지 삭제 처리
-                onClick={() => handlerOldFileDelete(index)}
-              />
-
-              {["mp4"].includes(imageUrlExtractExtension(imageURL)) ? (
-                <video
-                  className="w-full max-h-[300px] mx-auto"
-                  width={400}
-                  height={400}
-                  controls
-                >
-                  <source src={imageURL} />
-                </video>
-              ) : (
-                <Image
-                  className="w-full object-contain object-center max-h-[300px]"
-                  src={imageURL}
-                  alt={"기존 이미지"}
-                  width={400}
-                  height={400}
-                />
-              )}
-            </div>
-          ))}
-          {newImages.length > 0 &&
-            newImages.map((file, index) => (
-              <div className="flex relative" key={index}>
-                <CloseIcon
-                  width={20}
-                  height={20}
-                  className="bg-white rounded-lg absolute right-2 top-2 cursor-pointer fill-white dark:fill-black"
-                  //  color={iconColor}
-
-                  // TODO 새로운 이미지 삭제 처리
-                  onClick={() => handlerNewFileDelete(index)}
-                />
-
-                {["mp4"].includes(imageUrlExtractExtension(file.name)) ? (
-                  <video
-                    className="w-full max-h-[300px] mx-auto"
-                    width={400}
-                    height={400}
-                    controls
-                  >
-                    <source src={URL.createObjectURL(file)} />
-                  </video>
-                ) : (
-                  <Image
-                    className="w-full object-contain object-center max-h-[300px]"
-                    src={URL.createObjectURL(file)}
-                    alt={"새로운 이미지"}
-                    width={400}
-                    height={400}
-                  />
-                )}
-                {/* <Image
-                  className="h-full  object-center"
-                  src={URL.createObjectURL(file)}
-                  width={400}
-                  height={400}
-                  alt={"추가된이미지 - " + index}
-                /> */}
-              </div>
-            ))}
-          {
-            // @ts-ignore
-            <ImageUploadBox
-              // image={data.images[index]}
-              uploadImage={handlerNewFileUpload}
-              // deleteImage={handlerNewFileDelete}
-            />
-          }
-        </div>
-      </div>
       <div className="flex  items-center justify-start">
         <div className="flex text-lg font-medium min-w-24">
           상품명<p className="text-red-600">*</p>
@@ -451,3 +354,102 @@ export default function UpdateProductId({ productId }: { productId: number }) {
     </div>
   );
 }
+
+//  <div className="flex  items-start justify-start">
+//         <div className="text-lg font-medium min-w-24">
+//           <div className="flex">
+//             상품이미지<p className="text-red-600">*</p>
+//           </div>
+//           <div className="flex fill-red-500">
+//             (
+//             <p className="text-point-color">
+//               {data.images.length + newImages.length}
+//             </p>
+//             /10)
+//           </div>
+//         </div>
+//         {/* 이미지 업로드 */}
+
+//         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+//           {data.images.map(({ id, imageURL }, index) => (
+//             <div className="flex relative" key={index}>
+//               <CloseIcon
+//                 width={20}
+//                 height={20}
+//                 className="bg-white rounded-lg  absolute right-2 top-2 cursor-pointer fill-white dark:fill-black"
+//                 //  color={iconColor}
+
+//                 // TODO 기존 이미지 삭제 처리
+//                 onClick={() => handlerOldFileDelete(index)}
+//               />
+
+//               {["mp4"].includes(imageUrlExtractExtension(imageURL)) ? (
+//                 <video
+//                   className="w-full max-h-[300px] mx-auto"
+//                   width={400}
+//                   height={400}
+//                   controls
+//                 >
+//                   <source src={imageURL} />
+//                 </video>
+//               ) : (
+//                 <Image
+//                   className="w-full object-contain object-center max-h-[300px]"
+//                   src={imageURL}
+//                   alt={"기존 이미지"}
+//                   width={400}
+//                   height={400}
+//                 />
+//               )}
+//             </div>
+//           ))}
+//           {newImages.length > 0 &&
+//             newImages.map((file, index) => (
+//               <div className="flex relative" key={index}>
+//                 <CloseIcon
+//                   width={20}
+//                   height={20}
+//                   className="bg-white rounded-lg absolute right-2 top-2 cursor-pointer fill-white dark:fill-black"
+//                   //  color={iconColor}
+
+//                   // TODO 새로운 이미지 삭제 처리
+//                   onClick={() => handlerNewFileDelete(index)}
+//                 />
+
+//                 {["mp4"].includes(imageUrlExtractExtension(file.name)) ? (
+//                   <video
+//                     className="w-full max-h-[300px] mx-auto"
+//                     width={400}
+//                     height={400}
+//                     controls
+//                   >
+//                     <source src={URL.createObjectURL(file)} />
+//                   </video>
+//                 ) : (
+//                   <Image
+//                     className="w-full object-contain object-center max-h-[300px]"
+//                     src={URL.createObjectURL(file)}
+//                     alt={"새로운 이미지"}
+//                     width={400}
+//                     height={400}
+//                   />
+//                 )}
+//                 {/* <Image
+//                   className="h-full  object-center"
+//                   src={URL.createObjectURL(file)}
+//                   width={400}
+//                   height={400}
+//                   alt={"추가된이미지 - " + index}
+//                 /> */}
+//               </div>
+//             ))}
+//           {
+//             // @ts-ignore
+//             <ImageUploadBox
+//               // image={data.images[index]}
+//               uploadImage={handlerNewFileUpload}
+//               // deleteImage={handlerNewFileDelete}
+//             />
+//           }
+//         </div>
+//       </div>

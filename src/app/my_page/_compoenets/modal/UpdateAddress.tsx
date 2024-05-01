@@ -66,7 +66,7 @@ export default function UpdateAddress() {
             disabled
           />
           <KakaoAddress
-            className="bg-white hover:bg-gray-100 text-gray-800 font-semibold py-1 px-2 border border-gray-400 rounded shadow"
+            className="bg-white hover:bg-gray-100 text-gray-800 font-semibold py-1 px-2 border border-gray-400 rounded shadow "
             renderRef={warpRef}
             onFindReslt={handlerSearchddress}
           >
@@ -98,7 +98,7 @@ export default function UpdateAddress() {
 
       <div
         id="map_wrap"
-        className="w-[90vw] mt-[2rem] mx-auto border-[#873EAC] border-2 border-opacity-80"
+        className=" mt-[2rem] mx-auto border-[#873EAC] border-2 border-opacity-80"
         ref={warpRef}
       ></div>
     </div>

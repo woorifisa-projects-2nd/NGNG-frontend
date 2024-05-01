@@ -1,3 +1,4 @@
+import { deleteImageById } from "@/app/admin/products/_api/api";
 import { getAccessToken } from "../../_utils/auth-header";
 
 type UpdateProductRequest = {
@@ -38,7 +39,7 @@ type UpdateProductRequest = {
 // categoryId: product.category.id,
 // tags: product.tags,
 
-export const updateProdctByUpdateProductRequest = ({
+export const updateProdctByUpdateProductRequest = async ({
   deleteOldImages,
   newImages,
   newProduct,
@@ -53,7 +54,7 @@ export const updateProdctByUpdateProductRequest = ({
   console.log(deleteOldImages);
   console.log(newImages);
 
-  fetch(`/api/products/${origin.id}`, {
+  await fetch(`/api/products/${origin.id}`, {
     method: "PUT",
     cache: "no-cache",
     redirect: "follow",
@@ -63,6 +64,16 @@ export const updateProdctByUpdateProductRequest = ({
     },
     body: JSON.stringify(newProduct),
   });
+
+  // const promiseDeleteImage = [] as Promise<any>[];
+
+  // deleteOldImages.forEach((url) => [
+  //   promiseDeleteImage.push(deleteImageById(origin.id, url)),
+  // ]);
+
+  // Promise.all(promiseDeleteImage);
+
+  // createImages(origin.id + "", newImages);
 };
 
 const createImages = async (productId: string, images: File[]) => {
