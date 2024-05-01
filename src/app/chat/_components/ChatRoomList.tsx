@@ -45,7 +45,7 @@ export default function ChatRoomList({ currentBadge }: Props) {
     );
   }
   return (
-    <div className="flex flex-col gap-5 h-[600px] overflow-y-scroll scrollbar-hide">
+    <div className="flex flex-col gap-5 h-[600px] overflow-y-scroll ">
       {filtredData
         ?.sort((a, b) =>
           a.recentMessage === null
