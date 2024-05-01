@@ -5,6 +5,7 @@ import PointHistory from "../PointHistory";
 import useMypageSWR from "../../_hooks/useMypageSWR";
 import usePointHistory from "../../_hooks/usePointeHistory";
 import { addFetchPoint } from "../../_api/api";
+import { formatKRW } from "../../_utils/format";
 
 export default function PointModalContent({ point }: { point: number }) {
   const { updateCost } = useMypageSWR();
@@ -33,7 +34,7 @@ export default function PointModalContent({ point }: { point: number }) {
 
   return (
     <div>
-      <div>현재 보유 포인트 : {point}</div>
+      <div>현재 보유 포인트 : {formatKRW(point)}</div>
       <div className="flex">
         <input
           onInput={(e) => setCost(e.currentTarget.value)}
@@ -52,7 +53,7 @@ export default function PointModalContent({ point }: { point: number }) {
           Point 충전
         </button>
       </div>
-      <p>포인트 내역</p>
+      <p className="black md:hidden">포인트 내역</p>
       <div className="md:hidden">
         <PointHistory />
       </div>
