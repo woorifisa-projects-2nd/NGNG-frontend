@@ -93,6 +93,11 @@ export default function PrivateChat() {
     );
   }
 
+  if (document.hasFocus()) {
+    // console.log("focus");
+    mutate("/chat/private-chat/user-id");
+  }
+
   return (
     <div className="relative h-full scrollbar-hide max-h-[640px]">
       <div className="fixed top-0 w-full bg-white dark:bg-black min-h-28 z-10">
