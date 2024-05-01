@@ -1,5 +1,6 @@
 import useSWR from "swr";
 import {
+  deleteProductById,
   getFetchMyPage,
   updateFetchMyPage,
   updateTransaction,
@@ -103,8 +104,9 @@ const useMypageSWR = () => {
     );
   };
 
-  const deleteProduct = (deleteProductId: number) => {
+  const deleteProduct = async (deleteProductId: number) => {
     // 삭제 처리
+    await deleteProductById(deleteProductId);
     //  true일시
     mutate(
       async (prev: any) => ({

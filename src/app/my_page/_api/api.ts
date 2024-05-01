@@ -110,6 +110,16 @@ export const updateProductPurchaseById = async (productId: number) => {
   }).then((res) => res.text());
 };
 
+export const deleteProductById = async (productId: number) => {
+  return await fetch(`/products/${productId}`, {
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: getAccessToken(),
+    },
+  }).then((res) => res.text());
+};
+
 export const isPayment = async (cost: number) => {
   return await fetch(`/api/points/check`, {
     method: "POST",
