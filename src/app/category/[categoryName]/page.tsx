@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import EachProduct from "./product";
 import Pagination from "./pagination";
+import { categories } from "@/components/layouts/header/Header"
 
 export interface product {
   id: string,
@@ -28,7 +29,7 @@ interface minAndMaxPrice {
   maxPrice: number
 };
 
-export default function SearchKeyword() {
+export default function CategorySearch() {
 
   const path = usePathname();
   const [page, setPage] = useState<number>(0);
@@ -36,7 +37,6 @@ export default function SearchKeyword() {
   const [totalPages, setTotalPages] = useState<number>(0);
   const [totalHits, setTotalHits] = useState<number>(0);
   const [nowPageTable, setNowPageTable] = useState<number>(0);
-  const [selectdValue, setSelectdValue] = useState<string>("all");
   const [sortBy, setSortBy] = useState<string>("new");
   const [showProducts, setShowProducts] = useState<product[]>([]);
   const [forSale, setForSale] = useState<boolean>(false);
@@ -44,8 +44,8 @@ export default function SearchKeyword() {
   const [maxPrice, setMaxPrice] = useState<number>();
   const [minAndMaxPrice, setMinAndMaxPrice] = useState<minAndMaxPrice>({ minPrice: 0, maxPrice: Number.MAX_SAFE_INTEGER });
 
-  // path에서 검색어만 빼오는 로직, 그대로 출력 시 uri 형태로 인코딩된 값을 불러오기 때문에 decode
-  const searchKeyword = decodeURI(path.replaceAll(/search|\//g, ""));
+  console.log(path);
+  const category = categories.filter(category => category.link === path)[0].name;
 
   const pageSize = 5;
   const pages = Array.from({ length: totalPages }, (_, i) => i + 1);
@@ -57,7 +57,7 @@ export default function SearchKeyword() {
 
     const search = async () => {
 
-      const url = `/api${path}${page}`; // path : /search/{keyword}/
+      const url = `/api${path}${page}`; // path : /category/{categoryName}
       const options = {
         method: "GET",
         headers: {
@@ -68,10 +68,10 @@ export default function SearchKeyword() {
       fetch(url, options)
         .then(res => res.json())
         .then(json => {
-          setProducts(json.products);
-          setShowProducts(json.products);
-          setTotalPages(json.totalPages);
-          setTotalHits(json.totalHits);
+          setProducts(json.products.content);
+          setShowProducts(json.products.content);
+          setTotalPages(json.products.totalPages);
+          setTotalHits(json.products.totalElements);
         });
     };
 
@@ -98,9 +98,10 @@ export default function SearchKeyword() {
 
   useEffect(() => {
 
+    // 원래는 다시 fetch를 보내서 재정렬시켜야하지만 일단 이걸로 대체
     const filterAndSort = () => {
 
-      const filtedProducts: product[] = products.filter(product => selectdValue === "all" || product.category === selectdValue);
+      const filtedProducts: product[] = products;
 
       let sortedProducts: product[];
 
@@ -133,11 +134,10 @@ export default function SearchKeyword() {
       let priceRangeProducts: product[] = onSaleProducts.filter(product => product.price >= minAndMaxPrice?.minPrice && product.price <= minAndMaxPrice?.maxPrice);
 
       setShowProducts(priceRangeProducts);
-      
     }
 
     filterAndSort();
-  }, [selectdValue, sortBy, forSale, minAndMaxPrice]);
+  }, [sortBy, forSale, minAndMaxPrice]);
 
   const setPriceRange = () => {
 
@@ -177,35 +177,17 @@ export default function SearchKeyword() {
       <div className="flex mx-auto justify-center">
         <div className="flex-col mt-8">
           <div className="flex items-end">
-            <div className="text-3xl mr-4">
-              <span>{"\' "}</span>
-              <span className="text-point-color font-semibold">{searchKeyword}</span>
-              <span>{" \'"}</span>
-              <span>검색 결과</span>
+            <div>
+              <span className="text-3xl mr-4 text-point-color font-semibold">{category}</span>
             </div>
             <div>
               <span className="text-lg">총 </span>
-              <span className="text-xl">{totalHits}</span>
+              <span className="text-xl text-point-color">{totalHits}</span>
               <span className="text-lg">개</span>
             </div>
           </div>
           <div className="flex items-end justify-between">
             <div className="flex items-end">
-              <div className="px-2 py-1 border border-[#272727] mr-2 rounded">
-                <select value={selectdValue} onChange={e => setSelectdValue(e.target.value)}>
-                  <option value="all">카테고리</option>
-                  <option value="clothes">의류</option>
-                  <option value="accessories">잡화</option>
-                  <option value="beauty">뷰티</option>
-                  <option value="digital">디지털</option>
-                  <option value="hobby">취미</option>
-                  <option value="ticket">티켓/교환권</option>
-                  <option value="life">생활</option>
-                  <option value="furniture">가구</option>
-                  <option value="food">가공식품</option>
-                  <option value="etc">기타</option>
-                </select>
-              </div>
               <div>
                 <button type="button" className={
                   forSale
@@ -241,7 +223,7 @@ export default function SearchKeyword() {
                 <input type="number" placeholder="최대가격" value={maxPrice} onChange={e => setMaxPrice(parseInt(e.target.value))}
                   className="border rounded border-[#272727] px-1 py-1 mr-2" />
                 <button type="button" onClick={setPriceRange}
-                className="border rounded px-1 py-1 border-[#272727] active:border-point-color active:text-point-color">적용</button>
+                  className="border rounded px-1 py-1 border-[#272727] active:border-point-color active:text-point-color">적용</button>
               </div>
             </div>
           </div>

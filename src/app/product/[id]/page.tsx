@@ -11,8 +11,18 @@ type ProductResponse = {
   data: Product | undefined;
 };
 export default function ProductDetail({ params }: { params: { id: number } }) {
-  const { data } = useSWR<ProductResponse>("/api/products/id", () =>
-    getProductById(params.id).then((res) => res as ProductResponse)
+  const { data } = useSWR<ProductResponse>(
+    "/api/products/id",
+    () => getProductById(params.id).then((res) => res as ProductResponse),
+    {
+      revalidateIfStale: true,
+      revalidateOnMount: true,
+      revalidateOnFocus: true,
+      revalidateOnReconnect: true,
+      dedupingInterval: 500,
+      focusThrottleInterval: 1000,
+      errorRetryInterval: 1000,
+    }
   );
 
   if (!data) {

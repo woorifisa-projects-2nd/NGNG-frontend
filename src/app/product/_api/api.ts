@@ -10,6 +10,7 @@ export const getProductById = async (id: number): Promise<ProductRespons> => {
     headers: {
       Authorization: getAccessToken(),
     },
+    cache: "no-cache",
   }).then(async (res) => {
     if (res.status === 404) {
       return { status: res.status, data: undefined };
@@ -133,7 +134,7 @@ const createImages = async (
   });
   fomData.append("reportId", reportId);
 
-  console.log(fomData);
+  // console.log(fomData);
 
   // return await fetch("/api/upload", {
   return await fetch(`/api/reportImages/upload`, {

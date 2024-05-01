@@ -78,7 +78,7 @@ export default function Sell() {
     products.forEach(async (product) => {
       const res = await createProduct({ product, userId: user?.id ?? -1 });
       router.push(`../${res}`);
-      console.log("create", res);
+      // console.log("create", res);
     });
   };
   return (

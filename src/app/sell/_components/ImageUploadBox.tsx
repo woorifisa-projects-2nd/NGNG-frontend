@@ -22,8 +22,7 @@ export default function ImageUploadBox({
     e.target.files && uploadImage(e.target.files[0], image?.id);
   };
 
-
-  console.log("image", image);
+  // console.log("image", image);
 
   const imageUrlExtractExtension = (url: string) => {
     // 1. 마지막 `.`의 위치를 찾습니다.
@@ -35,7 +34,6 @@ export default function ImageUploadBox({
     // 3. 확장자를 추출합니다.
     return url.slice(lastDotIndex + 1);
   };
-
 
   return (
     <>

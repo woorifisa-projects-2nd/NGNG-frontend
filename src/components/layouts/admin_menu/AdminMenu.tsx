@@ -1,3 +1,4 @@
+import { UserContext } from "@/providers/UserContext";
 import Logo from "./design/SVG/logo.svg";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
@@ -82,6 +83,43 @@ export default function AdminMenu({ children }: { children: ReactNode }) {
             <div className="w-3/4 p-10">
                 {children}
             </div>
+          </Link>
         </div>
-    );
+        <hr />
+
+        {menu.map((item, index) => (
+          <div key={index} className="mt-5 text-left ml-28">
+            <Link
+              href={item.link}
+              className={`${
+                pathname.includes(item.link) && "text-point-color font-bold"
+              }`}
+            >
+              <div className="cursor-pointer inline-block">{item.name}</div>
+            </Link>
+            {item.subMenu && (
+              <div className="ml-4">
+                {item.subMenu.map((subItem, subIndex) => (
+                  <div key={subIndex} className="py-2 text-left ml-4">
+                    <Link
+                      href={subItem.link}
+                      className={`${
+                        pathname.includes(subItem.link) &&
+                        "text-point-color font-bold"
+                      }`}
+                    >
+                      <div className="cursor-pointer inline-block">
+                        {subItem.name}
+                      </div>
+                    </Link>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
+      <div className="w-3/4 p-10">{children}</div>
+    </div>
+  );
 }

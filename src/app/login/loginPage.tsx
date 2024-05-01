@@ -7,7 +7,6 @@ import { useRouter } from "next/navigation";
 import { UserContext } from "@/providers/UserContext";
 
 export default function LoginPage() {
-
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -35,30 +34,39 @@ export default function LoginPage() {
       body: formData,
     };
 
-    console.log("url", url);
+    // console.log("url", url);
 
-    fetch(url, options)
-      .then((res) => res.json())
-      .then((data) => {
-        setUser({
-          id: data.id,
-          nickname: data.nickname,
-          name: data.name,
-        });
+    const response = await fetch(url, options);
 
-        console.log(
-          "로그인 후 받은 토큰값",
-          data,
-          JSON.stringify(data.accessToken)
-        );
+    if (response.status === 401) {
 
-        // accessToken은 localStorage에, refreshToken은 securityCookie에 저장(자동)
-        localStorage.setItem("accessToken", JSON.stringify(data.accessToken));
+      alert("유효하지 않은 인증 정보입니다.");
 
-        setIsLogin(true);
-        router.push("/");
-      })
-      .catch((e) => console.error(e));
+      return;
+    }
+
+    localStorage.setItem("accessToken", JSON.stringify(response.headers.get("Authorization")));
+
+    const data = await response.json();
+
+    console.log(data);
+    
+    setUser({
+      id: data.id,
+      nickname: data.nickname,
+      name: data.name
+    });
+
+    setIsLogin(true);
+
+    if (data.role === "ADMIN") {
+
+      router.push("/admin/reports")
+    } else {
+
+      router.push("/");
+    }
+
   };
 
   return (

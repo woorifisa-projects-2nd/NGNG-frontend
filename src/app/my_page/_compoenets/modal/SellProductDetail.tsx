@@ -65,6 +65,13 @@ export default function SellProductDetail({
   const onCancel = () => {
     // 거래 취소 모달 작업후 이송
     if (confirm("정말로 취소 하시 겠습니까?.")) {
+      // 입금 완료후 부턴 취소 못하게
+      if (
+        product!.transactionDetails!.status.id >= PRODUCT_STATUS["입금 완료"]
+      ) {
+        alert("입금이 되어 취소가 불가능 합니다.");
+        return;
+      }
       chnageStatus(PRODUCT_STATUS["거래 취소"] + "");
     }
   };

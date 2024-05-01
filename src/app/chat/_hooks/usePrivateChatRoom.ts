@@ -17,9 +17,13 @@ const usePrivateChatRoom = (userId: number) => {
       }),
     // 자동 갱신 비활성화
     {
-      revalidateIfStale: false,
-      revalidateOnFocus: false,
-      revalidateOnReconnect: false,
+      revalidateIfStale: true,
+      revalidateOnMount: true,
+      revalidateOnFocus: true,
+      revalidateOnReconnect: true,
+      dedupingInterval: 100,
+      focusThrottleInterval: 100,
+      errorRetryInterval: 500,
     }
   );
 
