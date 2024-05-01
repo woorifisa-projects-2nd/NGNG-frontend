@@ -79,7 +79,7 @@ export default function ChattingInputTextArea({
           />
         </>
       )}
-      <div className="w-full flex justify-between items-center">
+      {/* <div className="w-full flex justify-between items-center">
         <ImagePlusIcon
           className={
             message.length === 0 && image === undefined ? "cursor-pointer" : ""
@@ -99,7 +99,7 @@ export default function ChattingInputTextArea({
           className="cursor-pointer fill-black"
           onClick={onEnterMessage}
         />
-      </div>
+      </div> */}
     </div>
   );
 }

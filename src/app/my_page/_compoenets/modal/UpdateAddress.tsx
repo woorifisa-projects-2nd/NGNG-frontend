@@ -56,7 +56,7 @@ export default function UpdateAddress() {
 
   return (
     <div>
-      <div className="mx-1 flex flex-col gap-1">
+      <div className="mx-1 flex flex-col gap-1 ">
         <div className="flex gap-2">
           <input
             className="border p-1 shadow-inner w-[7rem]"

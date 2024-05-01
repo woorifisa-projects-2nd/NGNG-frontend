@@ -6,7 +6,7 @@ import { UserContext } from "@/providers/UserContext";
 
 export default function DefaultLayout({ children }: { children: ReactNode }) {
   const { getAccessToken, logout } = useContext(UserContext);
-  console.log("access token", typeof getAccessToken());
+  // console.log("access token", typeof getAccessToken());
   const token = getAccessToken();
 
   if (token === "undefined" || token === undefined) {

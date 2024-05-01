@@ -45,7 +45,7 @@ export default function SecondPage({
     };
 
     console.log(auth);
-    
+    alert("입력하신 전화번호로 인증번호를 요청했습니다.");
 
     const url = "/api/join/auth/phonenumber";
     const options = {
@@ -135,8 +135,9 @@ export default function SecondPage({
               </button>
             </div>
             <div
-              className={`flex justify-between items-center w-full h-14 mt-2 ${isSendMessage ? "hidden" : ""
-                }`}
+              className={`flex justify-between items-center w-full h-14 mt-2 ${
+                isSendMessage ? "hidden" : ""
+              }`}
             >
               <div className="flex justify-center items-center w-[75%] p-2 rounded-md border-[1px] dark:bg-[#3B3B3B] border-black/45 h-14">
                 <AuthCheck className="w-9 mr-4 ml-2 fill-black/50 dark:fill-[#9CA3AF]" />
@@ -171,7 +172,7 @@ export default function SecondPage({
               </button>
             </div>
           </div>
-          <div className="flex justify-end">
+          <div className="flex justify-center">
             <Caution />
           </div>
         </div>
