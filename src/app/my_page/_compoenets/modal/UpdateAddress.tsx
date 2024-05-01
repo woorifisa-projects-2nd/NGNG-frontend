@@ -66,7 +66,8 @@ export default function UpdateAddress() {
             disabled
           />
           <KakaoAddress
-            className="bg-white hover:bg-gray-100 text-gray-800 font-semibold py-1 px-2 border border-gray-400 rounded shadow "
+            className="bg-white hover:bg-gray-100 text-gray-800 font-semibold py-1 px-2 border border-gray-400 rounded shadow   --tw-text-opacity: 1;
+    color: rgb(39 39 39 / var(--tw-text-opacity));"
             renderRef={warpRef}
             onFindReslt={handlerSearchddress}
           >
@@ -90,7 +91,7 @@ export default function UpdateAddress() {
         />
         <button
           onClick={() => onUpdateAddress()}
-          className="bg-white hover:bg-gray-100 text-gray-800 font-semibold py-1 px-2 border border-gray-400 rounded shadow"
+          className="bg-white hover:bg-gray-100 text-gray-800 font-semibold py-1 px-2 border border-gray-400 rounded shadow "
         >
           변경
         </button>
