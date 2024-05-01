@@ -17,6 +17,7 @@ type Props = {
 
 export default function SellHistory({ sellList, deleteProduct }: Props) {
   const [isOnlySell, setIsOnlySell] = useState<boolean>(false);
+  const [isTransactionl, setTransaction] = useState<boolean>(false);
   const [isOpenProductModal, setIsOpenModal] = useState<boolean>(false);
 
   const [selectIndex, setSelectIndex] = useState<number>();
@@ -51,15 +52,41 @@ export default function SellHistory({ sellList, deleteProduct }: Props) {
           onChange={(e) => setIsOnlySell(e.target.checked)}
         />
         <label className="cursor-pointer px-2" htmlFor="sell">
-          판매 글만 보기
+          판매 중인 상품
+        </label>
+      </div>
+      <div className="inline-flex ">
+        <input
+          className="cursor-pointer"
+          type="checkbox"
+          name="isTransactionl"
+          id="isTransactionl"
+          onChange={(e) => setTransaction(e.target.checked)}
+        />
+        <label className="cursor-pointer px-2" htmlFor="isTransactionl">
+          거래중인 상품
         </label>
       </div>
       <div className="grid grid-cols-2 sm:grid-cols-3 p-2 gap-4 md:grid-cols-4">
         {sellList &&
           sellList
-            .filter((item) =>
-              isOnlySell ? !item.transactionDetails?.status?.status : true
-            )
+            .filter((item) => {
+              if (
+                (!isOnlySell && !isTransactionl) ||
+                (isOnlySell && isTransactionl)
+              )
+                return true;
+
+              if (isOnlySell)
+                return isOnlySell
+                  ? !item.transactionDetails?.status?.status
+                  : true;
+
+              if (isTransactionl)
+                return isTransactionl
+                  ? item.transactionDetails?.status?.status
+                  : false;
+            })
             .map((slae, index) => (
               <div
                 key={index}
