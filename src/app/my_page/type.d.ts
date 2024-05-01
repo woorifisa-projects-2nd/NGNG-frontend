@@ -14,6 +14,7 @@ type TransactionDetails = {
     id: number;
     status: string;
   };
+  price: number;
 };
 
 type Product = {
