@@ -19,7 +19,10 @@ export type MainPageProduct = {
 const getMainPageProducts = async () => {
   return await fetch("/api/main", {
     headers: { Authorization: getAccessToken() },
-  }).then((res) => res.json());
+  }).then((res) => {
+    // console.log("res", res);
+    return res.json();
+  });
 };
 const useMainPageProductSWR = () => {
   const { data, mutate, isLoading } = useSWR<MainPageProduct[]>(

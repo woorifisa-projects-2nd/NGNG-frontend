@@ -74,7 +74,7 @@ export default function PrivateChat() {
 
   const onDismiss = () => {
     const request = data?.request;
-    console.log("dismiss", request);
+    // console.log("dismiss", request);
     request &&
       updateTransactionRequest({
         requestId: request?.requestId,
@@ -91,6 +91,11 @@ export default function PrivateChat() {
         <Loading />
       </div>
     );
+  }
+
+  if (document.hasFocus()) {
+    // console.log("focus");
+    mutate("/chat/private-chat/user-id");
   }
 
   return (

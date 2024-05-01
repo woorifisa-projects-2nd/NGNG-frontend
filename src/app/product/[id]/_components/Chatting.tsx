@@ -23,9 +23,9 @@ export default function Chatting({ data }: ChattingProps) {
   const [chatData, setChatData] = useState<Chat[]>(data.chats);
   const [message, setMessage] = useState<string>("");
   const [image, setImage] = useState<File | undefined>(undefined);
-  if (user === undefined) {
-    redirect("/login");
-  }
+  // if (user === undefined) {
+  //   redirect("/login");
+  // }
   const isReported =
     data.reports === null
       ? false
@@ -44,7 +44,8 @@ export default function Chatting({ data }: ChattingProps) {
   };
   const sendImage = (image: File) => {
     // 이미지 서버에 전송하기
-    stompClient &&
+    user !== undefined &&
+      stompClient &&
       sendPublicChatMessage({
         client: stompClient,
         message: URL.createObjectURL(image),
@@ -53,17 +54,18 @@ export default function Chatting({ data }: ChattingProps) {
         userId: user.id,
       });
 
-    setChatData([
-      ...chatData,
-      {
-        id: chatData?.slice(-1)[0].id + 1,
-        createdAt: new Date().toUTCString(),
-        message: URL.createObjectURL(image),
-        userId: user.id,
-        userName: user.name,
-        userNickName: user.nickname,
-      },
-    ]);
+    user !== undefined &&
+      setChatData([
+        ...chatData,
+        {
+          id: chatData?.slice(-1)[0].id + 1,
+          createdAt: new Date().toUTCString(),
+          message: URL.createObjectURL(image),
+          userId: user.id,
+          userName: user.name,
+          userNickName: user.nickname,
+        },
+      ]);
     setMessage("");
     setImage(undefined);
     scrollToBottom();
@@ -76,7 +78,8 @@ export default function Chatting({ data }: ChattingProps) {
   }, []);
 
   const sendMessage = (message: string) => {
-    stompClient &&
+    user !== undefined &&
+      stompClient &&
       sendPublicChatMessage({
         client: stompClient,
         message,
@@ -105,12 +108,10 @@ export default function Chatting({ data }: ChattingProps) {
       sendMessage(message);
     }
   };
-  console.log("data", chatData);
-  const getMessage = (data: any) => {
-    console.log("메시지 수신", data);
 
-    setChatData([
-      ...chatData,
+  const getMessage = (data: any) => {
+    setChatData((prev) => [
+      ...prev,
       {
         id: data.id,
         message: data.message,
@@ -137,6 +138,8 @@ export default function Chatting({ data }: ChattingProps) {
       if (client.connected) {
         // 연결 상태 확인
         client.subscribe(`/public-chats/${data.id}`, (message) => {
+          // console.log("use effect 안에서 chatdata", chatData);
+
           getMessage(JSON.parse(message.body).body);
         });
       }
@@ -150,6 +153,10 @@ export default function Chatting({ data }: ChattingProps) {
   }, []);
 
   useEffect(() => {
+    setChatData(data.chats);
+  }, [data]);
+
+  useEffect(() => {
     setTimeout(() => {
       scrollToBottom();
     }, 200);
@@ -157,7 +164,7 @@ export default function Chatting({ data }: ChattingProps) {
 
   return (
     <div className="lg:sticky relative w-full lg:w-[30%] dark:lg:shadow-gray-950 lg:shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px] p-5 h-[calc(100vh-128px)]  lg:top-[128px]  min-w-80 shadow-none dark:bg-bg-black">
-      <ChattingHeader data={data} userId={user.id} />
+      <ChattingHeader data={data} userId={user?.id} />
       <div
         className="min-w-72 h-[calc(100%-15rem)] mt-3 flex flex-col items-start overflow-y-scroll scrollbar-hide"
         ref={recentChatRef}
@@ -170,7 +177,13 @@ export default function Chatting({ data }: ChattingProps) {
             return (
               <Message
                 key={chat.id}
-                direction={user.id === chat.userId ? "right" : "left"}
+                direction={
+                  user === undefined
+                    ? "left"
+                    : user.id === chat.userId
+                    ? "right"
+                    : "left"
+                }
                 userName={chat.userNickName}
                 text={chat.message}
                 isImage={chat.isImage}
@@ -184,16 +197,18 @@ export default function Chatting({ data }: ChattingProps) {
             );
           })}
       </div>
-      <ChattingInputTextArea
-        changeFile={changeFile}
-        changeMessage={changeMessage}
-        enter={enter}
-        enterMessage={enterMessage}
-        isReported={isReported}
-        message={message}
-        resetImage={resetImage}
-        image={image}
-      />
+      {user !== undefined && (
+        <ChattingInputTextArea
+          changeFile={changeFile}
+          changeMessage={changeMessage}
+          enter={enter}
+          enterMessage={enterMessage}
+          isReported={isReported}
+          message={message}
+          resetImage={resetImage}
+          image={image}
+        />
+      )}
     </div>
   );
 }

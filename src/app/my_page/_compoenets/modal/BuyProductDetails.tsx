@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import { PRODUCT_STATUS, PRODUCT_STATUS_BUYER } from "../../_constans/enum";
 import ProductDetail from "../../_design/ProductDetail";
 import useMypageSWR from "../../_hooks/useMypageSWR";
+import { isPayment, paymentProduct } from "../../_api/api";
 
 type Props = {
   transactionDetails: TransactionDetails;
@@ -19,8 +20,23 @@ export default function BuyProductDetails({ transactionDetails }: Props) {
     });
   };
 
-  const onPayment = () => {
+  const onPayment = async () => {
+    const cost = transactionDetails.price;
+
+    const isPay = await isPayment(cost);
+
+    if (!isPay) {
+      alert("포인트가 부족 합니다.");
+      return;
+    }
+
     if (confirm("결제 하는 과정은 스킵 합니다.")) {
+      const ss = await paymentProduct({
+        cost,
+        productId: transactionDetails.product.id,
+      });
+      console.log(ss);
+
       chnageStatus(PRODUCT_STATUS["입금 완료"]);
     }
   };
@@ -39,6 +55,10 @@ export default function BuyProductDetails({ transactionDetails }: Props) {
   const onCancel = () => {
     // 거래 취소 모달 작업후 이송
     if (confirm("정말로 취소 하시 겠습니까?.")) {
+      if (transactionDetails!.status.id >= PRODUCT_STATUS["입금 완료"]) {
+        alert("입금이 되어 취소가 불가능 합니다.");
+        return;
+      }
       chnageStatus(PRODUCT_STATUS["거래 취소"]);
     }
   };
@@ -66,7 +86,7 @@ export default function BuyProductDetails({ transactionDetails }: Props) {
     ),
   };
   useEffect(() => {
-    console.log(transactionDetails);
+    // console.log(transactionDetails);
   }, []);
 
   return (
