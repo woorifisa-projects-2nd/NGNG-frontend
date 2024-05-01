@@ -114,7 +114,7 @@ export default function LoginPage() {
                   type="button"
                   onClick={() => router.push("/find/email")}
                 >
-                  이메일 찾기
+                  <span>이메일 찾기</span>
                 </button>
               </div>
               <div>
@@ -122,13 +122,13 @@ export default function LoginPage() {
                   type="button"
                   onClick={() => router.push("/find/password")}
                 >
-                  비밀번호 찾기
+                  <span>비밀번호 찾기</span>
                 </button>
               </div>
             </div>
             <div>
               <button type="button" onClick={() => router.push("/join")}>
-                회원가입
+                <span>회원가입</span>
               </button>
             </div>
           </div>

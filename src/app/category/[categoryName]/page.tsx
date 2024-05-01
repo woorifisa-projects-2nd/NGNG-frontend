@@ -164,7 +164,7 @@ export default function CategorySearch() {
   return (
     <DefaultLayout>
       <div className="flex mx-auto justify-center">
-        <div className="flex-col mt-8 xl:min-w-[880px]">
+        <div className="flex-col mt-8 md:min-w-[880px]">
           <div className="flex items-end">
             <div>
               <span className="text-3xl mr-4 text-point-color font-semibold">
@@ -282,25 +282,22 @@ export default function CategorySearch() {
             </div>
           </div>
           <div className="flex justify-center items-center mt-4">
-            <div className="grid md:grid-cols-4 grid-cols-1 gap-x-10 gap-y-10 ">
-              {showProducts.length === 0 ? (
-                <div>
-                  아직 등록된 상품이 없습니다.{" "}
-                  <Link
-                    href={"/sell"}
-                    className="font-semibold text-point-color"
-                  >
-                    상품 판매하러 가기
-                  </Link>
-                </div>
-              ) : (
-                showProducts?.map((product) => (
+            {showProducts.length === 0 ? (
+              <div className="flex flex-cols font-semibold ">
+                {`아직 등록된 상품이 없습니다. `}
+                <Link href={"/sell"} className="font-semibold text-point-color">
+                  상품 판매하러 가기
+                </Link>
+              </div>
+            ) : (
+              <div className="grid md:grid-cols-4 grid-cols-1 gap-x-10 gap-y-10 ">
+                {showProducts?.map((product) => (
                   <EachProduct product={product} key={product.productId} />
-                ))
-              )}
-            </div>
+                ))}
+              </div>
+            )}
           </div>
-          {showProducts.length > 0 && (
+          {
             <div className="flex justify-center items-center mt-6">
               <div>
                 <button
@@ -328,7 +325,7 @@ export default function CategorySearch() {
                 </button>
               </div>
             </div>
-          )}
+          }
         </div>
       </div>
     </DefaultLayout>

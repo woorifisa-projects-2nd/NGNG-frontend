@@ -1,13 +1,27 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { imageUrlExtractExtension } from "../_utils/extract";
 import Image from "next/image";
 
 type Props = {
   product: Product;
 };
+type ProductImage = {
+  id: number;
+  imageURL: string;
+  visible: boolean;
+};
 
 export default function ProductDetail({ product }: Props) {
   const [showProuctIndex, setProductIndex] = useState(0);
+
+  const [mainImage, setMainImage] = useState<ProductImage>(
+    product.images!.filter(({ visible }) => visible)[0]
+  );
+
+  useEffect(() => {
+    const filterImage = product.images!.filter(({ visible }) => visible);
+    setMainImage(filterImage[showProuctIndex]);
+  }, [showProuctIndex]);
 
   return (
     <>
@@ -15,12 +29,10 @@ export default function ProductDetail({ product }: Props) {
         <div className="lg:col-span-3 w-full lg:sticky top-0 text-center">
           {/* 메인 사진 */}
           <div className="px-4 py-10 min-h-[330px] rounded-xl shadow-[0_2px_10px_-3px_#873EAC] relative flex justify-center items-center">
-            {["mp4"].includes(
-              imageUrlExtractExtension(product.images[showProuctIndex].imageURL)
-            ) ? (
+            {["mp4"].includes(imageUrlExtractExtension(mainImage.imageURL)) ? (
               <iframe
                 className="h-full mx-auto"
-                src={product.images[showProuctIndex].imageURL}
+                src={mainImage.imageURL}
                 // @ts-ignore
                 frameborder="0"
                 allowfullscreen
@@ -28,7 +40,7 @@ export default function ProductDetail({ product }: Props) {
             ) : (
               <Image
                 className="w-full object-contain object-center max-h-[250px]"
-                src={product.images[showProuctIndex].imageURL}
+                src={mainImage.imageURL}
                 alt={"메인 이미지"}
                 width={700}
                 height={700}

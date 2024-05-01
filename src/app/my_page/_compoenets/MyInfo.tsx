@@ -11,17 +11,27 @@ import BuySVG from "../_design/SVG/BuySVG";
 import { UserContext } from "@/providers/UserContext";
 import { redirect, useRouter } from "next/navigation";
 import { ModalStatus, useModalController } from "../_provider/ModalProovider";
+import { getAccessToken } from "../_utils/auth-header";
 
 type Props = {
   userInfo: MypageReponse;
 };
 
 export default function MyInfo({ userInfo }: Props) {
-   const router = useRouter();
+  const router = useRouter();
   const { logout } = useContext(UserContext);
 
   const clickLogout = () => {
     logout();
+
+    const url = "/api/logout";
+    const options = {
+      method: "POST",
+      Authentication: getAccessToken(),
+    };
+
+    fetch(url, options);
+
     router.push("/");
   };
   const [_, setModal] = useModalController();
@@ -57,7 +67,8 @@ export default function MyInfo({ userInfo }: Props) {
               닉네임 변경하기
             </p>
             <button
-              className="block absolute right-0 bottom-0 border p-2 border-black md:bottom-[25%] "
+              className="block absolute right-0 bottom-0 border p-2 border-black md:bottom-[25%]  rounded
+              hover:shadow-[0px_2px_3px_-1px_rgba(0,0,0,0.1),0px_1px_0px_0px_rgba(25,28,33,0.02),0px_0px_0px_1px_rgba(25,28,33,0.08)]"
               onClick={clickLogout}
             >
               로그아웃

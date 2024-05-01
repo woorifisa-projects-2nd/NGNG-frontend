@@ -1,9 +1,8 @@
-"use client";
-import { UserContext } from "@/providers/UserContext";
 import Logo from "./design/SVG/logo.svg";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { ReactNode, useContext } from "react";
+import { UserContext } from "@/providers/UserContext";
 
 export default function AdminMenu({ children }: { children: ReactNode }) {
   const pathname = usePathname();
