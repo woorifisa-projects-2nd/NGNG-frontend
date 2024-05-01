@@ -50,3 +50,21 @@ body {
     background-position: -50%;
   }
 }
+
+.bg-white {
+  --tw-bg-opacity: 1;
+  background-color: rgb(255 255 255 / var(--tw-bg-opacity));
+  @apply dark:bg-black;
+}
+
+.text-black {
+  --tw-text-opacity: 1;
+  color: rgb(39 39 39 / var(--tw-text-opacity));
+  @apply dark:text-gray-400;
+}
+
+.text-gray-800 {
+  --tw-text-opacity: 1;
+  color: rgb(31 41 55 / var(--tw-text-opacity));
+  @apply dark:text-gray-300;
+}

@@ -81,13 +81,15 @@ export default function ProductDetail({ product }: Props) {
         </div>
         {/* 제품 정보 */}
         <div className="lg:col-span-2  flex flex-col gap-2">
-          <p className="text-gray-400">상품번호 : {product.id}</p>
-          <h2 className="text-2xl font-extrabold text-[#333]">
+          <p className="text-gray-400 dark:text-white">
+            상품번호 : {product.id}
+          </p>
+          <h2 className="text-2xl font-extrabold text-[#333] dark:text-gray-400">
             {product.title}
           </h2>
           <p className="text-gray-400">{product.category.name}</p>
           <div className="flex flex-wrap gap-4 items-center">
-            <p className="text-[#333] text-4xl font-bold">
+            <p className="text-[#333] text-4xl font-bold dark:text-gray-400">
               {product.price.toLocaleString()} 원
             </p>
             <p className="text-gray-400 text-xl">
@@ -115,7 +117,9 @@ export default function ProductDetail({ product }: Props) {
         </div>
       </div>
       <div className="mt-16 shadow-[0_2px_10px_-3px_#873EAC] p-6 my-4">
-        <h3 className="text-lg font-bold text-[#333]">제품 설명</h3>
+        <h3 className="text-lg font-bold text-[#333] dark:text-gray-400">
+          제품 설명
+        </h3>
         {product.content}
       </div>
     </>
