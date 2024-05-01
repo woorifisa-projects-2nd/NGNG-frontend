@@ -11,14 +11,12 @@ type ReportModalProps = {
   onClose: () => void;
   data: Product;
   userId: number;
-  onSuccessReport: (newData: Product | undefined) => void;
 };
 
 export default function ReportModal({
   onClose,
   data,
   userId,
-  onSuccessReport,
 }: ReportModalProps) {
   const { getUser } = useContext(UserContext);
   const user = getUser();
@@ -61,9 +59,6 @@ export default function ReportModal({
       // console.log(imagesFormatted);
 
       await createReport(requestData);
-
-      const updatedProductData = await getProductById(data.id);
-      onSuccessReport(updatedProductData.data);
 
       // console.log('신고가 성공적으로 제출되었습니다.');
       alert("신고가 성공적으로 제출되었습니다.");

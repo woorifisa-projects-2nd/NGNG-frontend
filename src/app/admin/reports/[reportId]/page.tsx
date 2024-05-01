@@ -136,7 +136,7 @@ export default function ReportDetail({
       };
       try {
         const response = await fetch(
-          process.env.NEXT_PUBLIC_API_URL + "admin/penalties",
+          "/api/admin/penalties",
           {
             method: "POST",
             headers: {
@@ -216,189 +216,187 @@ export default function ReportDetail({
 
   return (
     <>
-      <div>
-        <div>
-          <div className="flex mb-4">
-            <div className="w-1/2">
-              <div className="font-extrabold">신고 유저</div>
-              <div className="border-t border-solid border-t-fuchsia-900 mr-2">
-                {report?.reporter.name} (@{report?.reporter.nickname})
-              </div>
-            </div>
-            <div className="w-1/2">
-              <div className="font-extrabold">신고 대상</div>
-              <div className="border-t border-solid border-t-fuchsia-900">
-                {report?.user.name} (@{report?.user.nickname})
-              </div>
+      <div className="mt-20">
+        <div className="flex mb-4">
+          <div className="w-1/2">
+            <div className="font-extrabold">신고 유저</div>
+            <div className="border-t border-solid border-t-fuchsia-900 mr-2">
+              {report?.reporter.name} (@{report?.reporter.nickname})
             </div>
           </div>
-
-          <div className="flex mb-4">
-            <div className="w-1/2">
-              {report?.productId ? (
-                <div className="font-extrabold">상품 ID</div>
-              ) : (
-                <div className="font-extrabold">채팅방 ID</div>
-              )}
-              {report?.productId ? (
-                <div className="border-t border-solid border-t-fuchsia-900 mr-2">
-                  {report?.productId}
-                </div>
-              ) : (
-                <div className="border-t border-solid border-t-fuchsia-900 mr-2">
-                  {report?.privateChatId}
-                </div>
-              )}
-            </div>
-            <div className="w-1/2">
-              <div className="font-extrabold">신고 유형</div>
-              <div className="border-t border-solid border-t-fuchsia-900">
-                {report?.reportType.reportType}
-              </div>
-            </div>
-          </div>
-
-          <div className="mb-4">
-            <div className="font-extrabold">신고 날짜</div>
+          <div className="w-1/2">
+            <div className="font-extrabold">신고 대상</div>
             <div className="border-t border-solid border-t-fuchsia-900">
-              {report?.createdAt.substring(0, 10)}
+              {report?.user.name} (@{report?.user.nickname})
             </div>
           </div>
+        </div>
 
-          <div className="mb-4">
-            <div className="font-extrabold">신고 사진</div>
-
-            <div className="border-t border-solid border-t-fuchsia-900 p-4">
-              <Carousel
-                className=""
-                showArrows={true}
-                // centerMode={true}
-                // centerSlidePercentage={100}
-                showThumbs={false}
-                showStatus={false} // 우측상단 상태값
-                // autoPlay={true}
-                infiniteLoop={true}
-                // selectedItem={0}
-              >
-                {report?.reportImages.map((media, index) =>
-                  media.contentType === "IMAGE" ? ( // 이미지인 경우
-                    <div
-                      key={index}
-                      onClick={() => handleImageClick(media.imageUrl, index)}
-                    >
-                      <img
-                        key={media.reportImageId}
-                        src={media.imageUrl}
-                        className="object-contain object-center h-96 w-h-96"
-                        alt={`reportImage_${media.reportImageId}`}
-                      />
-                    </div>
-                  ) : (
-                    // 동영상인 경우
-                    <div
-                      key={index}
-                      onClick={() => handleImageClick(media.imageUrl, index)}
-                    >
-                      <ReactPlayer
-                        key={media.reportImageId}
-                        url={media.imageUrl}
-                        className="object-cover object-center h-96 w-h-96"
-                        controls={true}
-                      />
-                      {/* <video key={media.reportImageId} src={media.imageUrl}/> */}
-                    </div>
-                  )
-                )}
-              </Carousel>
-            </div>
-
-            {showModal && (
-              <div className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50 z-50">
-                <div className="max-w-screen-lg p-4 relative">
-                  {report?.reportImages[currentImageIndex]?.contentType ===
-                  "IMAGE" ? (
-                    <img
-                      src={report?.reportImages[currentImageIndex]?.imageUrl}
-                      alt={`reportImage_${report?.reportImages[currentImageIndex]?.reportImageId}`}
-                      className="max-w-full max-h-full"
-                    />
-                  ) : (
-                    <ReactPlayer
-                      url={report?.reportImages[currentImageIndex]?.imageUrl}
-                      controls={true}
-                      width="100%"
-                      height="100%"
-                    />
-                  )}
-
-                  <button
-                    className="absolute top-[50%] left-0 transform -translate-y-1/2 p-2 text-white"
-                    onClick={goToPreviousImage}
-                  >
-                    이전
-                  </button>
-                  <button
-                    className="absolute top-[50%] right-0 transform -translate-y-1/2 p-2 text-white"
-                    onClick={goToNextImage}
-                  >
-                    다음
-                  </button>
-                  <button
-                    className="absolute top-0 right-0 p-2 text-black"
-                    onClick={closeModal}
-                  >
-                    닫기
-                  </button>
-                </div>
+        <div className="flex mb-4">
+          <div className="w-1/2">
+            {report?.productId ? (
+              <div className="font-extrabold">상품 ID</div>
+            ) : (
+              <div className="font-extrabold">채팅방 ID</div>
+            )}
+            {report?.productId ? (
+              <div className="border-t border-solid border-t-fuchsia-900 mr-2">
+                {report?.productId}
+              </div>
+            ) : (
+              <div className="border-t border-solid border-t-fuchsia-900 mr-2">
+                {report?.privateChatId}
               </div>
             )}
           </div>
-
-          <div className="mb-4">
-            <div className="font-extrabold">신고 내용</div>
-            <textarea
-              className="bg-slate-100 w-full h-20 p-2 overflow-y-auto outline-none"
-              readOnly
-              value={report?.reportContents}
-            ></textarea>
-          </div>
-
-          <div className="mb-4">
-            <div className="font-extrabold">제재 이유</div>
-            <textarea
-              className="bg-slate-100 w-full h-20 p-2 overflow-hidden outline-none"
-              value={penalty?.reason}
-              onChange={handleReasonChange}
-            ></textarea>
-          </div>
-
-          <div className="mb-4">
-            <div className="font-extrabold">신고 처분</div>
-            <DropDown
-              data={penaltyLevels.map((penaltyLevel) => {
-                return { id: penaltyLevel.id, name: penaltyLevel.name };
-              })}
-              selected={selectedPenaltyLevel}
-              onClickItem={handlePenaltyLevelChange}
-              placeholder="신고 처분을 선택해주세요."
-            />
-            <div className="flex justify-end mt-2">
-              <div
-                className="bg-white text-[#77559D] rounded-xl px-4 py-2 border border-solid  w-1/4 text-center mr-2 cursor-pointer"
-                onClick={goToListPage}
-              >
-                뒤로가기
-              </div>
-
-              {report?.isReport !== true && (
-                <div
-                  className="bg-[#77559D] text-white rounded-xl px-4 py-2 hover:bg-[#6b4f8a] focus:outline-none focus:ring-2 focus:ring-[#77559D] focus:ring-opacity-50 w-1/4 text-center cursor-pointer"
-                  onClick={handleApply}
-                >
-                  적용
-                </div>
-              )}
+          <div className="w-1/2">
+            <div className="font-extrabold">신고 유형</div>
+            <div className="border-t border-solid border-t-fuchsia-900">
+              {report?.reportType.reportType}
             </div>
+          </div>
+        </div>
+
+        <div className="mb-4">
+          <div className="font-extrabold">신고 날짜</div>
+          <div className="border-t border-solid border-t-fuchsia-900">
+            {report?.createdAt.substring(0, 10)}
+          </div>
+        </div>
+
+        <div className="mb-4">
+          <div className="font-extrabold">신고 사진</div>
+
+          <div className="border-t border-solid border-t-fuchsia-900 p-4">
+            <Carousel
+              className=""
+              showArrows={true}
+              // centerMode={true}
+              // centerSlidePercentage={100}
+              showThumbs={false}
+              showStatus={false} // 우측상단 상태값
+              // autoPlay={true}
+              infiniteLoop={true}
+            // selectedItem={0}
+            >
+              {report?.reportImages.map((media, index) =>
+                media.contentType === "IMAGE" ? ( // 이미지인 경우
+                  <div
+                    key={index}
+                    onClick={() => handleImageClick(media.imageUrl, index)}
+                  >
+                    <img
+                      key={media.reportImageId}
+                      src={media.imageUrl}
+                      className="object-contain object-center h-96 w-h-96"
+                      alt={`reportImage_${media.reportImageId}`}
+                    />
+                  </div>
+                ) : (
+                  // 동영상인 경우
+                  <div
+                    key={index}
+                    onClick={() => handleImageClick(media.imageUrl, index)}
+                  >
+                    <ReactPlayer
+                      key={media.reportImageId}
+                      url={media.imageUrl}
+                      className="object-cover object-center h-96 w-h-96"
+                      controls={true}
+                    />
+                    {/* <video key={media.reportImageId} src={media.imageUrl}/> */}
+                  </div>
+                )
+              )}
+            </Carousel>
+          </div>
+
+          {showModal && (
+            <div className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50 z-50">
+              <div className="max-w-screen-lg p-4 relative">
+                {report?.reportImages[currentImageIndex]?.contentType ===
+                  "IMAGE" ? (
+                  <img
+                    src={report?.reportImages[currentImageIndex]?.imageUrl}
+                    alt={`reportImage_${report?.reportImages[currentImageIndex]?.reportImageId}`}
+                    className="max-w-full max-h-full"
+                  />
+                ) : (
+                  <ReactPlayer
+                    url={report?.reportImages[currentImageIndex]?.imageUrl}
+                    controls={true}
+                    width="100%"
+                    height="100%"
+                  />
+                )}
+
+                <button
+                  className="absolute top-[50%] left-0 transform -translate-y-1/2 p-2 text-white"
+                  onClick={goToPreviousImage}
+                >
+                  이전
+                </button>
+                <button
+                  className="absolute top-[50%] right-0 transform -translate-y-1/2 p-2 text-white"
+                  onClick={goToNextImage}
+                >
+                  다음
+                </button>
+                <button
+                  className="absolute top-0 right-0 p-2 text-black"
+                  onClick={closeModal}
+                >
+                  닫기
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
+
+        <div className="mb-4">
+          <div className="font-extrabold">신고 내용</div>
+          <textarea
+            className="bg-slate-100 w-full h-20 p-2 overflow-y-auto outline-none"
+            readOnly
+            value={report?.reportContents}
+          ></textarea>
+        </div>
+
+        <div className="mb-4">
+          <div className="font-extrabold">제재 이유</div>
+          <textarea
+            className="bg-slate-100 w-full h-20 p-2 overflow-hidden outline-none"
+            value={penalty?.reason}
+            onChange={handleReasonChange}
+          ></textarea>
+        </div>
+
+        <div className="mb-4">
+          <div className="font-extrabold">신고 처분</div>
+          <DropDown
+            data={penaltyLevels.map((penaltyLevel) => {
+              return { id: penaltyLevel.id, name: penaltyLevel.name };
+            })}
+            selected={selectedPenaltyLevel}
+            onClickItem={handlePenaltyLevelChange}
+            placeholder="신고 처분을 선택해주세요."
+          />
+          <div className="flex justify-end mt-2">
+            <div
+              className="bg-white text-[#77559D] rounded-xl px-4 py-2 border border-solid  w-1/4 text-center mr-2 cursor-pointer"
+              onClick={goToListPage}
+            >
+              뒤로가기
+            </div>
+
+            {report?.isReport !== true && (
+              <div
+                className="bg-[#77559D] text-white rounded-xl px-4 py-2 hover:bg-[#6b4f8a] focus:outline-none focus:ring-2 focus:ring-[#77559D] focus:ring-opacity-50 w-1/4 text-center cursor-pointer"
+                onClick={handleApply}
+              >
+                적용
+              </div>
+            )}
           </div>
         </div>
       </div>
