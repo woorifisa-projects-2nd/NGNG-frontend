@@ -42,7 +42,7 @@ export default function PrivateChatting({ data }: ChattingProps) {
         sendImage(image);
         setImage(undefined);
       } else {
-        sendMessage(message);
+        if (e.currentTarget.value.length > 0) sendMessage(message);
       }
     }
   };

@@ -44,7 +44,11 @@ export default function ChattingInputTextArea({
     if (e.key === "Enter") {
       e.preventDefault();
       e.stopPropagation();
-      enter();
+      // console.log("asdf", e.currentTarget.value.length);
+
+      if (e.currentTarget.value.length > 0) {
+        enter();
+      }
     }
   };
 
