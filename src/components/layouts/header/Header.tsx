@@ -47,7 +47,7 @@ export default function Header() {
               <Link
                 key={category.name}
                 href={category.link}
-                className={`hover:bg-light-gray/50 p-2 ${
+                className={`w-28 hover:bg-light-gray/90 p-2 text-center ${
                   pathname.split("/")[2] === category.link.split("/")[2] &&
                   "text-point-color font-bold "
                 }`}
