@@ -88,7 +88,7 @@ export default function ReportDetail({
 
   // API로부터 신고 데이터를 가져오는 함수
   async function fetchReport() {
-    fetch(`/api//admin/reports/${params.reportId}`, {
+    fetch(`/api/admin/reports/${params.reportId}`, {
       headers: {
         Authorization: getAccessToken(),
       },
@@ -104,14 +104,12 @@ export default function ReportDetail({
 
   // API로부터 패널티 데이터를 가져오는 함수
   async function fetchPenalty(results: any) {
-    fetch(
-      process.env.NEXT_PUBLIC_API_URL + `admin/penalties/${params.reportId}`,
-      {
-        headers: {
-          Authorization: getAccessToken(),
-        },
-      }
-    )
+    fetch(`/api/admin/penalties/${params.reportId}`, {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: getAccessToken(),
+      },
+    })
       .then((resp) => resp.json())
       .then((result) => {
         const findPenaltyLevel = penaltyLevels.find(
@@ -136,7 +134,6 @@ export default function ReportDetail({
         penaltyLevelId: selectedPenaltyLevel.id,
         reportId: report.reportId,
       };
-
       try {
         const response = await fetch(
           process.env.NEXT_PUBLIC_API_URL + "admin/penalties",
@@ -149,7 +146,6 @@ export default function ReportDetail({
             body: JSON.stringify(postData),
           }
         );
-
         if (response.ok) {
           // POST 요청이 성공한 경우에 대한 처리를 추가하십시오.
           alert("제재가 성공적으로 적용되었습니다.");
@@ -159,7 +155,7 @@ export default function ReportDetail({
           alert("제재 적용에 실패했습니다.");
         }
       } catch (error) {
-        console.error("제재 적용 중 오류가 발생했습니다.", error);
+        // console.error('제재 적용 중 오류가 발생했습니다.', error);
       }
     } else {
       alert("제재이유 또는 신고 처분을 선택해 주세요.");
@@ -216,7 +212,7 @@ export default function ReportDetail({
     setShowModal(false);
   };
 
-  console.log(report?.reportImages);
+  // console.log(report?.reportImages);
 
   return (
     <>

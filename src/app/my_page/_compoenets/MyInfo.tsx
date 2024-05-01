@@ -11,6 +11,7 @@ import BuySVG from "../_design/SVG/BuySVG";
 import { UserContext } from "@/providers/UserContext";
 import { redirect, useRouter } from "next/navigation";
 import { ModalStatus, useModalController } from "../_provider/ModalProovider";
+import { getAccessToken } from "../_utils/auth-header";
 
 type Props = {
   userInfo: MypageReponse;
@@ -22,6 +23,15 @@ export default function MyInfo({ userInfo }: Props) {
 
   const clickLogout = () => {
     logout();
+
+    const url = "/api/logout"
+    const options = {
+      method: "POST",
+      Authentication: getAccessToken()
+    };
+
+    fetch(url, options);
+
     router.push("/");
   };
   const [_, setModal] = useModalController();

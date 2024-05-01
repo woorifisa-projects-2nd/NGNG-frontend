@@ -1,7 +1,7 @@
 import { getAccessToken } from "../_utils/auth-header";
 
 export const getFetchMyPage = async () => {
-  console.log("acces", getAccessToken());
+  // console.log("access", getAccessToken());
 
   const res = await fetch(`/api/users/mypage`, {
     headers: {
@@ -9,6 +9,7 @@ export const getFetchMyPage = async () => {
     },
     // cache: "no-store",
   });
+  // console.log("mypage data", res);
 
   const data = (await res.json()) as MypageReponse;
   data.sellList.sort((item1, item2) => {

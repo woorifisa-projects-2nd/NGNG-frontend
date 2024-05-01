@@ -50,9 +50,9 @@ export const updateProdctByUpdateProductRequest = async ({
   newImages: File[];
   origin: Product;
 }) => {
-  console.log(newProduct);
-  console.log(deleteOldImages);
-  console.log(newImages);
+  // console.log(newProduct);
+  // console.log(deleteOldImages);
+  // console.log(newImages);
 
   await fetch(`/api/products/${origin.id}`, {
     method: "PUT",

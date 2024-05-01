@@ -96,8 +96,9 @@ export default function TabContent({ data, onChangeData }: TabContentProps) {
 
   const chanagePrice = (newPrice: string) => {
     const input = newPrice.replaceAll(",", "");
+    console.log("price", input);
 
-    if (!isNaN(Number(input))) {
+    if (!isNaN(Number(input)) || input === "") {
       onChangeData?.({
         order: data.order,
         product: {
@@ -299,7 +300,7 @@ export default function TabContent({ data, onChangeData }: TabContentProps) {
           style={{ width: 276 }}
           value={data.price?.toLocaleString()}
           onKeyDown={(e) => {
-            if (e.key >= "0" && e.key <= "9") {
+            if ((e.key >= "0" && e.key <= "9") || e.key === "Backspace") {
               chanagePrice(e.currentTarget.value);
             } else {
               e.preventDefault();

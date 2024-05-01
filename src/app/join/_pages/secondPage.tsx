@@ -30,8 +30,6 @@ export default function SecondPage({
   const [isDisabledNextPage, setIsDisabledNextPage] = useState(true);
   const [isPhoneNumberInputDisabled, setisPhoneNumberInputDisabled] =
     useState(false);
-  const [isAuthNumberInputDisabled, setisAuthNumberInputDisabled] =
-    useState(true);
   const [isSendMessage, setIsSendMessage] = useState(true);
 
   const sendMessage = async () => {
@@ -42,9 +40,12 @@ export default function SecondPage({
     }
 
     const auth = {
-      insertName,
-      insertPhoneNumber,
+      name: insertName,
+      phoneNumber: insertPhoneNumber,
     };
+
+    console.log(auth);
+    
 
     const url = "/api/join/auth/phonenumber";
     const options = {
@@ -73,7 +74,7 @@ export default function SecondPage({
     setUser({ ...user, name: insertName, phoneNumber: insertPhoneNumber });
 
     setIsDisabledNextPage(false);
-    setisAuthNumberInputDisabled(true);
+    alert("인증되었습니다.");
   };
 
   return (
@@ -134,9 +135,8 @@ export default function SecondPage({
               </button>
             </div>
             <div
-              className={`flex justify-between items-center w-full h-14 mt-2 ${
-                isSendMessage ? "hidden" : ""
-              }`}
+              className={`flex justify-between items-center w-full h-14 mt-2 ${isSendMessage ? "hidden" : ""
+                }`}
             >
               <div className="flex justify-center items-center w-[75%] p-2 rounded-md border-[1px] dark:bg-[#3B3B3B] border-black/45 h-14">
                 <AuthCheck className="w-9 mr-4 ml-2 fill-black/50 dark:fill-[#9CA3AF]" />
@@ -145,14 +145,12 @@ export default function SecondPage({
                   placeholder="전화번호 인증"
                   value={checkAuthNumber}
                   onChange={(e) => setCheckAuthNumber(e.target.value)}
-                  disabled={isAuthNumberInputDisabled}
                   className="w-full focus:outline-none text-xl"
                 />
               </div>
               <button
                 className="flex justify-center items-center rounded-md text-white bg-point-color w-[20%] h-14 text-xl"
                 onClick={authCheck}
-                disabled={isAuthNumberInputDisabled}
               >
                 확인
               </button>

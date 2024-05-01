@@ -114,17 +114,17 @@ export default function PrivateChatting({ data }: ChattingProps) {
   };
 
   const getMessage = (data: any) => {
-    console.log("get message", data);
+    // console.log("get message", data);
 
-    setChatData([
-      ...chatData,
+    setChatData((prev) => [
+      ...prev,
       {
         chatId: data.chatId,
         message: data.message,
         user: {
-          id: user.id,
-          name: user.name,
-          nickname: user.nickname,
+          id: data.user.id,
+          name: data.user.name,
+          nickname: data.user.nickname,
           address: "",
         },
         createdAt: data.createdAt,
@@ -140,10 +140,8 @@ export default function PrivateChatting({ data }: ChattingProps) {
   }, [stompClient]);
 
   useEffect(() => {
-    console.log(process.env.NEXT_PUBLIC_CHAT_SOCKET);
-
     const client = new StompJs.Client({
-      brokerURL: "ws://localhost:8081/chat-server", // WebSocket 서버 URL
+      brokerURL: `${process.env.NEXT_PUBLIC_CHAT_SOCKET}/chat-server`, // WebSocket 서버 URL
 
       reconnectDelay: 5000,
     });
@@ -180,7 +178,7 @@ export default function PrivateChatting({ data }: ChattingProps) {
       return a.createdAt - b.createdAt;
     });
 
-  console.log(messages);
+  // console.log("바깥 private chatData", messages);
 
   return (
     <div className="relative w-full p-3 overflow-y-hidden ">

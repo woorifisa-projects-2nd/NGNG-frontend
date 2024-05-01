@@ -3,6 +3,7 @@
 import { useContext, useRef } from "react";
 import * as StompJs from "@stomp/stompjs";
 import { UserContext } from "./UserContext";
+import { mutate } from "swr";
 const chatAlarm: number[] = [];
 
 export default function StompAlarmSubscibe() {
@@ -18,7 +19,7 @@ export default function StompAlarmSubscibe() {
   if (Notification.permission !== "granted") {
     try {
       Notification.requestPermission().then((permission) => {
-        console.log("요청은 함", Notification.permission);
+        // console.log("요청은 함", Notification.permission);
 
         if (permission !== "granted") return;
       });
@@ -33,15 +34,16 @@ export default function StompAlarmSubscibe() {
   }
   const client = new StompJs.Client({
     brokerURL: `${process.env.NEXT_PUBLIC_CHAT_SOCKET}/chat-server`,
-    reconnectDelay: 5000,
+    reconnectDelay: 1000,
   });
   client.onConnect = () => {
     client.subscribe(`/alarms/${user?.id}`, (message) => {
       const datas = JSON.parse(message.body).body;
-      console.log("chat data", datas);
+      // console.log("chat data", datas);
 
       if (chatAlarm.find((id) => id === datas.chatId) === undefined) {
         chatAlarm.push(datas.chatId);
+        mutate("/chat/private-chat/user-id");
         notificationRef.current = new Notification(datas.user.nickname, {
           body: datas.message,
           icon: datas.productThumbnail,

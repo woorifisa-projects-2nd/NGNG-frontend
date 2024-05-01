@@ -54,7 +54,7 @@ export default function ReportManagement() {
     pageNumber: number,
     unprocessedOnly: boolean
   ) {
-    const url = `/api//admin/reports?page=${pageNumber}&unprocessedOnly=${unprocessedOnly}`;
+    const url = `/api/admin/reports?page=${pageNumber}&unprocessedOnly=${unprocessedOnly}`;
 
     await fetch(url, {
       headers: {
@@ -136,7 +136,7 @@ export default function ReportManagement() {
     return pageNumbers;
   };
 
-  console.log(reports);
+  // console.log(reports);
 
   return (
     <div className="p-5">
@@ -175,7 +175,7 @@ export default function ReportManagement() {
         </div>
 
         <div className="text-center">
-          {reports.map((report, index) => (
+          {reports?.map((report, index) => (
             <div
               key={report.reportId}
               className="border-b border-gray-300 rounded p-3 flex items-center"

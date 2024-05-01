@@ -15,7 +15,7 @@ export default function UserManagement() {
   const [currentPage, setCurrentPage] = useState<number>(0);
   const [totalPages, setTotalPages] = useState<number>(0);
 
-  console.log(users);
+  // console.log(users);
 
   // 페이지 관련
   const [itemsPerPage, setItemsPerPage] = useState<number>(0);
@@ -32,7 +32,7 @@ export default function UserManagement() {
 
   // 페이지를 변경할 때 해당 페이지의 데이터를 가져오는 함수
   async function fetchReportsByPage(pageNumber: number) {
-    const url = `/api/admin/users`;
+    const url = `/api/admin/users?page=${pageNumber}`;
 
     await fetch(url, {
       headers: {
@@ -124,15 +124,24 @@ export default function UserManagement() {
     const shouldDelete = window.confirm("정말로 삭제하시겠습니까?");
 
     if (shouldDelete) {
-      const res = await fetch(`/api//admin/users/${userId}`, {
+      const res = await fetch(`/api/admin/users/${userId}`, {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
           Authorization: getAccessToken(),
         },
       });
+
+      // 삭제 후에 페이지의 상품 목록을 가져오기 전에 마지막 페이지인지 확인
+      const isLastItemOnPage = users.length === 1;
+
+      // 페이지가 마지막 페이지이고, 마지막 상품을 삭제한 경우에만 페이지를 감소시킴
+      if (isLastItemOnPage && currentPage > 0) {
+        fetchReportsByPage(currentPage - 1);
+      } else {
+        fetchReportsByPage(currentPage);
+      }
     }
-    fetchReportsByPage(currentPage);
   };
 
   return (

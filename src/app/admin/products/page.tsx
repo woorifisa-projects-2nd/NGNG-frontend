@@ -87,8 +87,7 @@ export default function ProductManagement() {
 
   // 페이지를 변경할 때 해당 페이지의 데이터를 가져오는 함수
   async function fetchReportsByPage(pageNumber: number) {
-    const url = `/api//products?page=${pageNumber}`;
-    // const url = `/api//products/page=${pageNumber}`;
+    const url = `/api/products?page=${pageNumber}`;
 
     await fetch(url, {
       headers: {
@@ -98,7 +97,7 @@ export default function ProductManagement() {
       .then((resp) => resp.json())
       .then((result) => {
         setProducts(result.content);
-        console.log(result.content);
+        // console.log(result.content);
 
         setCurrentPage(result.pageable.pageNumber);
         setTotalPages(result.totalPages);
@@ -176,10 +175,11 @@ export default function ProductManagement() {
     const shouldDelete = window.confirm("정말로 삭제하시겠습니까?");
 
     if (shouldDelete) {
-      const res = await fetch(`/api//products/${productId}`, {
+      const res = await fetch(`/api/products/${productId}`, {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
+          Authorization: getAccessToken(),
         },
       });
 
@@ -189,6 +189,8 @@ export default function ProductManagement() {
       // 페이지가 마지막 페이지이고, 마지막 상품을 삭제한 경우에만 페이지를 감소시킴
       if (isLastItemOnPage && currentPage > 0) {
         fetchReportsByPage(currentPage - 1);
+      } else {
+        fetchReportsByPage(currentPage);
       }
     }
   };

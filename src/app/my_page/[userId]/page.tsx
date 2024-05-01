@@ -28,7 +28,7 @@ export async function generateMetadata(
 }
 
 export async function generateStaticParams() {
-  console.log(process.env.TEST);
+  // console.log(process.env.TEST);
 
   // const posts = await fetch('https://.../posts').then((res) => res.json())
 

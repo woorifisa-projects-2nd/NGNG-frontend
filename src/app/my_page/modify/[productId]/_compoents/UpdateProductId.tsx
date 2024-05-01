@@ -62,7 +62,7 @@ export default function UpdateProductId({ productId }: { productId: number }) {
     fetch(`/api/products/${productId}`)
       .then((res) => res.json())
       .then((data: Product) => {
-        console.log(data);
+        // console.log(data);
 
         const product = {
           ...data,
@@ -111,23 +111,24 @@ export default function UpdateProductId({ productId }: { productId: number }) {
     setProductTags(newTags);
   };
 
+
   const handlerChange = async () => {
     console.log("수정할 데이터");
     console.log(deleteOriginImages);
     console.log(newImages);
 
-    console.log({
-      title: productTitle.current?.value,
-      category: productCategory.current?.value,
-      status: productStatus,
-      productPurchaseAt: productPurchaseAt.current?.value,
-      price: productPrice.current?.value,
-      isEscrow: productIsEscrow ? true : false,
-      content: productContent.current?.value,
-      tags: productTags,
-      discountable: productDiscountable.current?.checked,
-      freeShipping: productFreeShipping.current?.checked,
-    });
+    // console.log({
+    //   title: productTitle.current?.value,
+    //   category: productCategory.current?.value,
+    //   status: productStatus,
+    //   productPurchaseAt: productPurchaseAt.current?.value,
+    //   price: productPrice.current?.value,
+    //   isEscrow: productIsEscrow ? true : false,
+    //   content: productContent.current?.value,
+    //   tags: productTags,
+    //   discountable: productDiscountable.current?.checked,
+    //   freeShipping: productFreeShipping.current?.checked,
+    // });
 
     await updateProdctByUpdateProductRequest({
       deleteOldImages: deleteOriginImages,
