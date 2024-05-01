@@ -70,13 +70,15 @@ export default function ThirdPage({
   };
 
   const authCheck = () => {
+    
     if (checkAuthNumber !== authNumber) {
-      // console.log(authNumber);
 
       alert("올바른 인증번호를 입력해주세요.");
 
       return;
     }
+
+    alert("인증되었습니다.");
 
     setIsCheckAuthNumberDisabled(true);
     setIsJoinDisabled(false);
