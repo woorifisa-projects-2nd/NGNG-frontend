@@ -235,10 +235,10 @@ export default function SearchKeyword() {
                 </div>
               </div>
               <div className="mt-2">
-                <input type="number" placeholder="최소가격" value={minPrice} onChange={e => setMinPrice(parseInt(e.target.value))}
+                <input type="number" min={0} placeholder="최소가격" value={minPrice} onChange={e => setMinPrice(parseInt(e.target.value))}
                   className="border rounded border-[#272727] px-1 py-1" />
                 <span> - </span>
-                <input type="number" placeholder="최대가격" value={maxPrice} onChange={e => setMaxPrice(parseInt(e.target.value))}
+                <input type="number" min={0} placeholder="최대가격" value={maxPrice} onChange={e => setMaxPrice(parseInt(e.target.value))}
                   className="border rounded border-[#272727] px-1 py-1 mr-2" />
                 <button type="button" onClick={setPriceRange}
                 className="border rounded px-1 py-1 border-[#272727] active:border-point-color active:text-point-color">적용</button>

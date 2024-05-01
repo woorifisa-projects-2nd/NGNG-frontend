@@ -26,9 +26,13 @@ export const updateFetchMyPage = async (
   body: {
     nickname?: string;
     address?: string;
+    accountBank?: string;
+    accountNumber?: string;
   },
   Done?: () => void
 ) => {
+  console.log(body);
+
   return (await fetch("/api/users", {
     method: "PUT",
     cache: "no-cache",
@@ -99,6 +103,16 @@ export const addFetchPoint = async (cost: number, Done: () => void) => {
 export const updateProductPurchaseById = async (productId: number) => {
   return await fetch(`/products/refresh/${productId}`, {
     method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: getAccessToken(),
+    },
+  }).then((res) => res.text());
+};
+
+export const deleteProductById = async (productId: number) => {
+  return await fetch(`/products/${productId}`, {
+    method: "DELETE",
     headers: {
       "Content-Type": "application/json",
       Authorization: getAccessToken(),

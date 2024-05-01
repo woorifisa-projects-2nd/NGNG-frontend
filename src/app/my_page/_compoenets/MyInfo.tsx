@@ -93,7 +93,9 @@ export default function MyInfo({ userInfo }: Props) {
               <div className="flex m-1 flex-wrap ">
                 <AccountSVG />
                 <p className="w-[5rem] ">계좌번호</p>
-                <p>{userInfo.accountNumber}</p>
+                <p>
+                  {userInfo.accountBank}-{userInfo.accountNumber}
+                </p>
               </div>
               <div className="flex m-1 flex-wrap">
                 <EmailSVG />
