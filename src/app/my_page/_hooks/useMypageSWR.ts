@@ -34,6 +34,8 @@ const useMypageSWR = () => {
     body: {
       nickname?: string;
       address?: string;
+      accountBank?: string;
+      accountNumber?: string;
     },
     Done?: () => void
   ) => {
@@ -44,7 +46,9 @@ const useMypageSWR = () => {
           ...prev,
           ...(body.address && { address: update.address }),
           ...(body.nickname && { nickName: update.nickName }),
-        } as any;
+          ...(body.accountBank && { accountBank: update.accountBank }),
+          ...(body.accountNumber && { accountNumber: update.accountNumber }),
+        } as MypageReponse;
       },
       revalidate: true,
     });

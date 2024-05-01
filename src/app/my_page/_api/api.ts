@@ -25,9 +25,13 @@ export const updateFetchMyPage = async (
   body: {
     nickname?: string;
     address?: string;
+    accountBank?: string;
+    accountNumber?: string;
   },
   Done?: () => void
 ) => {
+  console.log(body);
+
   return (await fetch("/api/users", {
     method: "PUT",
     cache: "no-cache",
