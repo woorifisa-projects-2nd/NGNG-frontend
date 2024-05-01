@@ -1,7 +1,7 @@
 import ColorMode from "@/components/layouts/header/components/ColorMode";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import LogoImage from "../../../components/layouts/header/design/SVG/logo.svg";
 import EmailImage from "../_image/email.svg";
 import PasswordImage from "../_image/password.svg";
@@ -83,12 +83,6 @@ export default function ThirdPage({
   };
 
   const join = async () => {
-    setUser({
-      ...user,
-      email: insertEmail,
-      nickname: insertNickname,
-      password: insertPassword,
-    });
 
     const url = "/api/join";
     const options = {
@@ -103,6 +97,16 @@ export default function ThirdPage({
 
     router.push("/login");
   };
+
+  useEffect(() => {
+
+    setUser({
+      ...user,
+      email: insertEmail,
+      nickname: insertNickname,
+      password: insertPassword
+    })
+  }, [insertEmail, insertNickname, insertPassword])
 
   return (
     <div className="dark:bg-[#282828]">

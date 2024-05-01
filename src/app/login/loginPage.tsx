@@ -51,7 +51,7 @@ export default function LoginPage() {
     const data = await response.json();
 
     console.log(data);
-    
+
     setUser({
       id: data.id,
       nickname: data.nickname,
@@ -113,23 +113,21 @@ export default function LoginPage() {
               <div className="mr-2">
                 <button
                   type="button"
-                  onClick={() => router.push("/find/email")}
-                >
-                  이메일 찾기
+                  onClick={() => router.push("/find/email")}>
+                  <span>이메일 찾기</span>
                 </button>
               </div>
               <div>
                 <button
                   type="button"
-                  onClick={() => router.push("/find/password")}
-                >
-                  비밀번호 찾기
+                  onClick={() => router.push("/find/password")}>
+                  <span>비밀번호 찾기</span>
                 </button>
               </div>
             </div>
             <div>
               <button type="button" onClick={() => router.push("/join")}>
-                회원가입
+                <span>회원가입</span>
               </button>
             </div>
           </div>
