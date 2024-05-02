@@ -14,7 +14,7 @@ const mapProductToAPISepc = ({
     content: product.content,
     price: product.price,
     isEscrow: product.isEscrow,
-    discountale: product.discountable,
+    discountable: product.discountable,
     purchaseAt: product.purchaseAt,
     freeShipping: product.freeShipping,
     statusId: product.statusId,
