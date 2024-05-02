@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import EachProduct from "./product";
 import Pagination from "./pagination";
+import Link from "next/link";
 
 export interface product {
   id: string,
@@ -246,11 +247,18 @@ export default function SearchKeyword() {
             </div>
           </div>
           <div className="flex justify-center items-center mt-4">
-            <div className="grid md:grid-cols-4 grid-cols-1 gap-x-10 gap-y-10">
+            {showProducts.length === 0 ? (<div className="flex flex-cols font-semibold ">
+                {`아직 등록된 상품이 없습니다. `}
+                <Link href={"/sell"} className="font-semibold text-point-color">
+                  상품 판매하러 가기
+                </Link>
+              </div>
+              ) : (<div className="grid md:grid-cols-4 grid-cols-1 gap-x-10 gap-y-10">
               {showProducts?.map((product) => (
                 <EachProduct product={product} key={product.productId} />
               ))}
-            </div>
+            </div>)
+              }
           </div>
           <div className="flex justify-center items-center mt-6">
             <div>
