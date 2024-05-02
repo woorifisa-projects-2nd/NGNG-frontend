@@ -29,20 +29,11 @@ export default function ProudctInfo({ data }: ProductInfoProps) {
   const user = getUser();
   const [open, setOpen] = useState<boolean>(false);
   const [showReportModal, setShowReportModal] = useState<boolean>(false);
-  const [productData, setProductData] = useState<Product | undefined>(data);
   const router = useRouter();
 
   // 이미지 보기
   const [showModal, setShowModal] = useState<boolean>(false);
   const [currentImageIndex, setCurrentImageIndex] = useState<number>(0);
-
-  // if (user === undefined) {
-
-  // }
-
-  const handleReportSuccess = (newData: Product | undefined): void => {
-    setProductData(newData);
-  };
 
   // 이미지를 클릭했을 때 모달을 열고 해당 이미지를 표시하는 함수
   const handleImageClick = (imageUrl: string, index: number) => {
@@ -76,17 +67,16 @@ export default function ProudctInfo({ data }: ProductInfoProps) {
   const isUserAccountOk = true;
 
   const isReported =
-    productData?.reports === null
+    data?.reports?.length === 0
       ? false
-      : productData?.reports?.filter((report) => report.isReport)?.length ??
-        0 > 0;
+      : true
 
   const isReportedByMe =
     user === undefined
       ? false
-      : productData?.reports &&
-        productData?.reports.filter((report) => report.reporter.id === user?.id)
-          .length > 0;
+      : data?.reports &&
+      data?.reports.filter((report) => report.reporter.id === user?.id)
+        .length > 0;
 
   const fetchTime = async () => {
     const res = (await 3) + 4;
@@ -164,11 +154,7 @@ export default function ProudctInfo({ data }: ProductInfoProps) {
               </div>
               {data.forSale && (
                 <div className="flex text-red-500 font-medium justify-end items-center">
-                  {isReported ? (
-                    "신고받은 상품입니다"
-                  ) : isReportedByMe ? (
-                    "이미 신고한 상품입니다"
-                  ) : (
+                  {!isReported ? (
                     <div
                       className="cursor-pointer flex items-center gap-1"
                       onClick={() => setShowReportModal(true)}
@@ -176,6 +162,11 @@ export default function ProudctInfo({ data }: ProductInfoProps) {
                       <SirenIcon />
                       <div>신고하기</div>
                     </div>
+
+                  ) : isReportedByMe ? (
+                    "이미 신고한 상품입니다"
+                  ) : (
+                    "신고받은 상품입니다"
                   )}
                 </div>
               )}
@@ -189,7 +180,6 @@ export default function ProudctInfo({ data }: ProductInfoProps) {
               onClose={() => {
                 setShowReportModal(false);
               }}
-              onSuccessReport={handleReportSuccess}
               data={data}
               userId={user.id}
             />,
@@ -242,9 +232,8 @@ export default function ProudctInfo({ data }: ProductInfoProps) {
                 {data.price.toLocaleString()}원
               </span>
               <span
-                className={`inline font-medium text-sm  ${
-                  data.discountable ? "text-point-color" : "text-red-500"
-                } `}
+                className={`inline font-medium text-sm  ${data.discountable ? "text-point-color" : "text-red-500"
+                  } `}
               >
                 {data.discountable ? "할인가능" : "할인불가능"}
               </span>
@@ -313,18 +302,17 @@ export default function ProudctInfo({ data }: ProductInfoProps) {
                 }}
               >
                 <Button
-                  text={`${
-                    user === undefined
-                      ? "로그인이 필요합니다"
-                      : data.forSale
+                  text={`${user === undefined
+                    ? "로그인이 필요합니다"
+                    : data.forSale
                       ? data.user.id === user.id
                         ? "채팅방 보기"
                         : "1:1 채팅하기"
                       : "거래완료"
-                  }`}
+                    }`}
                   width={"100%"}
                   disabled={!data.forSale}
-                  onClick={() => {}}
+                  onClick={() => { }}
                 />
               </a>
             </div>

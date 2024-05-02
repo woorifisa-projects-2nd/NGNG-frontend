@@ -108,8 +108,10 @@ export default function Chatting({ data }: ChattingProps) {
       sendMessage(message);
     }
   };
-
+  console.log("data", chatData);
   const getMessage = (data: any) => {
+    console.log("메시지 수신 데이터들", chatData);
+    console.log("메시지 수신", data);
     setChatData((prev) => [
       ...prev,
       {
@@ -131,15 +133,12 @@ export default function Chatting({ data }: ChattingProps) {
 
   useEffect(() => {
     const client = new StompJs.Client({
-      brokerURL: `${process.env.NEXT_PUBLIC_CHAT_SOCKET}/chat-server`, // WebSocket 서버 URL
+      brokerURL: `${process.env.NEXT_PUBLIC_CHAT_SOCKET}/chat-server`,
       reconnectDelay: 5000,
     });
     client.onConnect = () => {
       if (client.connected) {
-        // 연결 상태 확인
         client.subscribe(`/public-chats/${data.id}`, (message) => {
-          // console.log("use effect 안에서 chatdata", chatData);
-
           getMessage(JSON.parse(message.body).body);
         });
       }

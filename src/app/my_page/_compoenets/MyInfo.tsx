@@ -132,9 +132,10 @@ export default function MyInfo({ userInfo }: Props) {
                 onClick={() =>
                   setModal({ type: ModalStatus.Account, isOpen: true })
                 }
-                className="text-start"
+                className={`text-start `}
+                disabled={userInfo.accountNumber ? true : false}
               >
-                계좌번호 변경하기
+                {userInfo.accountNumber ? "" : "계좌번호 변경하기"}
               </button>
               <button
                 onClick={() =>
