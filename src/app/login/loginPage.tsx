@@ -76,8 +76,8 @@ export default function LoginPage() {
       <div className="flex justify-center items-center h-screen">
         <div className="flex-col justify-center items-center w-2/3 md:w-1/4 h-auto">
           <div className="flex justify-center w-full h-auto">
-            <button type="button" onClick={() => router.push("/")}>
-              <LogoImage className="w-full" />
+            <button type="button" className="flex justify-center" onClick={() => router.push("/")}>
+              <LogoImage className="w-3/4" />
             </button>
           </div>
           <div>

@@ -44,7 +44,6 @@ export default function SecondPage({
       phoneNumber: insertPhoneNumber,
     };
 
-    console.log(auth);
     alert("입력하신 전화번호로 인증번호를 요청했습니다.");
 
     const url = "/api/join/auth/phonenumber";
@@ -84,8 +83,8 @@ export default function SecondPage({
       </div>
       <div className="flex justify-center items-center h-screen">
         <div className="flex-col justify-center items-center w-5/6 md:w-1/4 h-auto">
-          <button type="button" onClick={() => router.push("/")}>
-            <LogoImage width={"100%"} />
+        <button type="button" className="flex justify-center w-full" onClick={() => router.push("/")}>
+            <LogoImage className="w-1/2" />
           </button>
           <div className="text-sm mt-14">
             <button type="button" onClick={() => setCurrentPage(1)}>
@@ -108,6 +107,7 @@ export default function SecondPage({
                 <UserImage className="w-9 mr-4 ml-2 fill-black/50 dark:fill-[#9CA3AF]" />
                 <input
                   type="text"
+                  maxLength={12}
                   placeholder="이름"
                   value={insertName}
                   onChange={(e) => setInsertName(e.target.value)}
@@ -119,10 +119,11 @@ export default function SecondPage({
               <div className="flex justify-center items-center w-[75%] p-2 rounded-md border-[1px] dark:bg-[#3B3B3B] border-black/45 h-14">
                 <PhoneImage className="h-10 mr-4 ml-2 fill-black/50 dark:fill-[#9CA3AF]" />
                 <input
-                  type="text"
+                  type="tel"
+                  maxLength={11}
                   placeholder="전화번호"
                   value={insertPhoneNumber}
-                  onChange={(e) => setInsertPhoneNumber(e.target.value)}
+                  onChange={e => setInsertPhoneNumber(e.target.value)}
                   disabled={isPhoneNumberInputDisabled}
                   className="w-full focus:outline-none text-xl"
                 />
@@ -142,7 +143,9 @@ export default function SecondPage({
               <div className="flex justify-center items-center w-[75%] p-2 rounded-md border-[1px] dark:bg-[#3B3B3B] border-black/45 h-14">
                 <AuthCheck className="w-9 mr-4 ml-2 fill-black/50 dark:fill-[#9CA3AF]" />
                 <input
-                  type="text"
+                  type="number"
+                  min="0"
+                  maxLength={6}
                   placeholder="전화번호 인증"
                   value={checkAuthNumber}
                   onChange={(e) => setCheckAuthNumber(e.target.value)}

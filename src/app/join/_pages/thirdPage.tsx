@@ -84,7 +84,6 @@ export default function ThirdPage({
   };
 
   const join = async () => {
-    console.log("ㅓㅐㅑㅜ");
 
     const url = "/api/join";
     const options = {
@@ -116,8 +115,8 @@ export default function ThirdPage({
       </div>
       <div className="flex justify-center items-center h-screen">
         <div className="flex-col justify-center items-center w-5/6 md:w-1/4 h-auto">
-          <button type="button" onClick={() => router.push("/")}>
-            <LogoImage width={"100%"} />
+          <button type="button" className="flex justify-center w-full" onClick={() => router.push("/")}>
+            <LogoImage className="w-1/2" />
           </button>
           <div className="text-sm mt-14">
             <button type="button" onClick={() => setCurrentPage(1)}>
@@ -137,7 +136,7 @@ export default function ThirdPage({
               <div className="flex justify-center items-center w-[75%] p-2 rounded-md border-[1px] dark:bg-[#3B3B3B] border-black/45 h-14">
                 <EmailImage className="w-8 mr-4 ml-2 fill-black/50 dark:fill-[#9CA3AF]" />
                 <input
-                  type="text"
+                  type="email"
                   placeholder="이메일"
                   value={insertEmail}
                   onChange={(e) => setInsertEmail(e.target.value)}
@@ -149,18 +148,19 @@ export default function ThirdPage({
                 className="cursor-pointer flex justify-center items-center rounded-md text-white bg-point-color w-[20%] h-14 text-xl"
                 onClick={sendEmail}
               >
-                인증
+                <span>인증</span>
               </button>
             </div>
             <div
-              className={`flex justify-between items-center w-full h-14 mt-2 ${
-                isCheckAuthNumberHidden ? "hidden" : ""
-              }`}
+              className={`flex justify-between items-center w-full h-14 mt-2 ${isCheckAuthNumberHidden ? "hidden" : ""
+                }`}
             >
               <div className="flex justify-center items-center w-[75%] p-2 rounded-md border-[1px] dark:bg-[#3B3B3B] border-black/45 h-14">
                 <AuthCheck className="w-9 mr-4 ml-2 fill-black/50 dark:fill-[#9CA3AF]" />
                 <input
-                  type="text"
+                  type="number"
+                  min="0"
+                  maxLength={6}
                   placeholder="인증번호"
                   value={checkAuthNumber}
                   onChange={(e) => setCheckAuthNumber(e.target.value)}
@@ -173,7 +173,7 @@ export default function ThirdPage({
                 onClick={authCheck}
                 disabled={isCheckAuthNumberDisabled}
               >
-                확인
+                <span>확인</span>
               </button>
             </div>
             <div className="flex justify-center items-center w-full p-2 rounded-md border-[1px] dark:bg-[#3B3B3B] border-black/45 h-14 mt-8">
@@ -212,7 +212,7 @@ export default function ThirdPage({
               className="cursor-pointer border-solid rounded-md dark:text-white dark:bg-[#3B3B3B] dark:border-black/45 text-black bg-gray-100 border-[2px] w-[calc(50%-1vw)] h-16 text-3xl"
               onClick={() => setCurrentPage(currentPage - 1)}
             >
-              이전
+              <span>이전</span>
             </button>
             <button
               className="cursor-pointer border-solid rounded-md text-white bg-point-color w-[calc(50%-1vw)] h-16 text-3xl"

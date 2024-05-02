@@ -49,8 +49,8 @@ export default function FirstPage({
       </div>
       <div className="flex justify-center items-center h-screen">
         <div className="flex-col justify-center items-center w-5/6 md:w-1/4 h-auto">
-          <button type="button" onClick={() => router.push("/")}>
-            <LogoImage width={"100%"} />
+          <button type="button" className="flex justify-center w-full" onClick={() => router.push("/")}>
+            <LogoImage className="w-1/2" />
           </button>
           <div className="text-sm mt-14">
             <button type="button" className="font-bold">
