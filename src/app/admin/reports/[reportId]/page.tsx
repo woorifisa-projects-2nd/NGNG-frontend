@@ -356,7 +356,7 @@ export default function ReportDetail({
         <div className="mb-4">
           <div className="font-extrabold">신고 내용</div>
           <textarea
-            className="bg-slate-100 w-full h-20 p-2 overflow-y-auto outline-none"
+            className="bg-slate-100 w-full h-20 p-2 overflow-y-auto outline-none resize-none"
             readOnly
             value={report?.reportContents}
           ></textarea>
@@ -365,7 +365,7 @@ export default function ReportDetail({
         <div className="mb-4">
           <div className="font-extrabold">제재 이유</div>
           <textarea
-            className="bg-slate-100 w-full h-20 p-2 overflow-hidden outline-none"
+            className="bg-slate-100 w-full h-20 p-2 overflow-hidden outline-none resize-none"
             value={penalty?.reason}
             onChange={handleReasonChange}
           ></textarea>
