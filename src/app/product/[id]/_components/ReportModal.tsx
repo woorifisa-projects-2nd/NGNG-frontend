@@ -112,7 +112,7 @@ export default function ReportModal({
           value={reportContent}
           onChange={handleReportContentChange}
           rows={4}
-          className="border border-gray-300 rounded-md p-2 mt-1 w-full mb-4"
+          className="border border-gray-300 rounded-md p-2 mt-1 w-full mb-4 resize-none"
         ></textarea>
 
         {/* 이미지 업로드 박스 */}
