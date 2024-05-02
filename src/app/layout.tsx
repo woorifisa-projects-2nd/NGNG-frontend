@@ -30,6 +30,7 @@ export default function RootLayout({
   return (
     <html lang="ko" dir="ltr">
       <head>
+        <link rel="icon" href="/favicon.ico"></link>
         <link rel="preload" as="image" href="/banners/1.jpg" />
       </head>
       <body className={pretendard.className}>
