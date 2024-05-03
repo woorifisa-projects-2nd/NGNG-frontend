@@ -2,7 +2,10 @@ import * as StompJs from "@stomp/stompjs";
 import { Product, RequestReport } from "../_types/type";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
-import { getAccessToken } from "@/app/my_page/_utils/auth-header";
+import {
+  getAccessToken,
+  setAccessToken,
+} from "@/app/my_page/_utils/auth-header";
 import { ProductRespons } from "../[id]/_hooks/useProduct";
 
 export const getProductById = async (id: number): Promise<ProductRespons> => {
@@ -12,6 +15,7 @@ export const getProductById = async (id: number): Promise<ProductRespons> => {
     },
     cache: "no-cache",
   }).then(async (res) => {
+    setAccessToken(res);
     if (res.status === 404) {
       return { status: res.status, data: undefined };
     } else {
@@ -62,6 +66,7 @@ export const findPrivateChatRoomByProductIdAndBuyerId = async (
       Authorization: getAccessToken(),
     },
   }).then((res) => {
+    setAccessToken(res);
     if (res.status === 404) {
       return -1;
     }
@@ -88,7 +93,10 @@ export const createPrivateChatRoom = async ({
       buyerId,
       sellerId,
     }),
-  }).then((res) => res.json());
+  }).then((res) => {
+    setAccessToken(res);
+    return res.json();
+  });
 };
 
 export const createReport = async (
@@ -104,6 +112,7 @@ export const createReport = async (
     },
     body: JSON.stringify(requestReport),
   });
+  setAccessToken(res);
 
   if (res.ok === true) {
     const reportIdResponse = await res.text();
@@ -143,5 +152,8 @@ const createImages = async (
       Authorization: getAccessToken(),
     },
     body: fomData,
+  }).then((res) => {
+    setAccessToken(res);
+    return res.json();
   });
 };

@@ -1,5 +1,5 @@
 import * as StompJs from "@stomp/stompjs";
-import { getAccessToken } from "../my_page/_utils/auth-header";
+import { getAccessToken, setAccessToken } from "../my_page/_utils/auth-header";
 
 export const statusList = [
   { id: 1, name: "거래요청" },
@@ -69,7 +69,10 @@ export const getAllChatMessages = async ({
       Authorization: getAccessToken(),
     },
     cache: "no-cache",
-  }).then((res) => res.json());
+  }).then((res) => {
+    setAccessToken(res);
+    return res.json();
+  });
 };
 
 export const createTransactionRequestAPI = async ({
@@ -95,6 +98,9 @@ export const createTransactionRequestAPI = async ({
       sellerId,
       price,
     }),
+  }).then((res) => {
+    setAccessToken(res);
+    return res.json();
   });
 };
 
@@ -114,6 +120,9 @@ export const updateTransactionStatus = async ({
     body: JSON.stringify({
       statusId,
     }),
+  }).then((res) => {
+    setAccessToken(res);
+    return res.json();
   });
 };
 
@@ -122,7 +131,10 @@ export const getAllChatRoomData = async (userId: number) => {
     headers: {
       Authorization: getAccessToken(),
     },
-  }).then((res) => res.json());
+  }).then((res) => {
+    setAccessToken(res);
+    return res.json();
+  });
 };
 
 export const updateTransactionRequestAPI = async ({
@@ -142,5 +154,8 @@ export const updateTransactionRequestAPI = async ({
       transactionRequestId,
       isAccepted,
     }),
+  }).then((res) => {
+    setAccessToken(res);
+    return res.json();
   });
 };
