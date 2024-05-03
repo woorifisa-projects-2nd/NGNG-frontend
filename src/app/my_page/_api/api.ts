@@ -5,7 +5,7 @@ export const getFetchMyPage = async () => {
 
   const res = await fetch(`/api/users/mypage`, {
     headers: {
-      Authorization: getAccessToken(),
+      Authorization: await getAccessToken(),
     },
     // cache: "no-store",
   });
@@ -37,7 +37,7 @@ export const updateFetchMyPage = async (
     redirect: "follow",
     headers: {
       "Content-Type": "application/json",
-      Authorization: getAccessToken(),
+      Authorization: await getAccessToken(),
     },
     body: JSON.stringify(body),
   }).then((res) => {
@@ -63,7 +63,7 @@ export const updateUserAccount = async (
     redirect: "follow",
     headers: {
       "Content-Type": "application/json",
-      Authorization: getAccessToken(),
+      Authorization: await getAccessToken(),
     },
     body: JSON.stringify(body),
   }).then((res) => {
@@ -81,7 +81,7 @@ export const updateUserAddress = async (
     redirect: "follow",
     headers: {
       "Content-Type": "application/json",
-      Authorization: getAccessToken(),
+      Authorization: await getAccessToken(),
     },
     body: JSON.stringify(body),
   }).then((res) => {
@@ -99,7 +99,7 @@ export const updateTransaction = async ({
     cache: "no-cache",
     headers: {
       "Content-Type": "application/json",
-      Authorization: getAccessToken(),
+      Authorization: await getAccessToken(),
     },
     redirect: "follow",
     body: JSON.stringify({
@@ -118,7 +118,7 @@ export const updateTransaction = async ({
 export const getPointHistoryAll = async () => {
   return await fetch(`/api/points/all`, {
     headers: {
-      Authorization: getAccessToken(),
+      Authorization: await getAccessToken(),
     },
   }).then((res) => res.json());
 };
@@ -128,7 +128,7 @@ export const addFetchPoint = async (cost: number, Done: () => void) => {
     method: "post",
     headers: {
       "Content-Type": "application/json",
-      Authorization: getAccessToken(),
+      Authorization: await getAccessToken(),
     },
     body: JSON.stringify({
       addCost: cost,
@@ -145,7 +145,7 @@ export const updateProductPurchaseById = async (productId: number) => {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      Authorization: getAccessToken(),
+      Authorization: await getAccessToken(),
     },
   }).then((res) => res.text());
 };
@@ -155,7 +155,7 @@ export const deleteProductById = async (productId: number) => {
     method: "DELETE",
     headers: {
       "Content-Type": "application/json",
-      Authorization: getAccessToken(),
+      Authorization: await getAccessToken(),
     },
   }).then((res) => res.text());
 };
@@ -165,7 +165,7 @@ export const isPayment = async (cost: number) => {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      Authorization: getAccessToken(),
+      Authorization: await getAccessToken(),
     },
     body: JSON.stringify({
       paymentCost: cost,
@@ -184,7 +184,7 @@ export const paymentProduct = async ({
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      Authorization: getAccessToken(),
+      Authorization: await getAccessToken(),
     },
     body: JSON.stringify({
       paymentCost: cost,
