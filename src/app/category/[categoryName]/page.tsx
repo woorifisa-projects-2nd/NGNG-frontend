@@ -7,6 +7,7 @@ import EachProduct from "./product";
 import Pagination from "./pagination";
 import { categories } from "@/components/layouts/header/Header";
 import Link from "next/link";
+import CategoryHeader from "../_components/categoryHeader";
 
 export interface product {
   id: string;
@@ -165,124 +166,18 @@ export default function CategorySearch() {
     <DefaultLayout>
       <div className="flex mx-auto justify-center">
         <div className="flex-col mt-8 md:min-w-[880px]">
-          <div className="flex items-end">
-            <div>
-              <span className="text-3xl mr-4 text-point-color font-semibold">
-                {category}
-              </span>
-            </div>
-            <div>
-              <span className="text-lg">
-                총 <span className="text-xl text-point-color">{totalHits}</span>
-                개
-              </span>
-            </div>
-          </div>
-          <div className="flex items-end justify-between">
-            <div className="flex items-end">
-              <div>
-                <div
-                  className="flex items-center mb-4"
-                  onClick={() => setForSale(!forSale)}
-                >
-                  <input
-                    id="default-checkbox"
-                    type="checkbox"
-                    value=""
-                    className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded  dark:ring-offset-gray-800 dark:bg-gray-700 dark:border-gray-600"
-                  />
-                  <label
-                    htmlFor="default-checkbox"
-                    className="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300"
-                  >
-                    거래가능만 보기
-                  </label>
-                </div>
-              </div>
-            </div>
-            <div className="flex-col justify-end">
-              <div className="flex justify-end items-center gap-2">
-                <div className="hover:bg-light-gray/50">
-                  <input
-                    type="radio"
-                    id="new"
-                    name="sortBy"
-                    value="new"
-                    className="peer hidden "
-                    checked={sortBy === "new"}
-                    onChange={(e) => setSortBy(e.target.value)}
-                  />
-                  <label
-                    htmlFor="new"
-                    className=" flex cursor-pointer  peer-checked:text-point-color peer-checked:font-bold text-center"
-                  >
-                    <span className=" text-base text-center">최신순</span>
-                  </label>
-                </div>
-                <div className="hover:bg-light-gray/50  ">
-                  <input
-                    type="radio"
-                    id="lowPrice"
-                    name="sortBy"
-                    value="lowPrice"
-                    className="peer hidden"
-                    checked={sortBy === "lowPrice"}
-                    onChange={(e) => setSortBy(e.target.value)}
-                  />
-                  <label
-                    htmlFor="lowPrice"
-                    className="flex  cursor-pointer mr-2 peer-checked:text-point-color peer-checked:font-bold"
-                  >
-                    <span className="text-base ">낮은가격순</span>
-                  </label>
-                </div>
-                <div className="hover:bg-light-gray/50  ">
-                  <input
-                    type="radio"
-                    id="highPrice"
-                    name="sortBy"
-                    value="highPrice"
-                    className="peer hidden"
-                    checked={sortBy === "highPrice"}
-                    onChange={(e) => setSortBy(e.target.value)}
-                  />
-                  <label
-                    htmlFor="highPrice"
-                    className="flex cursor-pointer peer-checked:text-point-color peer-checked:font-bold"
-                  >
-                    <span className="text-base">높은가격순</span>
-                  </label>
-                </div>
-              </div>
-              <div className="mt-2">
-                <input
-                  type="number"
-                  min="0"
-                  placeholder="최소가격"
-                  value={minPrice}
-                  onChange={(e) => setMinPrice(parseInt(e.target.value))}
-                  className="border rounded border-[#272727]  p-1 px-2"
-                />
-                <span> - </span>
-                <input
-                  type="number"
-                  min="0"
-                  placeholder="최대가격"
-                  value={maxPrice}
-                  onChange={(e) => setMaxPrice(parseInt(e.target.value))}
-                  className="border rounded border-[#272727] p-1 px-2 mr-2 focus:ring-0 "
-                />
-                <button
-                  type="button"
-                  onClick={setPriceRange}
-                  className="hover:shadow-[0px_2px_3px_-1px_rgba(0,0,0,0.1),0px_1px_0px_0px_rgba(25,28,33,0.02),0px_0px_0px_1px_rgba(25,28,33,0.08)] 
-                  border rounded px-1 py-1 border-[#272727] active:border-point-color active:text-point-color"
-                >
-                  적용
-                </button>
-              </div>
-            </div>
-          </div>
+          <CategoryHeader
+            category={category}
+            totalHits={totalHits}
+            setForSale={setForSale}
+            forSale={forSale}
+            sortBy={sortBy}
+            setSortBy={setSortBy}
+            minPrice={minPrice}
+            setMinPrice={setMinPrice}
+            maxPrice={maxPrice}
+            setMaxPrice={setMaxPrice}
+            setMinAndMaxPrice={setMinAndMaxPrice} />
           <div className="flex justify-center items-center mt-4">
             {showProducts.length === 0 ? (
               <div className="flex flex-cols font-semibold ">

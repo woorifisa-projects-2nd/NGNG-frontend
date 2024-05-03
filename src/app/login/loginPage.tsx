@@ -47,11 +47,6 @@ export default function LoginPage() {
 
     setAccessToken(response);
 
-    // localStorage.setItem(
-    //   "accessToken",
-    //   JSON.stringify(response.headers.get("Authorization"))
-    // );
-
     const data = await response.json();
 
     // console.log(data);
