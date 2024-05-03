@@ -7,6 +7,7 @@ import { User } from "../_types/type";
 import Button from "@/components/common/Button";
 import { getAccessToken } from "../_utils/auth-header";
 import { useRouter } from "next/navigation";
+import { setAccessToken } from "@/app/my_page/_utils/auth-header";
 
 export default function UserDetail({ params }: { params: { id: number } }) {
   const router = useRouter();
@@ -14,15 +15,30 @@ export default function UserDetail({ params }: { params: { id: number } }) {
   const [password, setPassword] = useState<string | number>("");
 
   async function fetchUser() {
-    fetch(`/api/admin/users/${params.id}`, {
+
+    const options = {
       headers: {
-        Authorization: getAccessToken(),
+        Authorization: getAccessToken(), // 토큰을 헤더에 추가
       },
-    })
-      .then((resp) => resp.json())
-      .then((result) => {
-        setUser(result);
-      });
+    };
+
+    const response = await fetch(`/api/admin/users/${params.id}`, options);
+
+    if (response.status === 401) {
+      alert("유효하지 않은 인증 정보입니다.");
+      return;
+    }
+
+    setAccessToken(response);
+
+    const result = await response.json();
+
+    if (!response.ok) {
+      throw new Error('서버에서 데이터를 가져오는 중 문제가 발생했습니다.');
+    }
+
+    setUser(result);
+
   }
 
   const updateUser = async () => {

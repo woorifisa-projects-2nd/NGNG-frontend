@@ -7,6 +7,7 @@ import "react-responsive-carousel/lib/styles/carousel.min.css";
 import { Carousel } from "react-responsive-carousel";
 import ReactPlayer from "react-player";
 import { getAccessToken } from "../_utils/auth-header";
+import { setAccessToken } from "@/app/my_page/_utils/auth-header";
 
 type ReportTypeDetails = {
   reportTypeId: number;
@@ -88,36 +89,63 @@ export default function ReportDetail({
 
   // API로부터 신고 데이터를 가져오는 함수
   async function fetchReport() {
-    fetch(`/api/admin/reports/${params.reportId}`, {
+
+    const options = {
       headers: {
-        Authorization: getAccessToken(),
+        Authorization: getAccessToken(), // 토큰을 헤더에 추가
       },
-    })
-      .then((resp) => resp.json())
-      .then((result) => {
-        setReport(result);
-        if (result?.isReport === true) {
-          fetchPenalty(result);
-        }
-      });
+    };
+
+    const response = await fetch(`/api/admin/reports/${params.reportId}`, options);
+
+    if (response.status === 401) {
+      alert("유효하지 않은 인증 정보입니다.");
+      return;
+    }
+
+    setAccessToken(response);
+
+    const result = await response.json();
+
+    if (!response.ok) {
+      throw new Error('서버에서 데이터를 가져오는 중 문제가 발생했습니다.');
+    }
+
+    setReport(result);
+    if (result?.isReport === true) {
+      fetchPenalty(result);
+    }
   }
 
   // API로부터 패널티 데이터를 가져오는 함수
   async function fetchPenalty(results: any) {
-    fetch(`/api/admin/penalties/${params.reportId}`, {
+
+    const options = {
       headers: {
-        "Content-Type": "application/json",
-        Authorization: getAccessToken(),
+        Authorization: getAccessToken(), // 토큰을 헤더에 추가
       },
-    })
-      .then((resp) => resp.json())
-      .then((result) => {
-        const findPenaltyLevel = penaltyLevels.find(
-          (level) => level.id === result.penaltyLevel.penaltyLevelId
-        );
-        setSelectedPenaltyLevel(findPenaltyLevel);
-        setPenalty(result);
-      });
+    };
+
+    const response = await fetch(`/api/admin/penalties/${params.reportId}`, options);
+
+    if (response.status === 401) {
+      alert("유효하지 않은 인증 정보입니다.");
+      return;
+    }
+
+    setAccessToken(response);
+
+    const result = await response.json();
+
+    if (!response.ok) {
+      throw new Error('서버에서 데이터를 가져오는 중 문제가 발생했습니다.');
+    }
+
+    const findPenaltyLevel = penaltyLevels.find(
+      (level) => level.id === result.penaltyLevel.penaltyLevelId
+    );
+    setSelectedPenaltyLevel(findPenaltyLevel);
+    setPenalty(result);
   }
 
   useEffect(() => {
