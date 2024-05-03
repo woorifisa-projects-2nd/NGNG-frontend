@@ -4,6 +4,7 @@ import CheckReport from "@/components/layouts/admin_menu/design/SVG/check_report
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { getAccessToken } from "./_utils/auth-header";
+import { setAccessToken } from "@/app/my_page/_utils/auth-header";
 
 type ReportTypeDetails = {
   reportTypeId: number;
@@ -46,7 +47,7 @@ export default function ReportManagement() {
     0;
   const disableNext =
     Math.floor(currentPage / maxPageButtons) * maxPageButtons +
-      maxPageButtons >=
+    maxPageButtons >=
     totalPages;
 
   // 페이지를 변경할 때 해당 페이지의 데이터를 가져오는 함수
@@ -56,18 +57,31 @@ export default function ReportManagement() {
   ) {
     const url = `/api/admin/reports?page=${pageNumber}&unprocessedOnly=${unprocessedOnly}`;
 
-    await fetch(url, {
+    const options = {
       headers: {
-        Authorization: getAccessToken(),
+        Authorization: getAccessToken(), // 토큰을 헤더에 추가
       },
-    })
-      .then((resp) => resp.json())
-      .then((result) => {
-        setReports(result.content);
-        setCurrentPage(result.pageable.pageNumber);
-        setTotalPages(result.totalPages);
-        setItemsPerPage(result.pageable.pageSize);
-      });
+    };
+
+    const response = await fetch(url, options);
+
+    if (response.status === 401) {
+      alert("유효하지 않은 인증 정보입니다.");
+      return;
+    }
+
+    setAccessToken(response);
+
+    const result = await response.json();
+
+    if (!response.ok) {
+      throw new Error('서버에서 데이터를 가져오는 중 문제가 발생했습니다.');
+    }
+
+    setReports(result.content);
+    setCurrentPage(result.pageable.pageNumber);
+    setTotalPages(result.totalPages);
+    setItemsPerPage(result.pageable.pageSize);
   }
 
   useEffect(() => {
@@ -123,11 +137,10 @@ export default function ReportManagement() {
               handlePageClick(i);
             }
           }}
-          className={`${
-            currentPage === i
-              ? "text-violet-900 pointer-events-none"
-              : "text-slate-300 pointer-events-auto"
-          }`}
+          className={`${currentPage === i
+            ? "text-violet-900 pointer-events-none"
+            : "text-slate-300 pointer-events-auto"
+            }`}
         >
           {i + 1}
         </Link>
@@ -194,11 +207,10 @@ export default function ReportManagement() {
               </div>
               <div className="w-1/6">{report.reportType.reportType}</div>
               <div
-                className={`w-1/6 ${
-                  report.isReport
-                    ? "bg-green-100 text-green-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-green-900 dark:text-green-300"
-                    : "bg-red-100 text-red-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-red-900 dark:text-red-300"
-                }`}
+                className={`w-1/6 ${report.isReport
+                  ? "bg-green-100 text-green-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-green-900 dark:text-green-300"
+                  : "bg-red-100 text-red-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-red-900 dark:text-red-300"
+                  }`}
               >
                 {report.isReport ? "True" : "False"}
               </div>
@@ -218,11 +230,10 @@ export default function ReportManagement() {
         <Link
           href={
             !disablePrevious
-              ? `/admin/reports?page=${
-                  Math.floor(currentPage / maxPageButtons) * maxPageButtons -
-                  maxPageButtons +
-                  1
-                }`
+              ? `/admin/reports?page=${Math.floor(currentPage / maxPageButtons) * maxPageButtons -
+              maxPageButtons +
+              1
+              }`
               : "#"
           }
           onClick={(e) => {
@@ -232,9 +243,8 @@ export default function ReportManagement() {
               handlePreviousPageClick();
             }
           }}
-          className={`text-black ${
-            disablePrevious ? "cursor-not-allowed text-gray-500" : ""
-          }`}
+          className={`text-black ${disablePrevious ? "cursor-not-allowed text-gray-500" : ""
+            }`}
         >
           {"<"}
         </Link>
@@ -242,11 +252,10 @@ export default function ReportManagement() {
         <Link
           href={
             !disableNext
-              ? `/admin/reports?page=${
-                  Math.floor(currentPage / maxPageButtons) * maxPageButtons +
-                  maxPageButtons +
-                  1
-                }`
+              ? `/admin/reports?page=${Math.floor(currentPage / maxPageButtons) * maxPageButtons +
+              maxPageButtons +
+              1
+              }`
               : "#"
           }
           onClick={(e) => {
@@ -256,9 +265,8 @@ export default function ReportManagement() {
               handleNextPageClick();
             }
           }}
-          className={`text-black ${
-            disableNext ? "cursor-not-allowed text-gray-500" : ""
-          }`}
+          className={`text-black ${disableNext ? "cursor-not-allowed text-gray-500" : ""
+            }`}
         >
           {">"}
         </Link>

@@ -1,3 +1,4 @@
+import { setAccessToken } from "@/app/my_page/_utils/auth-header";
 import { Product } from "../[id]/page";
 import { getAccessToken } from "../_utils/auth-header";
 
@@ -28,7 +29,6 @@ const mapProductToAPISepc = (product: Product) => {
 };
 
 export const createProduct = async (product: Product): Promise<boolean> => {
-  // console.log(mapProductToAPISepc(product));
 
   const res = await fetch(`/products/${product.id}`, {
     method: "PUT",
@@ -38,6 +38,14 @@ export const createProduct = async (product: Product): Promise<boolean> => {
     },
     body: JSON.stringify(mapProductToAPISepc(product)),
   });
+
+  if (res.status === 401) {
+    alert("유효하지 않은 인증 정보입니다.");
+
+    return false;
+  }
+
+  setAccessToken(res);
 
   if (res.ok === true) {
     const productId = await res.text();
@@ -67,6 +75,15 @@ export const deleteImageById = async (productId: number, imageURL: string) => {
     },
     body: JSON.stringify(deleteData),
   });
+
+  if (response.status === 401) {
+    alert("유효하지 않은 인증 정보입니다.");
+
+    return;
+  }
+
+  setAccessToken(response);
+
   return response.ok;
 };
 
@@ -78,6 +95,15 @@ export const deleteImages = async (productId: number) => {
       Authorization: getAccessToken(),
     },
   });
+
+  if (response.status === 401) {
+    alert("유효하지 않은 인증 정보입니다.");
+
+    return;
+  }
+
+  setAccessToken(response);
+
   return response.ok;
 };
 

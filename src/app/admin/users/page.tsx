@@ -8,6 +8,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { User } from "./_types/type";
 import { getAccessToken } from "./_utils/auth-header";
+import { setAccessToken } from "@/app/my_page/_utils/auth-header";
 
 export default function UserManagement() {
   const router = useRouter();
@@ -27,27 +28,39 @@ export default function UserManagement() {
     0;
   const disableNext =
     Math.floor(currentPage / maxPageButtons) * maxPageButtons +
-      maxPageButtons >=
+    maxPageButtons >=
     totalPages;
 
   // 페이지를 변경할 때 해당 페이지의 데이터를 가져오는 함수
   async function fetchReportsByPage(pageNumber: number) {
     const url = `/api/admin/users?page=${pageNumber}`;
 
-    await fetch(url, {
+    const options = {
       headers: {
-        Authorization: getAccessToken(),
+        Authorization: getAccessToken(), // 토큰을 헤더에 추가
       },
-    })
-      .then((resp) => resp.json())
-      .then((result) => {
-        setUsers(result.content);
-        // console.log(result.content);
+    };
 
-        setCurrentPage(result.pageable.pageNumber);
-        setTotalPages(result.totalPages);
-        setItemsPerPage(result.pageable.pageSize);
-      });
+    const response = await fetch(url, options);
+
+    if (response.status === 401) {
+      alert("유효하지 않은 인증 정보입니다.");
+      return;
+    }
+
+    setAccessToken(response);
+
+    const result = await response.json();
+
+    if (!response.ok) {
+      throw new Error('서버에서 데이터를 가져오는 중 문제가 발생했습니다.');
+    }
+
+    setUsers(result.content);
+    setCurrentPage(result.pageable.pageNumber);
+    setTotalPages(result.totalPages);
+    setItemsPerPage(result.pageable.pageSize);
+
   }
 
   useEffect(() => {
@@ -103,11 +116,10 @@ export default function UserManagement() {
               handlePageClick(i);
             }
           }}
-          className={`${
-            currentPage === i
-              ? "text-violet-900 pointer-events-none"
-              : "text-slate-300 pointer-events-auto"
-          }`}
+          className={`${currentPage === i
+            ? "text-violet-900 pointer-events-none"
+            : "text-slate-300 pointer-events-auto"
+            }`}
         >
           {i + 1}
         </Link>
@@ -205,11 +217,10 @@ export default function UserManagement() {
         <Link
           href={
             !disablePrevious
-              ? `/admin/users?page=${
-                  Math.floor(currentPage / maxPageButtons) * maxPageButtons -
-                  maxPageButtons +
-                  1
-                }`
+              ? `/admin/users?page=${Math.floor(currentPage / maxPageButtons) * maxPageButtons -
+              maxPageButtons +
+              1
+              }`
               : "#"
           }
           onClick={(e) => {
@@ -219,9 +230,8 @@ export default function UserManagement() {
               handlePreviousPageClick();
             }
           }}
-          className={`text-black ${
-            disablePrevious ? "cursor-not-allowed text-gray-500" : ""
-          }`}
+          className={`text-black ${disablePrevious ? "cursor-not-allowed text-gray-500" : ""
+            }`}
         >
           {"<"}
         </Link>
@@ -229,11 +239,10 @@ export default function UserManagement() {
         <Link
           href={
             !disableNext
-              ? `/admin/users?page=${
-                  Math.floor(currentPage / maxPageButtons) * maxPageButtons +
-                  maxPageButtons +
-                  1
-                }`
+              ? `/admin/users?page=${Math.floor(currentPage / maxPageButtons) * maxPageButtons +
+              maxPageButtons +
+              1
+              }`
               : "#"
           }
           onClick={(e) => {
@@ -243,9 +252,8 @@ export default function UserManagement() {
               handleNextPageClick();
             }
           }}
-          className={`text-black ${
-            disableNext ? "cursor-not-allowed text-gray-500" : ""
-          }`}
+          className={`text-black ${disableNext ? "cursor-not-allowed text-gray-500" : ""
+            }`}
         >
           {">"}
         </Link>
