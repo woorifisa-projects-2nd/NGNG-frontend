@@ -41,7 +41,7 @@ const UserContextProvider = ({ children }: { children: React.ReactNode }) => {
 
   const logout = () => {
     localStorage.removeItem("user");
-    localStorage.removeItem("accessToken");
+    // localStorage.removeItem("accessToken");
   };
   return (
     <UserContext.Provider value={{ getUser, setUser, logout, getAccessToken }}>

@@ -5,11 +5,11 @@ import StompAlarmSubscibe from "@/providers/stompAlarmSubscribe";
 import { UserContext } from "@/providers/UserContext";
 
 export default function DefaultLayout({ children }: { children: ReactNode }) {
-  const { getAccessToken, logout } = useContext(UserContext);
+  const { logout, getUser } = useContext(UserContext);
   // console.log("access token", typeof getAccessToken());
-  const token = getAccessToken();
+  const user = getUser();
 
-  if (token === "undefined" || token === undefined) {
+  if (user === undefined) {
     logout();
   }
   return (
