@@ -5,6 +5,7 @@ import LogoImage from "./_image/logo.svg";
 import ColorMode from "@/components/layouts/header/components/ColorMode";
 import { useRouter } from "next/navigation";
 import { UserContext } from "@/providers/UserContext";
+import { setAccessToken } from "../my_page/_utils/auth-header";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -44,10 +45,12 @@ export default function LoginPage() {
       return;
     }
 
-    localStorage.setItem(
-      "accessToken",
-      JSON.stringify(response.headers.get("Authorization"))
-    );
+    setAccessToken(response);
+
+    // localStorage.setItem(
+    //   "accessToken",
+    //   JSON.stringify(response.headers.get("Authorization"))
+    // );
 
     const data = await response.json();
 
