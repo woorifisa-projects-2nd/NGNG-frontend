@@ -1,4 +1,7 @@
-import { getAccessToken } from "@/app/my_page/_utils/auth-header";
+import {
+  getAccessToken,
+  setAccessToken,
+} from "@/app/my_page/_utils/auth-header";
 import useSWR from "swr";
 export type MainPageProduct = {
   category: string;
@@ -20,7 +23,7 @@ const getMainPageProducts = async () => {
   return await fetch("/api/main", {
     headers: { Authorization: getAccessToken() },
   }).then((res) => {
-    // console.log("res", res);
+    setAccessToken(res);
     return res.json();
   });
 };

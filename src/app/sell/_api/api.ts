@@ -1,4 +1,7 @@
-import { getAccessToken } from "@/app/my_page/_utils/auth-header";
+import {
+  getAccessToken,
+  setAccessToken,
+} from "@/app/my_page/_utils/auth-header";
 import { Product } from "../page";
 
 const mapProductToAPISepc = ({
@@ -40,7 +43,7 @@ export const createProduct = async ({
     },
     body: JSON.stringify(mapProductToAPISepc({ product, userId })),
   });
-
+  setAccessToken(res);
   if (res.ok === true) {
     const productId = await res.text();
     const resImages = await createImages(productId, product.images);
@@ -70,5 +73,8 @@ const createImages = async (
       Authorization: getAccessToken(),
     },
     body: fomData,
+  }).then((res) => {
+    setAccessToken(res);
+    return res.json();
   });
 };
