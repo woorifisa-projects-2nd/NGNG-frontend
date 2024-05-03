@@ -108,10 +108,10 @@ export default function Chatting({ data }: ChattingProps) {
       sendMessage(message);
     }
   };
-  console.log("data", chatData);
+  // console.log("data", chatData);
   const getMessage = (data: any) => {
-    console.log("메시지 수신 데이터들", chatData);
-    console.log("메시지 수신", data);
+    // console.log("메시지 수신 데이터들", chatData);
+    // console.log("메시지 수신", data);
     setChatData((prev) => [
       ...prev,
       {

@@ -29,7 +29,7 @@ export const updateFetchMyPage = async (
   },
   Done?: () => void
 ) => {
-  console.log(body);
+  // console.log(body);
 
   return (await fetch("/api/users", {
     method: "PUT",
@@ -55,7 +55,7 @@ export const updateUserAccount = async (
   },
   Done?: () => void
 ) => {
-  console.log(body);
+  // console.log(body);
 
   return (await fetch("/api/confirm/account", {
     method: "PUT",

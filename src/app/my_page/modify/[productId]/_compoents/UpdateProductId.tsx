@@ -113,9 +113,9 @@ export default function UpdateProductId({ productId }: { productId: number }) {
 
 
   const handlerChange = async () => {
-    console.log("수정할 데이터");
-    console.log(deleteOriginImages);
-    console.log(newImages);
+    // console.log("수정할 데이터");
+    // console.log(deleteOriginImages);
+    // console.log(newImages);
 
     // console.log({
     //   title: productTitle.current?.value,
