@@ -1,11 +1,11 @@
-import { getAccessToken } from "../_utils/auth-header";
+import { getAccessToken, setAccessToken } from "../_utils/auth-header";
 
 export const getFetchMyPage = async () => {
   // console.log("access", getAccessToken());
 
   const res = await fetch(`/api/users/mypage`, {
     headers: {
-      Authorization: await getAccessToken(),
+      Authorization: getAccessToken(),
     },
     // cache: "no-store",
   });
@@ -37,10 +37,11 @@ export const updateFetchMyPage = async (
     redirect: "follow",
     headers: {
       "Content-Type": "application/json",
-      Authorization: await getAccessToken(),
+      Authorization: getAccessToken(),
     },
     body: JSON.stringify(body),
   }).then((res) => {
+    setAccessToken(res);
     if (res.ok) Done && Done();
 
     return res.json();
@@ -63,10 +64,11 @@ export const updateUserAccount = async (
     redirect: "follow",
     headers: {
       "Content-Type": "application/json",
-      Authorization: await getAccessToken(),
+      Authorization: getAccessToken(),
     },
     body: JSON.stringify(body),
   }).then((res) => {
+    setAccessToken(res);
     if (res.ok) Done && Done();
   })) as any;
 };
@@ -81,10 +83,11 @@ export const updateUserAddress = async (
     redirect: "follow",
     headers: {
       "Content-Type": "application/json",
-      Authorization: await getAccessToken(),
+      Authorization: getAccessToken(),
     },
     body: JSON.stringify(body),
   }).then((res) => {
+    setAccessToken(res);
     if (res.ok) Done && Done();
   })) as any;
 };
@@ -99,13 +102,14 @@ export const updateTransaction = async ({
     cache: "no-cache",
     headers: {
       "Content-Type": "application/json",
-      Authorization: await getAccessToken(),
+      Authorization: getAccessToken(),
     },
     redirect: "follow",
     body: JSON.stringify({
       statusId: status,
     }),
   }).then((res) => {
+    setAccessToken(res);
     if (res.status === 200) {
       Done && Done();
       return res.json();
@@ -118,9 +122,12 @@ export const updateTransaction = async ({
 export const getPointHistoryAll = async () => {
   return await fetch(`/api/points/all`, {
     headers: {
-      Authorization: await getAccessToken(),
+      Authorization: getAccessToken(),
     },
-  }).then((res) => res.json());
+  }).then((res) => {
+    setAccessToken(res);
+    return res.json();
+  });
 };
 
 export const addFetchPoint = async (cost: number, Done: () => void) => {
@@ -128,13 +135,14 @@ export const addFetchPoint = async (cost: number, Done: () => void) => {
     method: "post",
     headers: {
       "Content-Type": "application/json",
-      Authorization: await getAccessToken(),
+      Authorization: getAccessToken(),
     },
     body: JSON.stringify({
       addCost: cost,
       type: "충전",
     }),
   }).then((res) => {
+    setAccessToken(res);
     if (res.ok) Done && Done();
     return res.json();
   });
@@ -145,9 +153,12 @@ export const updateProductPurchaseById = async (productId: number) => {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      Authorization: await getAccessToken(),
+      Authorization: getAccessToken(),
     },
-  }).then((res) => res.text());
+  }).then((res) => {
+    setAccessToken(res);
+    return res.text();
+  });
 };
 
 export const deleteProductById = async (productId: number) => {
@@ -155,9 +166,12 @@ export const deleteProductById = async (productId: number) => {
     method: "DELETE",
     headers: {
       "Content-Type": "application/json",
-      Authorization: await getAccessToken(),
+      Authorization: getAccessToken(),
     },
-  }).then((res) => res.text());
+  }).then((res) => {
+    setAccessToken(res);
+    return res.text();
+  });
 };
 
 export const isPayment = async (cost: number) => {
@@ -165,12 +179,15 @@ export const isPayment = async (cost: number) => {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      Authorization: await getAccessToken(),
+      Authorization: getAccessToken(),
     },
     body: JSON.stringify({
       paymentCost: cost,
     }),
-  }).then((res) => res.json());
+  }).then((res) => {
+    setAccessToken(res);
+    return res.json();
+  });
 };
 
 export const paymentProduct = async ({
@@ -184,11 +201,14 @@ export const paymentProduct = async ({
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      Authorization: await getAccessToken(),
+      Authorization: getAccessToken(),
     },
     body: JSON.stringify({
       paymentCost: cost,
       payProductId: productId,
     }),
-  }).then((res) => res.json());
+  }).then((res) => {
+    setAccessToken(res);
+    return res.json();
+  });
 };

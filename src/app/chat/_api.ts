@@ -66,7 +66,7 @@ export const getAllChatMessages = async ({
 }) => {
   return await fetch(`/private-chats/${chatRoomId}/${userId}`, {
     headers: {
-      Authorization: await getAccessToken(),
+      Authorization: getAccessToken(),
     },
     cache: "no-cache",
   }).then((res) => {
@@ -90,7 +90,7 @@ export const createTransactionRequestAPI = async ({
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      Authorization: await getAccessToken(),
+      Authorization: getAccessToken(),
     },
     body: JSON.stringify({
       productId,
@@ -115,7 +115,7 @@ export const updateTransactionStatus = async ({
     method: "PUT",
     headers: {
       "Content-Type": "application/json",
-      Authorization: await getAccessToken(),
+      Authorization: getAccessToken(),
     },
     body: JSON.stringify({
       statusId,

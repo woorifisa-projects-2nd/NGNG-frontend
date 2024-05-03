@@ -21,7 +21,7 @@ export type MainPageProduct = {
 };
 const getMainPageProducts = async () => {
   return await fetch("/api/main", {
-    headers: { Authorization: await getAccessToken() },
+    headers: { Authorization: getAccessToken() },
   }).then((res) => {
     setAccessToken(res);
     return res.json();
