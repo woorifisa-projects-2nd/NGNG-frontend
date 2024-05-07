@@ -18,11 +18,10 @@ export default function PrivateChat() {
     roomId: string;
   }>();
   // const { getUser } = useContext(UserContext);
-  const { user, deleteProduct } = useMypageSWR();
+  const { user, deleteProduct, isLoading } = useMypageSWR();
   // const user = getUser();
-  console.log("user", user);
 
-  if (user === undefined) {
+  if (isLoading === false && user === undefined) {
     redirect("/login");
   }
 
