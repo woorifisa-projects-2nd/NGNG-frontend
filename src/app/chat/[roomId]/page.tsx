@@ -11,13 +11,17 @@ import usePrivateChatMessage from "../_hooks/usePrivateChatMessgae";
 import { mutate } from "swr";
 import { UserContext } from "@/providers/UserContext";
 import TransactionStatusToActiveButton from "./_components/TransactionStatusToActiveButton";
+import useMypageSWR from "@/app/my_page/_hooks/useMypageSWR";
 
 export default function PrivateChat() {
   const params = useParams<{
     roomId: string;
   }>();
-  const { getUser } = useContext(UserContext);
-  const user = getUser();
+  // const { getUser } = useContext(UserContext);
+  const { user, deleteProduct } = useMypageSWR();
+  // const user = getUser();
+  console.log("user", user);
+
   if (user === undefined) {
     redirect("/login");
   }
@@ -25,14 +29,14 @@ export default function PrivateChat() {
   const { data, updateTransactionRequest, createTransactionRequest } =
     usePrivateChatMessage({
       chatRoomId: Number(params.roomId),
-      userId: user.id,
+      userId: user?.userId ?? -1,
     });
   const [open, setOpen] = useState<boolean>(false);
   const [requestProcessModalOpen, setRequestProcessModalOpen] =
     useState<boolean>(false);
   const transactionStatus =
     data?.product?.transactionDetails?.status.status ?? null;
-  const isSeller = data && data.product?.seller.id === user.id;
+  const isSeller = data && data.product?.seller.id === user?.userId;
   const [price, setPrice] = useState<number>(data?.product?.price ?? 0);
 
   useEffect(() => {
@@ -50,7 +54,7 @@ export default function PrivateChat() {
   const onChangeTransactionStatus = () => {
     data &&
       createTransactionRequest({
-        buyerId: user.id,
+        buyerId: user?.userId ?? -1,
         productId: data?.product.productId,
         sellerId: data.product.seller.id,
         price,
@@ -102,7 +106,7 @@ export default function PrivateChat() {
     <div className="relative h-full scrollbar-hide max-h-[640px]">
       <div className="fixed top-0 w-full bg-white dark:bg-black min-h-28 z-10">
         <div className="relative flex justify-center font-bold p-2 ">
-          {data.product.seller.id === user.id
+          {data.product.seller.id === user?.userId
             ? data.product.buyer.nickname
             : data.product.seller.nickname}
           <span className="cursor-pointer absolute right-2 flex items-center text-red-500 text-sm">

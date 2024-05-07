@@ -63,7 +63,7 @@ const useMypageSWR = () => {
     },
     Done?: () => void
   ) => {
-    const user = localStorage.getItem("user");
+    const user = sessionStorage.getItem("user");
     if (!user) return;
     const id = (JSON.parse(user) as { id: number }).id;
 
@@ -95,7 +95,7 @@ const useMypageSWR = () => {
     },
     Done?: () => void
   ) => {
-    const user = localStorage.getItem("user");
+    const user = sessionStorage.getItem("user");
     if (!user) return;
 
     const userId = (JSON.parse(user) as { id: number }).id;
