@@ -44,7 +44,7 @@ export default function AdminMenu({ children }: { children: ReactNode }) {
                 <hr />
 
                 {menu.map((item, index) => (
-                    <div key={index} className="mt-5 text-left ml-28">
+                    <div key={index} className={`mt-5 text-left ${index === menu.length - 1 ? 'text-center' : 'flex justify-center'}`}>
                         <Link
                             href={item.link}
                             className={`${pathname.includes(item.link) && "text-point-color font-bold"
@@ -55,7 +55,7 @@ export default function AdminMenu({ children }: { children: ReactNode }) {
                         {item.subMenu && (
                             <div className="ml-4">
                                 {item.subMenu.map((subItem, subIndex) => (
-                                    <div key={subIndex} className="py-2 text-left ml-4">
+                                    <div key={subIndex} className="py-2 ml-4 text-center">
                                         <Link
                                             href={subItem.link}
                                             className={`${pathname.includes(subItem.link) && "text-point-color font-bold"

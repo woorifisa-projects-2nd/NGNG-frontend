@@ -18,7 +18,7 @@ export const UserContext = createContext<{
 });
 const UserContextProvider = ({ children }: { children: React.ReactNode }) => {
   const getUser = () => {
-    const data = localStorage.getItem("user");
+    const data = sessionStorage.getItem("user");
 
     if (data) {
       return JSON.parse(data) as User;
@@ -28,7 +28,7 @@ const UserContextProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   const getAccessToken = () => {
-    const token = localStorage.getItem("accessToken");
+    const token = sessionStorage.getItem("accessToken");
     if (token) {
       return token;
     } else {
@@ -36,12 +36,12 @@ const UserContextProvider = ({ children }: { children: React.ReactNode }) => {
     }
   };
   const setUser = (info: User) => {
-    localStorage.setItem("user", JSON.stringify(info));
+    sessionStorage.setItem("user", JSON.stringify(info));
   };
 
   const logout = () => {
-    localStorage.removeItem("user");
-    // localStorage.removeItem("accessToken");
+    sessionStorage.removeItem("user");
+    // sessionStorage.removeItem("accessToken");
   };
   return (
     <UserContext.Provider value={{ getUser, setUser, logout, getAccessToken }}>
