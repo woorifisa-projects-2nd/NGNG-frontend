@@ -80,22 +80,13 @@ export default function CategoryHeader({
       <div className="flex items-end justify-between">
         <div className="flex items-end">
           <div>
-            <div
-              className="flex items-center mb-4"
-              onClick={() => setForSale(!forSale)}
-            >
-              <input
-                id="default-checkbox"
-                type="checkbox"
-                value=""
-                className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded  dark:ring-offset-gray-800 dark:bg-gray-700 dark:border-gray-600"
-              />
-              <label
-                htmlFor="default-checkbox"
-                className="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300"
-              >
+            <div>
+              <button type="button" className={
+                forSale
+                  ? "px-4 py-1 w-fit text-center border border-point-color rounded text-point-color"
+                  : "px-4 py-1 w-fit text-center text-[#272727] border border-[#272727] rounded active:border-point-color active:text-point-color active:border-2"} onClick={() => setForSale(!forSale)}>
                 거래가능만 보기
-              </label>
+              </button>
             </div>
           </div>
         </div>

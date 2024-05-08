@@ -110,10 +110,10 @@ export default function SearchKeyword() {
         sortedProducts = filtedProducts.slice();
       } else if (sortBy === "lowPrice") {
 
-        sortedProducts = [...filtedProducts].sort((a, b) => a.price - b.price);
+        sortedProducts = filtedProducts.sort((a, b) => a.price - b.price);
       } else if (sortBy === "highPrice") {
 
-        sortedProducts = [...filtedProducts].sort((a, b) => b.price - a.price);
+        sortedProducts = filtedProducts.sort((a, b) => b.price - a.price);
       } else {
 
         sortedProducts = filtedProducts;
@@ -124,17 +124,14 @@ export default function SearchKeyword() {
       if (forSale) {
 
         onSaleProducts = sortedProducts.filter(product => product.forSale);
-        setTotalHits(onSaleProducts.length);
       } else {
 
         onSaleProducts = sortedProducts;
-        setTotalHits(onSaleProducts.length);
       }
 
       let priceRangeProducts: product[] = onSaleProducts.filter(product => product.price >= minAndMaxPrice?.minPrice && product.price <= minAndMaxPrice?.maxPrice);
 
       setShowProducts(priceRangeProducts);
-      
     }
 
     filterAndSort();
@@ -186,7 +183,7 @@ export default function SearchKeyword() {
             </div>
             <div>
               <span className="text-lg">총 </span>
-              <span className="text-xl">{totalHits}</span>
+              <span className="text-xl text-point-color">{totalHits}</span>
               <span className="text-lg">개</span>
             </div>
           </div>
@@ -242,23 +239,23 @@ export default function SearchKeyword() {
                 <input type="number" min={0} placeholder="최대가격" value={maxPrice} onChange={e => setMaxPrice(parseInt(e.target.value))}
                   className="border rounded border-[#272727] px-1 py-1 mr-2" />
                 <button type="button" onClick={setPriceRange}
-                className="border rounded px-1 py-1 border-[#272727] active:border-point-color active:text-point-color">적용</button>
+                  className="border rounded px-1 py-1 border-[#272727] active:border-point-color active:text-point-color">적용</button>
               </div>
             </div>
           </div>
           <div className="flex justify-center items-center mt-4">
             {showProducts.length === 0 ? (<div className="flex flex-cols font-semibold ">
-                {`아직 등록된 상품이 없습니다. `}
-                <Link href={"/sell"} className="font-semibold text-point-color">
-                  상품 판매하러 가기
-                </Link>
-              </div>
-              ) : (<div className="grid md:grid-cols-4 grid-cols-1 gap-x-10 gap-y-10">
+              {`아직 등록된 상품이 없습니다. `}
+              <Link href={"/sell"} className="font-semibold text-point-color">
+                상품 판매하러 가기
+              </Link>
+            </div>
+            ) : (<div className="grid md:grid-cols-4 grid-cols-1 gap-x-10 gap-y-10">
               {showProducts?.map((product) => (
                 <EachProduct product={product} key={product.productId} />
               ))}
             </div>)
-              }
+            }
           </div>
           <div className="flex justify-center items-center mt-6">
             <div>
