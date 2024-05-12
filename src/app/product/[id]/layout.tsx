@@ -48,6 +48,8 @@ export async function generateStaticParams() {
   }));
 }
 
+
 export default function Layout({ children }: { children: ReactNode }) {
   return <>{children}</>;
+
 }

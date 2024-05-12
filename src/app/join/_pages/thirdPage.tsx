@@ -60,9 +60,19 @@ export default function ThirdPage({
       method: "POST",
       body: JSON.stringify(auth),
     };
-    alert("입력하신 이메일로 인증번호를 요청했습니다.");
 
     const response = await fetch(url, options);
+
+    if (response.status === 409) {
+
+      alert("이미 사용중인 이메일입니다..");
+
+      return;
+    } else {
+
+      alert("입력하신 이메일로로 인증번호를 전송했습니다.");
+    }
+
     const responseJson = await response.json();
 
     setIsCheckAuthNumberDisabled(false);
