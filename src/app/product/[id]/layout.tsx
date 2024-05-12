@@ -48,6 +48,8 @@ export async function generateStaticParams() {
   }));
 }
 
-export default function ProductLayout({ children }: { children: ReactNode }) {
-  return <DefaultLayout>{children}</DefaultLayout>;
+
+export default function Layout({ children }: { children: ReactNode }) {
+  return <>{children}</>;
+
 }
