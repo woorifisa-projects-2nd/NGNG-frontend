@@ -25,7 +25,7 @@
 저희는 이런  아이디어를 바탕으로 프로젝트를 기획했습니다.
 
 # 2. 프로젝트 시스템 아키텍처, ERD
-![image](https://github.com/woorifisa-projects-2nd/NGNG-frontend/assets/74474291/e9c284e3-4c25-4b27-bcf8-89c69b6b51dd)
+![image](https://github.com/woorifisa-projects-2nd/NGNG-frontend/assets/74474291/99186954-1825-4590-abcc-e9b29826ec80)
 ![image (1)](https://github.com/woorifisa-projects-2nd/NGNG-chat-server/assets/62551858/3b81650b-e00c-4172-95f3-27770b843b19)(https://www.erdcloud.com/d/akdosZBK9b5xTTRDd)
 
 # 3. 기술 및 채택 이유
