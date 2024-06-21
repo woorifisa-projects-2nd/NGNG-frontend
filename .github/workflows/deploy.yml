@@ -15,8 +15,8 @@ jobs:
 
     - name: add .env file
       run: |
-        echo "NEXT_PUBLIC_CHAT_SOCKET=$NEXT_PUBLIC_CHAT_SOCKET" >> .env
-        echo "BACKEND_URL=$BACKEND_URL" >> .env
+        echo "NEXT_PUBLIC_CHAT_SOCKET=$NEXT_PUBLIC_CHAT_SOCKET" >> .env.production
+        echo "BACKEND_URL=$BACKEND_URL" >> .env.production
 
       env:
         NEXT_PUBLIC_CHAT_SOCKET: ${{ secrets.NEXT_PUBLIC_CHAT_SOCKET }}
