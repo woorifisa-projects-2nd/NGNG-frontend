@@ -58,6 +58,12 @@ export default ({
       },
       {
         protocol: "https",
+        hostname: "api.ngng.site",
+        port: "",
+        pathname: "**",
+      },
+      {
+        protocol: "https",
         hostname: "team3-ngng.s3.ap-northeast-2.amazonaws.com",
         port: "",
         pathname: "**",
