@@ -16,7 +16,6 @@ export function middleware(request: NextRequest) {
   const token = request.cookies.get("refreshToken")?.value;
 
   const role = token && (jwtDecode(token) as any).role;
-  console.log(role);
 
   if (request.nextUrl.pathname.startsWith("/admin")) {
     if (role != "ADMIN") {
