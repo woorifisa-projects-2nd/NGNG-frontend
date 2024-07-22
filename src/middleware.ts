@@ -16,6 +16,7 @@ export function middleware(request: NextRequest) {
   const token = request.cookies.get("refreshToken")?.value;
 
   const role = token && (jwtDecode(token) as any).role;
+  console.log(role);
 
   if (request.nextUrl.pathname.startsWith("/admin")) {
     if (role != "ADMIN") {
@@ -36,5 +37,6 @@ export function middleware(request: NextRequest) {
 
 // See "Matching Paths" below to learn more
 export const config = {
-  matcher: ["/admin/:path*", "/my_page/:path*"],
+  // matcher: ["/admin/:path*", "/my_page/:path*"],
+  matcher: ["/admin/:path*"],
 };
