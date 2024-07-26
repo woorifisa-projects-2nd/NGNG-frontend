@@ -24,7 +24,7 @@ export default function BannerAndItems({ dataChunk, index }: Props) {
         />
       </div>
       {index === 0 && <h2 className=" text-xl font-medium my-5">최신 상품</h2>}
-      <div className="grid grid-cols-4 gap-y-10">
+      <div className="grid grid-cols-2  md:grid-cols-3 lg:grid-cols-4 gap-x-2 gap-y-10">
         {dataChunk.map((item) => (
           <Item item={item} key={item.productId} />
         ))}
