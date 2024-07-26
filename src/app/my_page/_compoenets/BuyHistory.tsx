@@ -17,7 +17,7 @@ export default function BuyHistory({ buyList }: Props) {
 
   return (
     <div className="grid grid-cols-2 sm:grid-cols-3 p-2 gap-2 md:grid-cols-4">
-      {buyList &&
+      {buyList.length > 0 ? (
         buyList.map((buy, index) => (
           <div
             key={index}
@@ -34,7 +34,10 @@ export default function BuyHistory({ buyList }: Props) {
               price={buy.product.price}
             />
           </div>
-        ))}
+        ))
+      ) : (
+        <div>구매한 물품이 없습니다.</div>
+      )}
       {isOpenProductModal &&
         createPortal(
           <ModalLarge

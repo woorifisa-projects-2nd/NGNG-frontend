@@ -47,7 +47,7 @@ export default function MyInfo({ userInfo }: Props) {
         <div>
           <Image
             className="rounded-full"
-            src={"https://source.unsplash.com/user/max_duz/300x300"}
+            src={"https://api.ngng.site/images/basicAvatar.png"}
             width={300}
             height={300}
             alt="사용자 이미지"
@@ -120,14 +120,17 @@ export default function MyInfo({ userInfo }: Props) {
             </div>
             {/* 기타 */}
             <div className="hidden w-[80vw] max-w-[480px] gap-4 text-black dark:text-white text-opacity-45 md:block md:w-auto md:flex md:flex-col md:justify-start">
-              <button
+              {/* <button
                 onClick={() =>
                   setModal({ type: ModalStatus.Point, isOpen: true })
                 }
                 className="text-start"
               >
                 포인트 충전하기
-              </button>
+              </button> */}
+              <br />
+              <br />
+
               <button
                 onClick={() =>
                   setModal({ type: ModalStatus.Account, isOpen: true })
