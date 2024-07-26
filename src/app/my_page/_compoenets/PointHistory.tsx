@@ -3,14 +3,24 @@ import React, { useEffect, useState } from "react";
 import { formatKRW } from "../_utils/format";
 import { getAccessToken } from "../_utils/auth-header";
 import usePointHistory from "../_hooks/usePointeHistory";
+import { ModalStatus, useModalController } from "../_provider/ModalProovider";
 
 export default function PointHistory() {
   const { pointHistory } = usePointHistory();
+  const [_, setModal] = useModalController();
 
   if (!pointHistory) return <div>로딩중....</div>;
 
   return (
     <div>
+      <div className="flex justify-end p-2 hidden md:block">
+        <button
+          onClick={() => setModal({ type: ModalStatus.Point, isOpen: true })}
+          className=" border-2 border-black shadow p-2"
+        >
+          포인트 충전하기
+        </button>
+      </div>
       {/* 테이블 */}
       <div className="relative overflow-x-auto shadow-md sm:rounded-lg my-2 text-[.5rem] md:text-[1rem]">
         <table className=" md:table-auto w-full   text-left rtl:text-right text-gray-500 dark:text-gray-400">

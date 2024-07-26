@@ -20,6 +20,7 @@ import { ModalStatus, useModalController } from "./_provider/ModalProovider";
 
 export default function Page() {
   const router = useRouter();
+  const [_, setModal] = useModalController();
   const { getUser } = useContext(UserContext);
   const user = getUser();
   if (!user) {
@@ -35,6 +36,16 @@ export default function Page() {
   const handlerDelteProduct = (productId: number) => {
     deleteProduct(productId);
   };
+
+  useEffect(() => {
+    const reSizeResetModal = () => {
+      setModal({ type: ModalStatus.reset, isOpen: false });
+    };
+
+    window.addEventListener("resize", reSizeResetModal);
+
+    return () => window.removeEventListener("resize", reSizeResetModal);
+  });
 
   //   추후 Suspense 로바꾸면 좋을거 같음
   if (!userInfo) return <SkeletonMyinfo />;
