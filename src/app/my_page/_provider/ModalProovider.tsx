@@ -15,6 +15,7 @@ export enum ModalStatus {
   "Email",
   "Point",
   "NickName",
+  "reset",
 }
 type ModalAction = {
   type: ModalStatus;
@@ -62,7 +63,11 @@ const reducerFunc = (state: Data, action: ModalAction): Data => {
         ...ArrayToObjectReset,
         isPoint: action.isOpen,
       };
-
+    case ModalStatus.reset:
+      return {
+        ...state,
+        ...ArrayToObjectReset,
+      };
     default:
       return {
         ...state,
