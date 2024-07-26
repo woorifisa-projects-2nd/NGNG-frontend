@@ -93,7 +93,8 @@ export default function SellHistory({ sellList, deleteProduct }: Props) {
                 className="relative cursor-pointer hmx-auto hover:scale-110 transition-all"
                 onClick={() => {
                   setIsOpenModal(true);
-                  setSelectIndex(index);
+                  const findIndex = sellList.findIndex((v) => v.id === slae.id);
+                  setSelectIndex(findIndex);
                 }}
               >
                 <ProductCard
