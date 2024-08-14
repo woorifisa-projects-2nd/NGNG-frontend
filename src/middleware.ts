@@ -1,5 +1,7 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
+
+import { cookies } from "next/headers";
 import { jwtDecode } from "jwt-decode";
 
 // npm i jwt-decode
@@ -13,9 +15,11 @@ export function middleware(request: NextRequest) {
   // console.log(requestHeadres.get("referer"));
   // console.log(requestHeadres);
 
-  const token = request.cookies.get("refreshToken")?.value;
+  // const token = request.cookies.get("refreshToken")?.value;
+  const roleToken = cookies().get("roleToken")?.value as string;
+  console.log(roleToken);
 
-  const role = token && (jwtDecode(token) as any).role;
+  const role = roleToken && (jwtDecode(roleToken) as any).role;
 
   if (request.nextUrl.pathname.startsWith("/admin")) {
     if (role != "ADMIN") {
@@ -36,6 +40,6 @@ export function middleware(request: NextRequest) {
 
 // See "Matching Paths" below to learn more
 export const config = {
-  // matcher: ["/admin/:path*", "/my_page/:path*"],
-  matcher: ["/admin/:path*"],
+  matcher: ["/admin/:path*", "/my_page/:path*"],
+  // matcher: ["/admin/:path*"],
 };

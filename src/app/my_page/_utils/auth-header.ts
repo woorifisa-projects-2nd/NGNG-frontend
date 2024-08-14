@@ -1,4 +1,4 @@
-import { User } from "@/providers/UserContext";
+import { jwtDecode } from "jwt-decode";
 
 export const getAccessToken = () => {
   if (typeof window !== "undefined") {
@@ -15,5 +15,8 @@ export const setAccessToken = (response: Response) => {
 
   if (token !== null) {
     sessionStorage.setItem("accessToken", JSON.stringify(token));
+    const roleToken = getAccessToken();
+
+    document.cookie = `roleToken=${roleToken}`;
   }
 };
